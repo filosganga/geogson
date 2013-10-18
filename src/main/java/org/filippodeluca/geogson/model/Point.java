@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.Serializable;
 
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
 
 /**
@@ -11,13 +12,13 @@ import com.google.common.base.Objects;
  */
 public class Point extends Geometry implements Serializable {
 
-    private final Position position;
+    private final SinglePosition coordinates;
 
-    public Point(Position position) {
+    public Point(SinglePosition positions) {
 
-        checkArgument(position != null, "coordinate must be not null");
+        checkArgument(positions != null, "coordinate must be not null");
 
-        this.position = position;
+        this.coordinates = positions;
     }
 
     public static Point of(double lon, double lat) {
@@ -25,20 +26,20 @@ public class Point extends Geometry implements Serializable {
     }
 
     public static Point of(Position position) {
-        return new Point(position);
+        return new Point(new SinglePosition(position));
 
     }
 
     public Position getPosition() {
-        return position;
+        return coordinates.getPosition();
     }
 
     public double getLon() {
-        return position.getLon();
+        return getPosition().getLon();
     }
 
     public double getLat() {
-        return position.getLat();
+        return getPosition().getLat();
     }
 
     public Point withPosition(Position position) {
@@ -46,11 +47,11 @@ public class Point extends Geometry implements Serializable {
     }
 
     public Point withLon(double lon) {
-        return of(lon, position.getLat());
+        return of(lon, getPosition().getLat());
     }
 
     public Point withLat(double lat) {
-        return of(position.getLon(), lat);
+        return of(getPosition().getLon(), lat);
     }
 
     @Override
@@ -60,12 +61,12 @@ public class Point extends Geometry implements Serializable {
 
     @Override
     public SinglePosition getPositions() {
-        return new SinglePosition(position);
+        return coordinates;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(position);
+        return Objects.hashCode(getClass(), coordinates);
     }
 
     @Override
@@ -77,11 +78,20 @@ public class Point extends Geometry implements Serializable {
             return false;
         }
         final Point other = (Point) obj;
-        return Objects.equal(this.position, other.position);
+        return Objects.equal(this.coordinates, other.coordinates);
     }
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("coordinate", position).toString();
+        return Objects.toStringHelper(this).add("coordinates", coordinates).toString();
+    }
+
+    public static Function<Point, Position> getPositionFn() {
+        return new Function<Point, Position>() {
+            @Override
+            public Position apply(Point input) {
+                return input.getPosition();
+            }
+        };
     }
 }

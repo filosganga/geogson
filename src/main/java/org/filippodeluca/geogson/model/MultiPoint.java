@@ -12,21 +12,21 @@ import com.google.common.collect.ImmutableList;
  */
 public class MultiPoint extends LinearGeometry {
 
-    public MultiPoint(ImmutableList<Position> coordinates) {
+    public MultiPoint(LinearPositions coordinates) {
         super(coordinates);
     }
 
     public static MultiPoint of(Position...positions) {
-        return new MultiPoint(ImmutableList.copyOf(positions));
+        return new MultiPoint(new LinearPositions(ImmutableList.copyOf(positions)));
     }
 
     public static MultiPoint of(Point...points) {
-        return new MultiPoint(ImmutableList.copyOf(FluentIterable.from(asList(points)).transform(new Function<Point, Position>() {
+        return new MultiPoint(new LinearPositions(ImmutableList.copyOf(FluentIterable.from(asList(points)).transform(new Function<Point, Position>() {
             @Override
             public Position apply(Point input) {
                 return input.getPosition();
             }
-        })));
+        }))));
     }
 
     public LineString toLineString() {
@@ -40,7 +40,7 @@ public class MultiPoint extends LinearGeometry {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(coordinates);
+        return Objects.hashCode(getClass(), coordinates);
     }
 
     @Override

@@ -7,22 +7,22 @@ import com.google.common.collect.ImmutableList;
  */
 public abstract class LinearGeometry extends Geometry {
 
-    protected final ImmutableList<Position> coordinates;
+    protected final LinearPositions coordinates;
 
-    public LinearGeometry(ImmutableList<Position> coordinates) {
+    public LinearGeometry(LinearPositions coordinates) {
         this.coordinates = coordinates;
     }
 
     @Override
     public LinearPositions getPositions() {
-        return new LinearPositions(coordinates);
-    }
-
-    public ImmutableList<Position> getCoordinates() {
         return coordinates;
     }
 
+    public ImmutableList<Position> getCoordinates() {
+        return coordinates.getPositions();
+    }
+
     public int getSize() {
-        return coordinates.size();
+        return coordinates.getPositions().size();
     }
 }

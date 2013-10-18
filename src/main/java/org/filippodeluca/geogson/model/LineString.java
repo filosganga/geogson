@@ -14,23 +14,23 @@ import com.google.common.collect.ImmutableList;
  */
 public class LineString extends LinearGeometry {
 
-    public LineString(ImmutableList<Position> coordinates) {
+    public LineString(LinearPositions coordinates) {
         super(coordinates);
 
-        checkArgument(coordinates.size() >= 2);
+        checkArgument(getSize() >= 2);
     }
 
     public static LineString of(Position...positions) {
-        return new LineString(ImmutableList.copyOf(positions));
+        return new LineString(new LinearPositions(ImmutableList.copyOf(positions)));
     }
 
     public static LineString of(Point...points) {
-        return new LineString(ImmutableList.copyOf(FluentIterable.from(asList(points)).transform(new Function<Point, Position>() {
+        return new LineString(new LinearPositions(ImmutableList.copyOf(FluentIterable.from(asList(points)).transform(new Function<Point, Position>() {
             @Override
             public Position apply(Point input) {
                 return input.getPosition();
             }
-        })));
+        }))));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class LineString extends LinearGeometry {
     }
 
     public boolean isClosed() {
-        return coordinates.size() >= 4 && getLast(coordinates).equals(getFirst(coordinates, null));
+        return getCoordinates().size() >= 4 && getLast(getCoordinates()).equals(getFirst(getCoordinates(), null));
     }
 
     public boolean isLinearRing() {
