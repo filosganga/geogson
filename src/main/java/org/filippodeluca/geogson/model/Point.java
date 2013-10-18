@@ -9,58 +9,63 @@ import com.google.common.base.Objects;
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class Point extends Shape implements Serializable {
+public class Point extends Geometry implements Serializable {
 
-    private final Coordinate coordinate;
+    private final Position position;
 
-    public Point(Coordinate coordinate) {
+    public Point(Position position) {
 
-        checkArgument(coordinate != null, "coordinate must be not null");
+        checkArgument(position != null, "coordinate must be not null");
 
-        this.coordinate = coordinate;
+        this.position = position;
     }
 
     public static Point of(double lon, double lat) {
-        return of(Coordinate.of(lon, lat));
+        return of(Position.of(lon, lat));
     }
 
-    public static Point of(Coordinate coordinate) {
-        return new Point(coordinate);
+    public static Point of(Position position) {
+        return new Point(position);
 
     }
 
-    public Coordinate getCoordinate() {
-        return coordinate;
+    public Position getPosition() {
+        return position;
     }
 
     public double getLon() {
-        return coordinate.getLon();
+        return position.getLon();
     }
 
     public double getLat() {
-        return coordinate.getLat();
+        return position.getLat();
     }
 
-    public Point withCoordinate(Coordinate coordinate) {
-        return of(coordinate);
+    public Point withPosition(Position position) {
+        return of(position);
     }
 
     public Point withLon(double lon) {
-        return of(lon, coordinate.getLat());
+        return of(lon, position.getLat());
     }
 
     public Point withLat(double lat) {
-        return of(coordinate.getLon(), lat);
+        return of(position.getLon(), lat);
     }
 
     @Override
-    public boolean isPoint() {
-        return true;
+    public Type getType() {
+        return Type.POINT;
+    }
+
+    @Override
+    public SinglePosition getPositions() {
+        return new SinglePosition(position);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(coordinate);
+        return Objects.hashCode(position);
     }
 
     @Override
@@ -72,11 +77,11 @@ public class Point extends Shape implements Serializable {
             return false;
         }
         final Point other = (Point) obj;
-        return Objects.equal(this.coordinate, other.coordinate);
+        return Objects.equal(this.position, other.position);
     }
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("coordinate", coordinate).toString();
+        return Objects.toStringHelper(this).add("coordinate", position).toString();
     }
 }

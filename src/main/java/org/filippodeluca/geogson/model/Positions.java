@@ -1,13 +1,9 @@
 package org.filippodeluca.geogson.model;
 
 /**
- *
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class Shape {
+public interface Positions {
 
-    public boolean isPoint() {
-        return false;
-    }
-
+    Positions merge(Positions other);
 }

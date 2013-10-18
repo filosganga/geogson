@@ -12,16 +12,32 @@ public final class Matchers {
     private Matchers() {
     }
 
-    public static Matcher<Coordinate> coordinateWithLonLat(final double lon, final double lat) {
-        return new TypeSafeMatcher<Coordinate>() {
+    public static Matcher<Positions> singlePositionsWithLonLat(final double lon, final double lat) {
+        return new TypeSafeMatcher<Positions>() {
             @Override
-            protected boolean matchesSafely(Coordinate item) {
+            protected boolean matchesSafely(Positions item) {
+                return positionWithLonLat(lon, lat).matches(((SinglePosition)item).getPosition());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Single positions with position: ").appendDescriptionOf(positionWithLonLat(lon, lat));
+
+            }
+        };
+    }
+
+
+    public static Matcher<Position> positionWithLonLat(final double lon, final double lat) {
+        return new TypeSafeMatcher<Position>() {
+            @Override
+            protected boolean matchesSafely(Position item) {
                 return item.getLon() == lon && item.getLat() == lat;
             }
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("Coordinate with lon: ")
+                description.appendText("Position with lon: ")
                         .appendValue(lon)
                         .appendText(" and lat: ")
                         .appendValue(lat);
@@ -30,19 +46,19 @@ public final class Matchers {
     }
 
     public static Matcher<Point> pointWithLonLat(final double lon, final double lat) {
-        return pointThatHave(coordinateWithLonLat(lon, lat));
+        return pointThatHave(positionWithLonLat(lon, lat));
     }
 
-    public static Matcher<Point> pointThatHave(final Matcher<Coordinate> coordinateMatcher) {
+    public static Matcher<Point> pointThatHave(final Matcher<Position> positionMatcher) {
         return new TypeSafeMatcher<Point>() {
             @Override
             protected boolean matchesSafely(Point item) {
-                return coordinateMatcher.matches(item.getCoordinate());
+                return positionMatcher.matches(item.getPosition());
             }
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("Point with that have ").appendDescriptionOf(coordinateMatcher);
+                description.appendText("Point with that have ").appendDescriptionOf(positionMatcher);
             }
         };
     }
