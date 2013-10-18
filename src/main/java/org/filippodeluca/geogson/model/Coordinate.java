@@ -37,6 +37,14 @@ public class Coordinate implements Serializable {
         return lat;
     }
 
+    public Coordinate withLon(double lon) {
+        return Coordinate.of(lon, lat);
+    }
+
+    public Coordinate withLat(double lat) {
+        return Coordinate.of(lon, lat);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(Coordinate.class, lon, lat);
@@ -52,5 +60,10 @@ public class Coordinate implements Serializable {
             final Coordinate other = (Coordinate) obj;
             return Objects.equal(this.lon, other.lon) && Objects.equal(this.lat, other.lat);
         }
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this).add("lon", lon).add("lat", lat).toString();
     }
 }
