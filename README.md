@@ -1,4 +1,4 @@
-GeoGson - A GeoJSON support for Gson
+GeoJSON support for Gson
 ====================================
 
 TBD
