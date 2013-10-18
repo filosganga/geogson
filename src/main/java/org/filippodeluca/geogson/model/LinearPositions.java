@@ -16,6 +16,9 @@
 
 package org.filippodeluca.geogson.model;
 
+import static com.google.common.collect.Iterables.transform;
+
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
@@ -42,10 +45,20 @@ public class LinearPositions implements Positions {
         } else if(other instanceof LinearPositions) {
             LinearPositions that = (LinearPositions) other;
 
-            return new AreaPositions(ImmutableList.of(positions, that.positions));
+            return new AreaPositions(ImmutableList.<LinearPositions>builder().add(this).add(that).build());
         } else {
             return other.merge(this);
         }
+    }
+
+    @Override
+    public Iterable<Positions> getChildren() {
+        return transform(positions, new Function<Position, Positions>() {
+            @Override
+            public Positions apply(Position input) {
+                return new SinglePosition(input);
+            }
+        });
     }
 
     @Override

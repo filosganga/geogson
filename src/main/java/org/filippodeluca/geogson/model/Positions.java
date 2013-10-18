@@ -22,4 +22,6 @@ package org.filippodeluca.geogson.model;
 public interface Positions {
 
     Positions merge(Positions other);
+
+    Iterable<? extends Positions> getChildren();
 }

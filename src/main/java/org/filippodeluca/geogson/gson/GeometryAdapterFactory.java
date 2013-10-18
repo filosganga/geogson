@@ -31,7 +31,9 @@ import org.filippodeluca.geogson.model.AreaPositions;
 import org.filippodeluca.geogson.model.Geometry;
 import org.filippodeluca.geogson.model.LineString;
 import org.filippodeluca.geogson.model.LinearPositions;
+import org.filippodeluca.geogson.model.MultiDimensionalPositions;
 import org.filippodeluca.geogson.model.MultiPoint;
+import org.filippodeluca.geogson.model.MultiPolygon;
 import org.filippodeluca.geogson.model.Point;
 import org.filippodeluca.geogson.model.Polygon;
 import org.filippodeluca.geogson.model.Positions;
@@ -44,8 +46,10 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-        if (type.getRawType().isAssignableFrom(Geometry.class)) {
+        if (Geometry.class.isAssignableFrom(type.getRawType())) {
             return (TypeAdapter<T>) new GeometryAdapter(gson);
+        } else if(Positions.class.isAssignableFrom(type.getRawType())) {
+            return (TypeAdapter<T>) new PositionsAdapter();
         } else {
             return gson.getAdapter(type);
         }
@@ -182,6 +186,9 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
         private Optional<Geometry> buildMultiPolygon(String type, Positions coordinates) {
 
             Optional<Geometry> mayGeometry = Optional.absent();
+            if(Geometry.Type.MULTI_POLYGON.getValue().equals(type)) {
+                mayGeometry = Optional.<Geometry>of(new MultiPolygon((MultiDimensionalPositions)coordinates));
+            }
 
 
             return mayGeometry;

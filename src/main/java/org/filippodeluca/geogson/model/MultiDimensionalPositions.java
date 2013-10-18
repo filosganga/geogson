@@ -16,6 +16,10 @@
 
 package org.filippodeluca.geogson.model;
 
+import static com.google.common.collect.Iterables.concat;
+import static com.google.common.collect.Iterables.transform;
+
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
@@ -24,13 +28,14 @@ import com.google.common.collect.ImmutableList;
  */
 public class MultiDimensionalPositions implements Positions {
 
-    ImmutableList<ImmutableList<ImmutableList<Position>>> positions;
+    private ImmutableList<AreaPositions> positions;
 
-    public MultiDimensionalPositions(ImmutableList<ImmutableList<ImmutableList<Position>>> positions) {
+
+    public MultiDimensionalPositions(ImmutableList<AreaPositions> positions) {
         this.positions = positions;
     }
 
-    public ImmutableList<ImmutableList<ImmutableList<Position>>> getPositions() {
+    public ImmutableList<AreaPositions> getPositions() {
         return positions;
     }
 
@@ -45,11 +50,16 @@ public class MultiDimensionalPositions implements Positions {
         } else if (other instanceof AreaPositions) {
 
             AreaPositions that = (AreaPositions) other;
-            return new MultiDimensionalPositions(ImmutableList.<ImmutableList<ImmutableList<Position>>>builder().addAll(positions).add(that.getPositions()).build());
+            return new MultiDimensionalPositions(ImmutableList.<AreaPositions>builder().addAll(positions).add(that).build());
         } else {
 
             throw new RuntimeException("Cannot merge wtih: " + other);
         }
+    }
+
+    @Override
+    public Iterable<AreaPositions> getChildren() {
+        return positions;
     }
 
     @Override

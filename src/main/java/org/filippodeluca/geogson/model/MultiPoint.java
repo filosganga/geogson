@@ -54,20 +54,4 @@ public class MultiPoint extends LinearGeometry {
         return Type.MULTI_POINT;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getClass(), coordinates);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final MultiPoint other = (MultiPoint) obj;
-        return Objects.equal(this.coordinates, other.coordinates);
-    }
 }

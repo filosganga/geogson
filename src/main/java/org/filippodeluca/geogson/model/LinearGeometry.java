@@ -16,6 +16,7 @@
 
 package org.filippodeluca.geogson.model;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -40,5 +41,29 @@ public abstract class LinearGeometry extends Geometry {
 
     public int getSize() {
         return coordinates.getPositions().size();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getClass(), coordinates);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final LinearGeometry other = (LinearGeometry) obj;
+        return Objects.equal(this.coordinates, other.coordinates);
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("coordinates", coordinates)
+                .toString();
     }
 }

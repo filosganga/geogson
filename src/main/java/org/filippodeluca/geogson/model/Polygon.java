@@ -18,6 +18,7 @@ package org.filippodeluca.geogson.model;
 
 import static java.util.Arrays.asList;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -27,14 +28,16 @@ public class Polygon extends Geometry {
 
     public static class Builder {
 
-        private ImmutableList.Builder<ImmutableList<Position>> coordinates;
+        private ImmutableList.Builder<LinearPositions> coordinates;
 
         public Builder(Iterable<Position> perimeter) {
-            this.coordinates = ImmutableList.<ImmutableList<Position>>builder().add(ImmutableList.copyOf(perimeter));
+            this.coordinates = ImmutableList.<LinearPositions>builder().add(
+                    new LinearPositions(ImmutableList.copyOf(perimeter))
+            );
         }
 
         public Builder withHole(Iterable<Position> hole) {
-            coordinates.add(ImmutableList.copyOf(hole));
+            coordinates.add(new LinearPositions(ImmutableList.copyOf(hole)));
             return this;
         }
 
@@ -79,5 +82,22 @@ public class Polygon extends Geometry {
     @Override
     public AreaPositions getPositions() {
         return coordinates;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getClass(), coordinates);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Polygon other = (Polygon) obj;
+        return Objects.equal(this.coordinates, other.coordinates);
     }
 }

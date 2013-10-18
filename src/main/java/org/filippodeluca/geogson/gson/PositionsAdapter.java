@@ -41,7 +41,16 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
         if(value == null) {
             out.nullValue();
         } else {
-            // TODO
+            out.beginArray();
+            if(value instanceof SinglePosition) {
+                SinglePosition sp = (SinglePosition) value;
+                out.value(sp.getPosition().getLon()).value(sp.getPosition().getLat());
+            } else {
+                for (Positions child : value.getChildren()) {
+                    write(out, child);
+                }
+            }
+            out.endArray();
         }
     }
 

@@ -16,6 +16,10 @@
 
 package org.filippodeluca.geogson.model;
 
+import static com.google.common.collect.Iterables.concat;
+import static com.google.common.collect.Iterables.transform;
+
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
@@ -24,13 +28,13 @@ import com.google.common.collect.ImmutableList;
  */
 public class AreaPositions implements Positions {
 
-    private final ImmutableList<ImmutableList<Position>> positions;
+    private final ImmutableList<LinearPositions> positions;
 
-    public AreaPositions(ImmutableList<ImmutableList<Position>> positions) {
+    public AreaPositions(ImmutableList<LinearPositions> positions) {
         this.positions = positions;
     }
 
-    public ImmutableList<ImmutableList<Position>> getPositions() {
+    public ImmutableList<LinearPositions> getPositions() {
         return positions;
     }
 
@@ -43,15 +47,20 @@ public class AreaPositions implements Positions {
         } else if(other instanceof LinearPositions) {
 
             LinearPositions that = (LinearPositions) other;
-            return new AreaPositions(ImmutableList.<ImmutableList<Position>>builder().addAll(positions).add(that.getPositions()).build());
+            return new AreaPositions(ImmutableList.<LinearPositions>builder().addAll(positions).add(that).build());
         } else if (other instanceof AreaPositions) {
 
             AreaPositions that = (AreaPositions) other;
-            return new MultiDimensionalPositions(ImmutableList.of(positions, that.getPositions()));
+            return new MultiDimensionalPositions(ImmutableList.of(this, that));
         } else {
 
             return other.merge(this);
         }
+    }
+
+    @Override
+    public Iterable<LinearPositions> getChildren() {
+        return positions;
     }
 
     @Override

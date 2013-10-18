@@ -35,7 +35,7 @@ public class Position implements Serializable {
     private Position(double lon, double lat) {
 
         checkArgument(abs(lon) <= 180, "lon is out of range -180:180: " + lon);
-        checkArgument(abs(lat) <= 90, "lat is out of range -90:90: " + lon);
+        checkArgument(abs(lat) <= 90, "lat is out of range -90:90: " + lat);
 
         this.lon = lon;
         this.lat = lat;

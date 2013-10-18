@@ -16,6 +16,8 @@
 
 package org.filippodeluca.geogson.model;
 
+import java.util.ArrayList;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
@@ -42,6 +44,11 @@ public class SinglePosition implements Positions {
         } else {
             return other.merge(this);
         }
+    }
+
+    @Override
+    public Iterable<Positions> getChildren() {
+        return new ArrayList<Positions>();
     }
 
     @Override
