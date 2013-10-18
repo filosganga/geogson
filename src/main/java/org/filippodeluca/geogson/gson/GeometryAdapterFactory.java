@@ -71,18 +71,15 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 Iterable<Geometry> geometries = null;
 
                 while (in.hasNext()) {
-                    switch (in.nextName()) {
-                        case "type":
-                            type = in.nextString();
-                            break;
-                        case "coordinates":
-                            positions = readPosition(in);
-                            break;
-                        case "geometries":
-                            // TODO
-                            break;
-                        default:
-                            // Ignore
+                    String name = in.nextName();
+                    if("type".equals(name)) {
+                        type = in.nextString();
+                    } else if("coordinates".equals(name)) {
+                        positions = readPosition(in);
+                    } else if("geometries".equals(name)) {
+                        // TODO
+                    } else {
+                       // Ignore
                     }
                 }
 
