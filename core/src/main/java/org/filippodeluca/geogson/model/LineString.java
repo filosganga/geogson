@@ -32,7 +32,7 @@ public class LineString extends LinearGeometry {
     }
 
     private static LinearPositions checkPositionsSize(LinearPositions toCheck) {
-        checkArgument(toCheck.getSize() > 2);
+        checkArgument(toCheck.getSize() >= 2);
 
         return toCheck;
     }
