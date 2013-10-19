@@ -46,32 +46,32 @@ public class Point implements Geometry, Serializable {
         return new Point(new SinglePosition(coordinates));
     }
 
-    public static Function<Point, SinglePosition> getPositionsFn() {
-        return GetPositionFn.INSTANCE;
+    public static Function<Point, SinglePosition> positionsFn() {
+        return PositionFn.INSTANCE;
     }
 
-    public static Function<Point, Coordinates> getCoordinatesFn() {
-        return GetCoordinatesFn.INSTANCE;
+    public static Function<Point, Coordinates> coordinatesFn() {
+        return CoordinatesFn.INSTANCE;
     }
 
-    public Coordinates getCoordinates() {
+    public Coordinates coordinates() {
         return positions.coordinates();
     }
 
-    public double getLon() {
-        return getCoordinates().getLon();
+    public double lon() {
+        return coordinates().getLon();
     }
 
-    public double getLat() {
-        return getCoordinates().getLat();
+    public double lat() {
+        return coordinates().getLat();
     }
 
     public Point withLon(double lon) {
-        return from(lon, getCoordinates().getLat());
+        return from(lon, coordinates().getLat());
     }
 
     public Point withLat(double lat) {
-        return from(getCoordinates().getLon(), lat);
+        return from(coordinates().getLon(), lat);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class Point implements Geometry, Serializable {
         return Objects.toStringHelper(this).add("positions", positions).toString();
     }
 
-    private static enum GetPositionFn implements Function<Point, SinglePosition> {
+    private static enum PositionFn implements Function<Point, SinglePosition> {
         INSTANCE;
 
         @Override
@@ -115,12 +115,12 @@ public class Point implements Geometry, Serializable {
         }
     }
 
-    private static enum GetCoordinatesFn implements Function<Point, Coordinates> {
+    private static enum CoordinatesFn implements Function<Point, Coordinates> {
         INSTANCE;
 
         @Override
         public Coordinates apply(Point input) {
-            return input.getCoordinates();
+            return input.coordinates();
         }
     }
 

@@ -18,6 +18,7 @@ package org.filippodeluca.geogson.model;
 
 import static com.google.common.collect.Iterables.transform;
 
+import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import org.filippodeluca.geogson.model.positions.LinearPositions;
 
@@ -30,16 +31,12 @@ public class MultiPoint extends LinearGeometry {
         super(coordinates);
     }
 
-    public static MultiPoint of(Point...points) {
+    public static MultiPoint of(Point... points) {
         return of(ImmutableList.copyOf(points));
     }
 
     public static MultiPoint of(Iterable<Point> points) {
-        return new MultiPoint(new LinearPositions(transform(points, Point.getPositionsFn())));
-    }
-
-    public LineString toLineString() {
-        return new LineString(positions);
+        return new MultiPoint(new LinearPositions(transform(points, Point.positionsFn())));
     }
 
     @Override

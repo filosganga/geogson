@@ -71,7 +71,7 @@ public final class Matchers {
         return new TypeSafeMatcher<Point>() {
             @Override
             protected boolean matchesSafely(Point item) {
-                return positionMatcher.matches(item.getCoordinates());
+                return positionMatcher.matches(item.coordinates());
             }
 
             @Override

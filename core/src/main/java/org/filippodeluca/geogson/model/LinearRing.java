@@ -12,9 +12,15 @@ import org.filippodeluca.geogson.model.positions.LinearPositions;
 public class LinearRing extends LineString {
 
     public LinearRing(LinearPositions positions) {
-        super(positions);
+        super(checkPositions(positions));
 
         checkArgument(positions.isClosed());
+    }
+
+    private static LinearPositions checkPositions(LinearPositions toCheck) {
+        checkArgument(toCheck.isClosed());
+
+        return toCheck;
     }
 
     public static LinearRing of(Point... points) {
@@ -22,7 +28,7 @@ public class LinearRing extends LineString {
     }
 
     public static LinearRing of(Iterable<Point> points) {
-        return new LinearRing(new LinearPositions(transform(points, Point.getPositionsFn())));
+        return new LinearRing(new LinearPositions(transform(points, Point.positionsFn())));
     }
 
     @Override

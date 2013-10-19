@@ -26,11 +26,11 @@ public class MultiLineString implements Geometry, Serializable {
     }
 
     public static MultiLineString of(Iterable<LineString> lineStrings) {
-        return new MultiLineString(new AreaPositions(transform(lineStrings, LineString.getPositionsFn())));
+        return new MultiLineString(new AreaPositions(transform(lineStrings, LineString.positionsFn())));
     }
 
-    public static Function<MultiLineString, AreaPositions> getPositionsFn() {
-        return GetPositionsFn.INSTANCE;
+    public static Function<MultiLineString, AreaPositions> positionsFn() {
+        return PositionsFn.INSTANCE;
     }
 
     @Override
@@ -45,6 +45,10 @@ public class MultiLineString implements Geometry, Serializable {
 
     public int size() {
         return Iterables.size(positions.children());
+    }
+
+    public Polygon toPolygon() {
+        return new Polygon(positions);
     }
 
     @Override
@@ -64,7 +68,7 @@ public class MultiLineString implements Geometry, Serializable {
         return Objects.equal(this.positions, other.positions);
     }
 
-    private static enum GetPositionsFn implements Function<MultiLineString, AreaPositions> {
+    private static enum PositionsFn implements Function<MultiLineString, AreaPositions> {
         INSTANCE;
 
         @Override

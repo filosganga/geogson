@@ -16,6 +16,7 @@
 
 package org.filippodeluca.geogson.model;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.transform;
 import static java.util.Arrays.asList;
 
@@ -29,10 +30,22 @@ import org.filippodeluca.geogson.model.positions.LinearPositions;
 public class Polygon extends MultiLineString {
 
     public Polygon(AreaPositions positions) {
-        super(positions);
+        super(checkPositions(positions));
     }
 
-    public static Polygon of(LinearRing perimeter, LinearRing...holes) {
+    private static AreaPositions checkPositions(AreaPositions src) {
+
+        checkArgument(src.size() >= 1);
+
+        for (LinearPositions child : src.children()) {
+            checkArgument(child.isClosed());
+        }
+
+        return src;
+
+    }
+
+    public static Polygon of(LinearRing perimeter, LinearRing... holes) {
         return of(perimeter, asList(holes));
     }
 
@@ -40,7 +53,7 @@ public class Polygon extends MultiLineString {
 
         AreaPositions positions = new AreaPositions(ImmutableList.<LinearPositions>builder()
                 .add(perimeter.positions())
-                .addAll(transform(holes, LinearRing.getPositionsFn()))
+                .addAll(transform(holes, LinearRing.positionsFn()))
                 .build());
 
         return new Polygon(positions);
@@ -49,5 +62,9 @@ public class Polygon extends MultiLineString {
     @Override
     public Type type() {
         return Type.POLYGON;
+    }
+
+    public MultiLineString toMultiLineString() {
+        return new MultiLineString(positions());
     }
 }

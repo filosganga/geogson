@@ -29,12 +29,12 @@ public class MultiPolygon implements Geometry, Serializable {
     public static MultiPolygon of(Iterable<Polygon> polygons) {
 
         return new MultiPolygon(
-                new MultiDimensionalPositions(transform(polygons, Polygon.getPositionsFn()))
+                new MultiDimensionalPositions(transform(polygons, Polygon.positionsFn()))
         );
     }
 
-    public static Function<MultiPolygon, MultiDimensionalPositions> getPositionsFn() {
-        return GetPositionsFn.INSTANCE;
+    public static Function<MultiPolygon, MultiDimensionalPositions> positionsFn() {
+        return PositionsFn.INSTANCE;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class MultiPolygon implements Geometry, Serializable {
         return Objects.equal(this.positions, other.positions);
     }
 
-    private static enum GetPositionsFn implements Function<MultiPolygon, MultiDimensionalPositions> {
+    private static enum PositionsFn implements Function<MultiPolygon, MultiDimensionalPositions> {
         INSTANCE;
 
         @Override

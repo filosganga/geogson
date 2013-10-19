@@ -16,9 +16,6 @@
 
 package org.filippodeluca.geogson.model;
 
-import static com.google.common.collect.Iterables.transform;
-import static org.filippodeluca.geogson.model.positions.SinglePosition.coordinatesFn;
-
 import java.io.Serializable;
 
 import com.google.common.base.Function;
@@ -36,8 +33,20 @@ public abstract class LinearGeometry implements Geometry, Serializable {
         this.positions = positions;
     }
 
-    public static Function<LinearGeometry, LinearPositions> getPositionsFn() {
-        return GetPositionsFn.INSTANCE;
+    public static Function<LinearGeometry, LinearPositions> positionsFn() {
+        return PositionsFn.INSTANCE;
+    }
+
+    public static Function<LinearGeometry, MultiPoint> toMultiPointFn() {
+        return ToMultiPointFn.INSTANCE;
+    }
+
+    public static Function<LinearGeometry, LineString> toLineStringFn() {
+        return ToLineStringFn.INSTANCE;
+    }
+
+    public static Function<LinearGeometry, LinearRing> toLinearRingFn() {
+        return ToLinearRingFn.INSTANCE;
     }
 
     @Override
@@ -45,12 +54,20 @@ public abstract class LinearGeometry implements Geometry, Serializable {
         return positions;
     }
 
-    public Iterable<Coordinates> getCoordinates() {
-        return transform(positions.children(), coordinatesFn());
-    }
-
     public int size() {
         return positions.size();
+    }
+
+    public MultiPoint toMultiPoint() {
+        return new MultiPoint(positions);
+    }
+
+    public LineString toLineString() {
+        return new LineString(positions);
+    }
+
+    public LinearRing toLinearRing() {
+        return new LinearRing(positions());
     }
 
     @Override
@@ -77,12 +94,42 @@ public abstract class LinearGeometry implements Geometry, Serializable {
                 .toString();
     }
 
-    private static enum GetPositionsFn implements Function<LinearGeometry, LinearPositions> {
+    private static enum PositionsFn implements Function<LinearGeometry, LinearPositions> {
         INSTANCE;
 
         @Override
         public LinearPositions apply(LinearGeometry input) {
             return input.positions();
+        }
+
+    }
+
+    private enum ToMultiPointFn implements Function<LinearGeometry, MultiPoint> {
+        INSTANCE;
+
+        @Override
+        public MultiPoint apply(LinearGeometry input) {
+            return input.toMultiPoint();
+        }
+
+    }
+
+    private enum ToLineStringFn implements Function<LinearGeometry, LineString> {
+        INSTANCE;
+
+        @Override
+        public LineString apply(LinearGeometry input) {
+            return input.toLineString();
+        }
+
+    }
+
+    private enum ToLinearRingFn implements Function<LinearGeometry, LinearRing> {
+        INSTANCE;
+
+        @Override
+        public LinearRing apply(LinearGeometry input) {
+            return input.toLinearRing();
         }
 
     }

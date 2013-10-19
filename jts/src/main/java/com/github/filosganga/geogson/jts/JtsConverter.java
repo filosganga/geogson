@@ -108,7 +108,7 @@ class JtsConverter {
 
     public static com.vividsolutions.jts.geom.Point toJtsPoint(Point src) {
 
-        return new GeometryFactory().createPoint(new Coordinate(src.getLon(), src.getLat()));
+        return new GeometryFactory().createPoint(new Coordinate(src.lon(), src.lat()));
     }
 
     public static Function<com.vividsolutions.jts.geom.Point, Point> fromJtsPointFn() {
