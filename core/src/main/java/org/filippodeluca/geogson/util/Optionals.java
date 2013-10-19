@@ -12,13 +12,6 @@ import com.google.common.base.Predicate;
  */
 public final class Optionals {
 
-    private static final Predicate<Optional<?>> IS_PRESENT_PR = new Predicate<Optional<?>>() {
-        @Override
-        public boolean apply(Optional<?> input) {
-            return input.isPresent();
-        }
-    };
-
     private Optionals() {
     }
 
@@ -35,7 +28,22 @@ public final class Optionals {
     }
 
     public static Predicate<Optional<?>> isPresentPr() {
-        return IS_PRESENT_PR;
+        return IsPresentPr.INSTANCE;
+    }
+
+    // singleton enum pattern
+    private static enum IsPresentPr implements Predicate<Optional<?>> {
+        INSTANCE;
+
+        @Override
+        public boolean apply(Optional<?> input) {
+            return input.isPresent();
+        }
+
+        @Override
+        public String toString() {
+            return "is present";
+        }
     }
 
 }

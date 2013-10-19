@@ -46,9 +46,16 @@ public class Point implements Geometry, Serializable {
         return new Point(new SinglePosition(coordinates));
     }
 
+    public static Function<Point, SinglePosition> getPositionsFn() {
+        return GetPositionFn.INSTANCE;
+    }
+
+    public static Function<Point, Coordinates> getCoordinatesFn() {
+        return GetCoordinatesFn.INSTANCE;
+    }
 
     public Coordinates getCoordinates() {
-        return positions.getCoordinates();
+        return positions.coordinates();
     }
 
     public double getLon() {
@@ -99,22 +106,22 @@ public class Point implements Geometry, Serializable {
         return Objects.toStringHelper(this).add("positions", positions).toString();
     }
 
-    public static Function<Point, SinglePosition> getPositionsFn() {
-        return new Function<Point, SinglePosition>() {
-            @Override
-            public SinglePosition apply(Point input) {
-                return input.positions();
-            }
-        };
+    private static enum GetPositionFn implements Function<Point, SinglePosition> {
+        INSTANCE;
+
+        @Override
+        public SinglePosition apply(Point input) {
+            return input.positions;
+        }
     }
 
-    public static Function<Point, Coordinates> getCoordinatesFn() {
-        return new Function<Point, Coordinates>() {
-            @Override
-            public Coordinates apply(Point input) {
-                return input.getCoordinates();
-            }
-        };
+    private static enum GetCoordinatesFn implements Function<Point, Coordinates> {
+        INSTANCE;
+
+        @Override
+        public Coordinates apply(Point input) {
+            return input.getCoordinates();
+        }
     }
 
 }

@@ -34,7 +34,7 @@ public final class Matchers {
         return new TypeSafeMatcher<Positions>() {
             @Override
             protected boolean matchesSafely(Positions item) {
-                return positionWithLonLat(lon, lat).matches(((SinglePosition)item).getCoordinates());
+                return positionWithLonLat(lon, lat).matches(((SinglePosition)item).coordinates());
             }
 
             @Override

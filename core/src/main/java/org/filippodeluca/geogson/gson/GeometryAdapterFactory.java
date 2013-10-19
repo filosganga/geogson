@@ -142,7 +142,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             Optional<Geometry> mayGeometry = Optional.absent();
 
             if (type.equals(Geometry.Type.POINT.getValue())) {
-                mayGeometry = Optional.<Geometry>of(Point.from(((SinglePosition) coordinates).getCoordinates()));
+                mayGeometry = Optional.<Geometry>of(Point.from(((SinglePosition) coordinates).coordinates()));
             }
 
             return mayGeometry;

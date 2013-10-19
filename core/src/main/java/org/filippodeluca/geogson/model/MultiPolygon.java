@@ -7,6 +7,7 @@ import java.io.Serializable;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import org.filippodeluca.geogson.model.positions.MultiDimensionalPositions;
 
 /**
@@ -32,6 +33,10 @@ public class MultiPolygon implements Geometry, Serializable {
         );
     }
 
+    public static Function<MultiPolygon, MultiDimensionalPositions> getPositionsFn() {
+        return GetPositionsFn.INSTANCE;
+    }
+
     @Override
     public Type type() {
         return Type.MULTI_POLYGON;
@@ -40,6 +45,10 @@ public class MultiPolygon implements Geometry, Serializable {
     @Override
     public MultiDimensionalPositions positions() {
         return positions;
+    }
+
+    public int size() {
+        return Iterables.size(positions.children());
     }
 
     @Override
@@ -59,12 +68,12 @@ public class MultiPolygon implements Geometry, Serializable {
         return Objects.equal(this.positions, other.positions);
     }
 
-    public static Function<MultiPolygon, MultiDimensionalPositions> getPositionsFn() {
-        return new Function<MultiPolygon, MultiDimensionalPositions>() {
-            @Override
-            public MultiDimensionalPositions apply(MultiPolygon input) {
-                return input.positions();
-            }
-        };
+    private static enum GetPositionsFn implements Function<MultiPolygon, MultiDimensionalPositions> {
+        INSTANCE;
+
+        @Override
+        public MultiDimensionalPositions apply(MultiPolygon input) {
+            return input.positions();
+        }
     }
 }

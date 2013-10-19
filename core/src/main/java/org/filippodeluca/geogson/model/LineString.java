@@ -32,12 +32,12 @@ public class LineString extends LinearGeometry {
     }
 
     private static LinearPositions checkPositionsSize(LinearPositions toCheck) {
-        checkArgument(toCheck.getSize() >= 2);
+        checkArgument(toCheck.size() >= 2);
 
         return toCheck;
     }
 
-    public static LineString of(Point...points) {
+    public static LineString of(Point... points) {
         return of(ImmutableList.copyOf(points));
     }
 

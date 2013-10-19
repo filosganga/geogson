@@ -7,6 +7,7 @@ import java.io.Serializable;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import org.filippodeluca.geogson.model.positions.AreaPositions;
 
 /**
@@ -20,12 +21,16 @@ public class MultiLineString implements Geometry, Serializable {
         this.positions = positions;
     }
 
-    public static MultiLineString of(LineString...lineStrings) {
+    public static MultiLineString of(LineString... lineStrings) {
         return of(ImmutableList.copyOf(lineStrings));
     }
 
     public static MultiLineString of(Iterable<LineString> lineStrings) {
         return new MultiLineString(new AreaPositions(transform(lineStrings, LineString.getPositionsFn())));
+    }
+
+    public static Function<MultiLineString, AreaPositions> getPositionsFn() {
+        return GetPositionsFn.INSTANCE;
     }
 
     @Override
@@ -36,6 +41,10 @@ public class MultiLineString implements Geometry, Serializable {
     @Override
     public AreaPositions positions() {
         return positions;
+    }
+
+    public int size() {
+        return Iterables.size(positions.children());
     }
 
     @Override
@@ -55,13 +64,13 @@ public class MultiLineString implements Geometry, Serializable {
         return Objects.equal(this.positions, other.positions);
     }
 
-    public static Function<MultiLineString, AreaPositions> getPositionsFn() {
-        return new Function<MultiLineString, AreaPositions>() {
-            @Override
-            public AreaPositions apply(MultiLineString input) {
-                return input.positions();
-            }
-        };
+    private static enum GetPositionsFn implements Function<MultiLineString, AreaPositions> {
+        INSTANCE;
+
+        @Override
+        public AreaPositions apply(MultiLineString input) {
+            return input.positions();
+        }
     }
 
 }

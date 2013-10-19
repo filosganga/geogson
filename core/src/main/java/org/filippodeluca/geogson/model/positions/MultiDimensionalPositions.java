@@ -16,27 +16,19 @@
 
 package org.filippodeluca.geogson.model.positions;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class MultiDimensionalPositions implements Positions {
+public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> {
 
-    private ImmutableList<AreaPositions> positions;
-
-
-    public MultiDimensionalPositions(ImmutableList<AreaPositions> positions) {
-        this.positions = positions;
+    public MultiDimensionalPositions(ImmutableList<AreaPositions> children) {
+        super(children);
     }
 
-    public MultiDimensionalPositions(Iterable<AreaPositions> positions) {
-        this(ImmutableList.copyOf(positions));
-    }
-
-    public ImmutableList<AreaPositions> getPositions() {
-        return positions;
+    public MultiDimensionalPositions(Iterable<AreaPositions> children) {
+        this(ImmutableList.copyOf(children));
     }
 
     @Override
@@ -50,32 +42,11 @@ public class MultiDimensionalPositions implements Positions {
         } else if (other instanceof AreaPositions) {
 
             AreaPositions that = (AreaPositions) other;
-            return new MultiDimensionalPositions(ImmutableList.<AreaPositions>builder().addAll(positions).add(that).build());
+            return new MultiDimensionalPositions(ImmutableList.<AreaPositions>builder().addAll(children).add(that).build());
         } else {
 
             throw new RuntimeException("Cannot merge wtih: " + other);
         }
     }
 
-    @Override
-    public Iterable<AreaPositions> children() {
-        return positions;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(MultiDimensionalPositions.class, positions);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final MultiDimensionalPositions other = (MultiDimensionalPositions) obj;
-        return Objects.equal(this.positions, other.positions);
-    }
 }

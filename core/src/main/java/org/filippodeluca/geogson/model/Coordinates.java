@@ -29,7 +29,6 @@ import com.google.common.base.Objects;
 public class Coordinates implements Serializable {
 
     private final double lon;
-
     private final double lat;
 
     private Coordinates(double lon, double lat) {

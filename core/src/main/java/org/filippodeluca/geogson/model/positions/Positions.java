@@ -26,4 +26,7 @@ public interface Positions extends Serializable {
     Positions merge(Positions other);
 
     Iterable<? extends Positions> children();
+
+    int size();
+
 }

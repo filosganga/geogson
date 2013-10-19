@@ -17,7 +17,7 @@
 package org.filippodeluca.geogson.model;
 
 import static com.google.common.collect.Iterables.transform;
-import static org.filippodeluca.geogson.model.positions.SinglePosition.getCoordinatesFn;
+import static org.filippodeluca.geogson.model.positions.SinglePosition.coordinatesFn;
 
 import java.io.Serializable;
 
@@ -36,17 +36,21 @@ public abstract class LinearGeometry implements Geometry, Serializable {
         this.positions = positions;
     }
 
+    public static Function<LinearGeometry, LinearPositions> getPositionsFn() {
+        return GetPositionsFn.INSTANCE;
+    }
+
     @Override
     public LinearPositions positions() {
         return positions;
     }
 
     public Iterable<Coordinates> getCoordinates() {
-        return transform(positions.children(), getCoordinatesFn());
+        return transform(positions.children(), coordinatesFn());
     }
 
-    public int getSize() {
-        return positions.getSize();
+    public int size() {
+        return positions.size();
     }
 
     @Override
@@ -73,12 +77,13 @@ public abstract class LinearGeometry implements Geometry, Serializable {
                 .toString();
     }
 
-    public static Function<LinearGeometry, LinearPositions> getPositionsFn() {
-        return new Function<LinearGeometry, LinearPositions>() {
-            @Override
-            public LinearPositions apply(LinearGeometry input) {
-                return input.positions();
-            }
-        };
+    private static enum GetPositionsFn implements Function<LinearGeometry, LinearPositions> {
+        INSTANCE;
+
+        @Override
+        public LinearPositions apply(LinearGeometry input) {
+            return input.positions();
+        }
+
     }
 }

@@ -16,18 +16,15 @@
 
 package org.filippodeluca.geogson.model.positions;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class AreaPositions implements Positions {
-
-    private final ImmutableList<LinearPositions> children;
+public class AreaPositions extends AbstractPositions<LinearPositions> {
 
     public AreaPositions(ImmutableList<LinearPositions> children) {
-        this.children = children;
+        super(children);
     }
 
     public AreaPositions(Iterable<LinearPositions> children) {
@@ -54,25 +51,4 @@ public class AreaPositions implements Positions {
         }
     }
 
-    @Override
-    public Iterable<LinearPositions> children() {
-        return children;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(children);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final AreaPositions other = (AreaPositions) obj;
-        return Objects.equal(this.children, other.children);
-    }
 }

@@ -16,8 +16,6 @@
 
 package org.filippodeluca.geogson.model.positions;
 
-import java.util.ArrayList;
-
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -26,34 +24,34 @@ import org.filippodeluca.geogson.model.Coordinates;
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class SinglePosition implements Positions {
+public class SinglePosition extends AbstractPositions<Positions> {
 
-    private static final Iterable<Positions> CHILDREN = new ArrayList<Positions>();
-
+    private static final ImmutableList<Positions> CHILDREN = ImmutableList.of();
     private final Coordinates coordinates;
 
     public SinglePosition(Coordinates coordinates) {
+        super(CHILDREN);
+
         this.coordinates = coordinates;
     }
 
-    public Coordinates getCoordinates() {
+    public static Function<SinglePosition, Coordinates> coordinatesFn() {
+        return CoordinatesFn.INSTANCE;
+    }
+
+    public Coordinates coordinates() {
         return coordinates;
     }
 
     @Override
     public Positions merge(Positions other) {
 
-        if(other instanceof SinglePosition) {
-            SinglePosition that = (SinglePosition)other;
+        if (other instanceof SinglePosition) {
+            SinglePosition that = (SinglePosition) other;
             return new LinearPositions(ImmutableList.of(new SinglePosition(coordinates), that));
         } else {
             return other.merge(this);
         }
-    }
-
-    @Override
-    public Iterable<Positions> children() {
-        return CHILDREN;
     }
 
     @Override
@@ -76,16 +74,16 @@ public class SinglePosition implements Positions {
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("position", coordinates)
+                .add("coordinates", coordinates)
                 .toString();
     }
 
-    public static Function<SinglePosition, Coordinates> getCoordinatesFn() {
-        return new Function<SinglePosition, Coordinates>() {
-            @Override
-            public Coordinates apply(SinglePosition input) {
-                return input.getCoordinates();
-            }
-        };
+    private static enum CoordinatesFn implements Function<SinglePosition, Coordinates> {
+        INSTANCE;
+
+        @Override
+        public Coordinates apply(SinglePosition input) {
+            return input.coordinates();
+        }
     }
 }

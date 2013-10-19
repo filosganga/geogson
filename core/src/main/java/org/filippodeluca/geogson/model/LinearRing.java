@@ -17,7 +17,7 @@ public class LinearRing extends LineString {
         checkArgument(positions.isClosed());
     }
 
-    public static LinearRing of(Point...points) {
+    public static LinearRing of(Point... points) {
         return of(ImmutableList.copyOf(points));
     }
 

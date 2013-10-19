@@ -19,18 +19,15 @@ package org.filippodeluca.geogson.model.positions;
 import static com.google.common.collect.Iterables.getFirst;
 import static com.google.common.collect.Iterables.getLast;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class LinearPositions implements Positions {
-
-    private ImmutableList<SinglePosition> children;
+public class LinearPositions extends AbstractPositions<SinglePosition> {
 
     public LinearPositions(ImmutableList<SinglePosition> children) {
-        this.children = children;
+        super(children);
     }
 
     public LinearPositions(Iterable<SinglePosition> children) {
@@ -39,11 +36,11 @@ public class LinearPositions implements Positions {
 
     @Override
     public Positions merge(Positions other) {
-        if(other instanceof SinglePosition) {
+        if (other instanceof SinglePosition) {
 
             SinglePosition that = (SinglePosition) other;
             return new LinearPositions(ImmutableList.<SinglePosition>builder().addAll(children).add(that).build());
-        } else if(other instanceof LinearPositions) {
+        } else if (other instanceof LinearPositions) {
             LinearPositions that = (LinearPositions) other;
 
             return new AreaPositions(ImmutableList.<LinearPositions>builder().add(this).add(that).build());
@@ -52,33 +49,8 @@ public class LinearPositions implements Positions {
         }
     }
 
-    @Override
-    public Iterable<SinglePosition> children() {
-        return children;
-    }
-
-    public int getSize() {
-        return children.size();
-    }
-
     public boolean isClosed() {
-        return getSize() >= 4 && getLast(children).equals(getFirst(children, null));
+        return size() >= 4 && getLast(children).equals(getFirst(children, null));
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(LinearPositions.class, children);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final LinearPositions other = (LinearPositions) obj;
-        return Objects.equal(this.children, other.children);
-    }
 }
