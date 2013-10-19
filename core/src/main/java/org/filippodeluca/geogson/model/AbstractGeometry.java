@@ -43,7 +43,7 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getClass(), positions());
+        return Objects.hashCode(getClass(), positions);
     }
 
     @Override
