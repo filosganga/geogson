@@ -46,7 +46,7 @@ public class Polygon extends MultiLineString {
     }
 
     public static Polygon of(LinearRing perimeter, LinearRing... holes) {
-        return of(perimeter, asList(holes));
+        return Polygon.of(perimeter, asList(holes));
     }
 
     public static Polygon of(LinearRing perimeter, Iterable<LinearRing> holes) {

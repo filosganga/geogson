@@ -16,7 +16,7 @@ public class MultiLineString extends AbstractGeometry<AreaPositions> {
     }
 
     public static MultiLineString of(LineString... lineStrings) {
-        return of(ImmutableList.copyOf(lineStrings));
+        return MultiLineString.of(ImmutableList.copyOf(lineStrings));
     }
 
     public static MultiLineString of(Iterable<LineString> lineStrings) {
