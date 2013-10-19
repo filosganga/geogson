@@ -2,19 +2,19 @@ package com.github.filosganga.geogson.jts;
 
 import static com.google.common.collect.Iterables.transform;
 
+import com.github.filosganga.geogson.model.Coordinates;
+import com.github.filosganga.geogson.model.Geometry;
+import com.github.filosganga.geogson.model.LineString;
+import com.github.filosganga.geogson.model.LinearRing;
+import com.github.filosganga.geogson.model.MultiLineString;
+import com.github.filosganga.geogson.model.MultiPoint;
+import com.github.filosganga.geogson.model.MultiPolygon;
+import com.github.filosganga.geogson.model.Point;
+import com.github.filosganga.geogson.model.Polygon;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import org.filippodeluca.geogson.model.Coordinates;
-import org.filippodeluca.geogson.model.Geometry;
-import org.filippodeluca.geogson.model.LineString;
-import org.filippodeluca.geogson.model.LinearRing;
-import org.filippodeluca.geogson.model.MultiLineString;
-import org.filippodeluca.geogson.model.MultiPoint;
-import org.filippodeluca.geogson.model.MultiPolygon;
-import org.filippodeluca.geogson.model.Point;
-import org.filippodeluca.geogson.model.Polygon;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
@@ -25,7 +25,7 @@ class JtsConverter {
 
         Geometry toReturn = null;
 
-        if(src instanceof com.vividsolutions.jts.geom.MultiPolygon) {
+        if (src instanceof com.vividsolutions.jts.geom.MultiPolygon) {
             toReturn = fromJtsMultiPolygon((com.vividsolutions.jts.geom.MultiPolygon) src);
         } else if (src instanceof com.vividsolutions.jts.geom.Polygon) {
             toReturn = fromJtsPolygon((com.vividsolutions.jts.geom.Polygon) src);

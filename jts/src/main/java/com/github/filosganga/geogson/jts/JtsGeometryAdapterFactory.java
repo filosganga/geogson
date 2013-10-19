@@ -2,6 +2,7 @@ package com.github.filosganga.geogson.jts;
 
 import java.io.IOException;
 
+import com.github.filosganga.geogson.model.Geometry;
 import com.google.common.base.Supplier;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -9,7 +10,6 @@ import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import org.filippodeluca.geogson.model.Geometry;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
@@ -25,7 +25,7 @@ public class JtsGeometryAdapterFactory implements TypeAdapterFactory {
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
 
-        if(com.vividsolutions.jts.geom.Geometry.class.isAssignableFrom(type.getRawType())) {
+        if (com.vividsolutions.jts.geom.Geometry.class.isAssignableFrom(type.getRawType())) {
             return (TypeAdapter<T>) new GeometryAdapter(gson);
         } else {
             return gson.getAdapter(type);

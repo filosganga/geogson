@@ -1,7 +1,7 @@
 package com.github.filosganga.geogson.jts;
 
+import com.github.filosganga.geogson.model.Geometry;
 import com.google.common.base.Optional;
-import org.filippodeluca.geogson.model.Geometry;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
