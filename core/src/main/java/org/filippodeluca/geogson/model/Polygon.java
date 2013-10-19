@@ -16,88 +16,38 @@
 
 package org.filippodeluca.geogson.model;
 
+import static com.google.common.collect.Iterables.transform;
 import static java.util.Arrays.asList;
 
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import org.filippodeluca.geogson.model.positions.AreaPositions;
+import org.filippodeluca.geogson.model.positions.LinearPositions;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class Polygon extends Geometry {
+public class Polygon extends MultiLineString {
 
-    public static class Builder {
-
-        private ImmutableList.Builder<LinearPositions> coordinates;
-
-        public Builder(Iterable<Position> perimeter) {
-            this.coordinates = ImmutableList.<LinearPositions>builder().add(
-                    new LinearPositions(ImmutableList.copyOf(perimeter))
-            );
-        }
-
-        public Builder withHole(Iterable<Position> hole) {
-            coordinates.add(new LinearPositions(ImmutableList.copyOf(hole)));
-            return this;
-        }
-
-        public Polygon build() {
-            return new Polygon(this);
-        }
+    public Polygon(AreaPositions positions) {
+        super(positions);
     }
 
-    private final AreaPositions coordinates;
-
-    public Polygon(Builder builder) {
-        this(new AreaPositions(
-                builder.coordinates.build()
-        ));
+    public static Polygon of(LinearRing perimeter, LinearRing...holes) {
+        return of(perimeter, asList(holes));
     }
 
-    public Polygon(AreaPositions coordinates) {
-        this.coordinates = coordinates;
-    }
+    public static Polygon of(LinearRing perimeter, Iterable<LinearRing> holes) {
 
-    public static Polygon of(Position...perimeter) {
-        return of(asList(perimeter));
-    }
+        AreaPositions positions = new AreaPositions(ImmutableList.<LinearPositions>builder()
+                .add(perimeter.getPositions())
+                .addAll(transform(holes, LinearRing.getPositionsFn()))
+                .build());
 
-    public static Polygon of(Iterable<Position> perimeter) {
-        return new Builder(perimeter).build();
-    }
-
-    public static Polygon of(Iterable<Position> perimeter, Iterable<Position>...holes) {
-        Builder builder = new Builder(perimeter);
-        for(Iterable<Position> hole : holes) {
-            builder.withHole(hole);
-        }
-        return builder.build();
+        return new Polygon(positions);
     }
 
     @Override
     public Type getType() {
         return Type.POLYGON;
-    }
-
-    @Override
-    public AreaPositions getPositions() {
-        return coordinates;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getClass(), coordinates);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final Polygon other = (Polygon) obj;
-        return Objects.equal(this.coordinates, other.coordinates);
     }
 }

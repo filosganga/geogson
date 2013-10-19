@@ -16,36 +16,42 @@
 
 package org.filippodeluca.geogson.model;
 
+import static com.google.common.collect.Iterables.transform;
+import static org.filippodeluca.geogson.model.positions.SinglePosition.getCoordinatesFn;
+
+import java.io.Serializable;
+
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
+import org.filippodeluca.geogson.model.positions.LinearPositions;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public abstract class LinearGeometry extends Geometry {
+public abstract class LinearGeometry implements Geometry, Serializable {
 
-    protected final LinearPositions coordinates;
+    protected final LinearPositions positions;
 
-    public LinearGeometry(LinearPositions coordinates) {
-        this.coordinates = coordinates;
+    protected LinearGeometry(LinearPositions positions) {
+        this.positions = positions;
     }
 
     @Override
     public LinearPositions getPositions() {
-        return coordinates;
+        return positions;
     }
 
-    public ImmutableList<Position> getCoordinates() {
-        return coordinates.getPositions();
+    public Iterable<Coordinates> getCoordinates() {
+        return transform(positions.getChildren(), getCoordinatesFn());
     }
 
     public int getSize() {
-        return coordinates.getPositions().size();
+        return positions.getSize();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getClass(), coordinates);
+        return Objects.hashCode(getClass(), positions);
     }
 
     @Override
@@ -57,13 +63,22 @@ public abstract class LinearGeometry extends Geometry {
             return false;
         }
         final LinearGeometry other = (LinearGeometry) obj;
-        return Objects.equal(this.coordinates, other.coordinates);
+        return Objects.equal(this.positions, other.positions);
     }
 
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("coordinates", coordinates)
+                .add("positions", positions)
                 .toString();
+    }
+
+    public static Function<LinearGeometry, LinearPositions> getPositionsFn() {
+        return new Function<LinearGeometry, LinearPositions>() {
+            @Override
+            public LinearPositions apply(LinearGeometry input) {
+                return input.getPositions();
+            }
+        };
     }
 }

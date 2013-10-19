@@ -16,6 +16,8 @@
 
 package org.filippodeluca.geogson.model;
 
+import org.filippodeluca.geogson.model.positions.Positions;
+import org.filippodeluca.geogson.model.positions.SinglePosition;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -32,7 +34,7 @@ public final class Matchers {
         return new TypeSafeMatcher<Positions>() {
             @Override
             protected boolean matchesSafely(Positions item) {
-                return positionWithLonLat(lon, lat).matches(((SinglePosition)item).getPosition());
+                return positionWithLonLat(lon, lat).matches(((SinglePosition)item).getCoordinates());
             }
 
             @Override
@@ -44,10 +46,10 @@ public final class Matchers {
     }
 
 
-    public static Matcher<Position> positionWithLonLat(final double lon, final double lat) {
-        return new TypeSafeMatcher<Position>() {
+    public static Matcher<Coordinates> positionWithLonLat(final double lon, final double lat) {
+        return new TypeSafeMatcher<Coordinates>() {
             @Override
-            protected boolean matchesSafely(Position item) {
+            protected boolean matchesSafely(Coordinates item) {
                 return item.getLon() == lon && item.getLat() == lat;
             }
 
@@ -65,11 +67,11 @@ public final class Matchers {
         return pointThatHave(positionWithLonLat(lon, lat));
     }
 
-    public static Matcher<Point> pointThatHave(final Matcher<Position> positionMatcher) {
+    public static Matcher<Point> pointThatHave(final Matcher<Coordinates> positionMatcher) {
         return new TypeSafeMatcher<Point>() {
             @Override
             protected boolean matchesSafely(Point item) {
-                return positionMatcher.matches(item.getPosition());
+                return positionMatcher.matches(item.getCoordinates());
             }
 
             @Override

@@ -27,17 +27,17 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import org.filippodeluca.geogson.model.AreaPositions;
+import org.filippodeluca.geogson.model.positions.AreaPositions;
 import org.filippodeluca.geogson.model.Geometry;
 import org.filippodeluca.geogson.model.LineString;
-import org.filippodeluca.geogson.model.LinearPositions;
-import org.filippodeluca.geogson.model.MultiDimensionalPositions;
+import org.filippodeluca.geogson.model.positions.LinearPositions;
+import org.filippodeluca.geogson.model.positions.MultiDimensionalPositions;
 import org.filippodeluca.geogson.model.MultiPoint;
 import org.filippodeluca.geogson.model.MultiPolygon;
 import org.filippodeluca.geogson.model.Point;
 import org.filippodeluca.geogson.model.Polygon;
-import org.filippodeluca.geogson.model.Positions;
-import org.filippodeluca.geogson.model.SinglePosition;
+import org.filippodeluca.geogson.model.positions.Positions;
+import org.filippodeluca.geogson.model.positions.SinglePosition;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
@@ -72,7 +72,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
                 out.name("type").value(value.getType().getValue());
                 if (value.getType() != Geometry.Type.GEOMETRY_COLLECTION) {
-                    out.name("coordinates");
+                    out.name("positions");
                     gson.getAdapter(Positions.class).write(out, value.getPositions());
                 } else {
                     // TODO
@@ -99,7 +99,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                     String name = in.nextName();
                     if ("type".equals(name)) {
                         type = in.nextString();
-                    } else if ("coordinates".equals(name)) {
+                    } else if ("positions".equals(name)) {
                         positions = readPosition(in);
                     } else if ("geometries".equals(name)) {
                         // TODO
@@ -142,7 +142,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             Optional<Geometry> mayGeometry = Optional.absent();
 
             if (type.equals(Geometry.Type.POINT.getValue())) {
-                mayGeometry = Optional.<Geometry>of(Point.of(((SinglePosition) coordinates).getPosition()));
+                mayGeometry = Optional.<Geometry>of(Point.of(((SinglePosition) coordinates).getCoordinates()));
             }
 
             return mayGeometry;

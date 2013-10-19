@@ -6,12 +6,13 @@ import static org.hamcrest.Matchers.equalTo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.filippodeluca.geogson.model.Coordinates;
 import org.filippodeluca.geogson.model.LineString;
+import org.filippodeluca.geogson.model.LinearRing;
 import org.filippodeluca.geogson.model.MultiPoint;
 import org.filippodeluca.geogson.model.MultiPolygon;
 import org.filippodeluca.geogson.model.Point;
 import org.filippodeluca.geogson.model.Polygon;
-import org.filippodeluca.geogson.model.Position;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,8 +62,8 @@ public class GeometryAdapterFactoryTest {
     public void shouldHandlePolygon() {
 
         Polygon source = Polygon.of(
-                asList(Position.of(120.3, 45.3), Position.of(100, -50.8), Position.of(100, 5.8), Position.of(120.3, 45.3)),
-                asList(Position.of(120.3, 45.3), Position.of(100, -50.8), Position.of(100, 5.8), Position.of(120.3, 45.3))
+                LinearRing.of(Point.of(120.3, 45.3), Point.of(100, -50.8), Point.of(100, 5.8), Point.of(120.3, 45.3)),
+                LinearRing.of(Point.of(120.3, 45.3), Point.of(100, -50.8), Point.of(100, 5.8), Point.of(120.3, 45.3))
         );
 
         Polygon parsed = toTest.fromJson(toTest.toJson(source), Polygon.class);
@@ -75,12 +76,12 @@ public class GeometryAdapterFactoryTest {
 
         MultiPolygon source = MultiPolygon.of(
                 Polygon.of(
-                        asList(Position.of(120.3, 45.3), Position.of(100, -50.8), Position.of(100, 5.8), Position.of(120.3, 45.3)),
-                        asList(Position.of(120.3, 45.3), Position.of(100, -50.8), Position.of(100, 5.8), Position.of(120.3, 45.3))
+                        LinearRing.of(Point.of(120.3, 45.3), Point.of(100, -50.8), Point.of(100, 5.8), Point.of(120.3, 45.3)),
+                        LinearRing.of(Point.of(120.3, 45.3), Point.of(100, -50.8), Point.of(100, 5.8), Point.of(120.3, 45.3))
                 ),
                 Polygon.of(
-                        asList(Position.of(120.3, 45.3), Position.of(100, -50.8), Position.of(100, 5.8), Position.of(120.3, 45.3)),
-                        asList(Position.of(120.3, 45.3), Position.of(100, -50.8), Position.of(100, 5.8), Position.of(120.3, 45.3))
+                        LinearRing.of(Point.of(120.3, 45.3), Point.of(100, -50.8), Point.of(100, 5.8), Point.of(120.3, 45.3)),
+                        LinearRing.of(Point.of(120.3, 45.3), Point.of(100, -50.8), Point.of(100, 5.8), Point.of(120.3, 45.3))
                 )
         );
 

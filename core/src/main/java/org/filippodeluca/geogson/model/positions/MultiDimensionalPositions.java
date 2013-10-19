@@ -14,56 +14,59 @@
  * limitations under the License.
  */
 
-package org.filippodeluca.geogson.model;
+package org.filippodeluca.geogson.model.positions;
 
-import static com.google.common.collect.Iterables.transform;
+import static com.google.common.collect.Iterables.concat;
 
-import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class LinearPositions implements Positions {
+public class MultiDimensionalPositions implements Positions {
 
-    private ImmutableList<Position> positions;
+    private ImmutableList<AreaPositions> positions;
 
-    public LinearPositions(ImmutableList<Position> positions) {
+
+    public MultiDimensionalPositions(ImmutableList<AreaPositions> positions) {
         this.positions = positions;
     }
 
-    public ImmutableList<Position> getPositions() {
+    public MultiDimensionalPositions(Iterable<AreaPositions> positions) {
+        this(ImmutableList.copyOf(positions));
+    }
+
+    public ImmutableList<AreaPositions> getPositions() {
         return positions;
     }
 
     @Override
     public Positions merge(Positions other) {
         if(other instanceof SinglePosition) {
-            SinglePosition that = (SinglePosition) other;
-            return new LinearPositions(ImmutableList.<Position>builder().addAll(positions).add(that.getPosition()).build());
-        } else if(other instanceof LinearPositions) {
-            LinearPositions that = (LinearPositions) other;
 
-            return new AreaPositions(ImmutableList.<LinearPositions>builder().add(this).add(that).build());
+            throw new IllegalArgumentException("Cannot merge single position and multidimensionl positions");
+        } else if(other instanceof LinearPositions) {
+
+            throw new IllegalArgumentException("Cannot merge linear position and multidimensionl positions");
+        } else if (other instanceof AreaPositions) {
+
+            AreaPositions that = (AreaPositions) other;
+            return new MultiDimensionalPositions(ImmutableList.<AreaPositions>builder().addAll(positions).add(that).build());
         } else {
-            return other.merge(this);
+
+            throw new RuntimeException("Cannot merge wtih: " + other);
         }
     }
 
     @Override
-    public Iterable<Positions> getChildren() {
-        return transform(positions, new Function<Position, Positions>() {
-            @Override
-            public Positions apply(Position input) {
-                return new SinglePosition(input);
-            }
-        });
+    public Iterable<AreaPositions> getChildren() {
+        return positions;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(positions);
+        return Objects.hashCode(MultiDimensionalPositions.class, positions);
     }
 
     @Override
@@ -74,7 +77,7 @@ public class LinearPositions implements Positions {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final LinearPositions other = (LinearPositions) obj;
+        final MultiDimensionalPositions other = (MultiDimensionalPositions) obj;
         return Objects.equal(this.positions, other.positions);
     }
 }

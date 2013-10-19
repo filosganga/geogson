@@ -16,16 +16,19 @@
 
 package org.filippodeluca.geogson.model;
 
+import org.filippodeluca.geogson.model.positions.Positions;
+
 /**
  *
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public abstract class Geometry {
+public interface Geometry {
 
     public static enum Type {
         POINT("Point"),
         MULTI_POINT("MultiPoint"),
         LINE_STRING("LineString"),
+        LINEAR_RING("LineString"),
         MULTI_LINE_STRING("MultiLineString"),
         POLYGON("Polygon"),
         MULTI_POLYGON("MultiPolygon"),
@@ -42,7 +45,7 @@ public abstract class Geometry {
         }
     }
 
-    public abstract Type getType();
+    Type getType();
 
-    public abstract Positions getPositions();
+    Positions getPositions();
 }

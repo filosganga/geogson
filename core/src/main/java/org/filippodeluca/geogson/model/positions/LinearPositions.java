@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.filippodeluca.geogson.model;
+package org.filippodeluca.geogson.model.positions;
 
-import static com.google.common.collect.Iterables.concat;
+import static com.google.common.collect.Iterables.getFirst;
+import static com.google.common.collect.Iterables.getLast;
 
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
@@ -24,46 +25,49 @@ import com.google.common.collect.ImmutableList;
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class AreaPositions implements Positions {
+public class LinearPositions implements Positions {
 
-    private final ImmutableList<LinearPositions> positions;
+    private ImmutableList<SinglePosition> children;
 
-    public AreaPositions(ImmutableList<LinearPositions> positions) {
-        this.positions = positions;
+    public LinearPositions(ImmutableList<SinglePosition> children) {
+        this.children = children;
     }
 
-    public ImmutableList<LinearPositions> getPositions() {
-        return positions;
+    public LinearPositions(Iterable<SinglePosition> children) {
+        this(ImmutableList.copyOf(children));
     }
 
     @Override
     public Positions merge(Positions other) {
-
         if(other instanceof SinglePosition) {
 
-            throw new IllegalArgumentException("Cannot merge single position and area positions");
+            SinglePosition that = (SinglePosition) other;
+            return new LinearPositions(ImmutableList.<SinglePosition>builder().addAll(children).add(that).build());
         } else if(other instanceof LinearPositions) {
-
             LinearPositions that = (LinearPositions) other;
-            return new AreaPositions(ImmutableList.<LinearPositions>builder().addAll(positions).add(that).build());
-        } else if (other instanceof AreaPositions) {
 
-            AreaPositions that = (AreaPositions) other;
-            return new MultiDimensionalPositions(ImmutableList.of(this, that));
+            return new AreaPositions(ImmutableList.<LinearPositions>builder().add(this).add(that).build());
         } else {
-
             return other.merge(this);
         }
     }
 
     @Override
-    public Iterable<LinearPositions> getChildren() {
-        return positions;
+    public Iterable<SinglePosition> getChildren() {
+        return children;
+    }
+
+    public int getSize() {
+        return children.size();
+    }
+
+    public boolean isClosed() {
+        return getSize() >= 4 && getLast(children).equals(getFirst(children, null));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(positions);
+        return Objects.hashCode(LinearPositions.class, children);
     }
 
     @Override
@@ -74,7 +78,7 @@ public class AreaPositions implements Positions {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final AreaPositions other = (AreaPositions) obj;
-        return Objects.equal(this.positions, other.positions);
+        final LinearPositions other = (LinearPositions) obj;
+        return Objects.equal(this.children, other.children);
     }
 }

@@ -14,33 +14,38 @@
  * limitations under the License.
  */
 
-package org.filippodeluca.geogson.model;
+package org.filippodeluca.geogson.model.positions;
 
 import java.util.ArrayList;
 
+import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
+import org.filippodeluca.geogson.model.Coordinates;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
 public class SinglePosition implements Positions {
 
-    private final Position position;
+    private static final Iterable<Positions> CHILDREN = new ArrayList<Positions>();
 
-    public SinglePosition(Position position) {
-        this.position = position;
+    private final Coordinates coordinates;
+
+    public SinglePosition(Coordinates coordinates) {
+        this.coordinates = coordinates;
     }
 
-    public Position getPosition() {
-        return position;
+    public Coordinates getCoordinates() {
+        return coordinates;
     }
 
     @Override
     public Positions merge(Positions other) {
+
         if(other instanceof SinglePosition) {
-            Position that = ((SinglePosition)other).getPosition();
-            return new LinearPositions(ImmutableList.of(position, that));
+            SinglePosition that = (SinglePosition)other;
+            return new LinearPositions(ImmutableList.of(new SinglePosition(coordinates), that));
         } else {
             return other.merge(this);
         }
@@ -48,12 +53,12 @@ public class SinglePosition implements Positions {
 
     @Override
     public Iterable<Positions> getChildren() {
-        return new ArrayList<Positions>();
+        return CHILDREN;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(position);
+        return Objects.hashCode(SinglePosition.class, coordinates);
     }
 
     @Override
@@ -65,13 +70,22 @@ public class SinglePosition implements Positions {
             return false;
         }
         final SinglePosition other = (SinglePosition) obj;
-        return Objects.equal(this.position, other.position);
+        return Objects.equal(this.coordinates, other.coordinates);
     }
 
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("position", position)
+                .add("position", coordinates)
                 .toString();
+    }
+
+    public static Function<SinglePosition, Coordinates> getCoordinatesFn() {
+        return new Function<SinglePosition, Coordinates>() {
+            @Override
+            public Coordinates apply(SinglePosition input) {
+                return input.getCoordinates();
+            }
+        };
     }
 }

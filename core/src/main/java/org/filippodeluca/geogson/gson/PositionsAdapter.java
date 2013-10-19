@@ -24,9 +24,9 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import org.filippodeluca.geogson.model.Position;
-import org.filippodeluca.geogson.model.Positions;
-import org.filippodeluca.geogson.model.SinglePosition;
+import org.filippodeluca.geogson.model.Coordinates;
+import org.filippodeluca.geogson.model.positions.Positions;
+import org.filippodeluca.geogson.model.positions.SinglePosition;
 
 
 /**
@@ -43,7 +43,7 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             out.beginArray();
             if(value instanceof SinglePosition) {
                 SinglePosition sp = (SinglePosition) value;
-                out.value(sp.getPosition().getLon()).value(sp.getPosition().getLat());
+                out.value(sp.getCoordinates().getLon()).value(sp.getCoordinates().getLat());
             } else {
                 for (Positions child : value.getChildren()) {
                     write(out, child);
@@ -113,7 +113,7 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             in.skipValue();
         }
 
-        parsed = new SinglePosition(Position.of(lon, lat));
+        parsed = new SinglePosition(Coordinates.of(lon, lat));
         return parsed;
     }
 

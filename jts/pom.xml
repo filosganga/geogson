@@ -24,21 +24,22 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>geogson-core</artifactId>
+    <artifactId>geogson-jts</artifactId>
     <packaging>jar</packaging>
 
     <name>GeoGson Core</name>
-    <description>GeoJSON support for Google Gson - Core</description>
+    <description>GeoJSON support for Google Gson - JTS</description>
 
     <dependencies>
 
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <groupId>org.filippodeluca.geogson</groupId>
+            <artifactId>geogson-core</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
         </dependency>
 
         <dependency>

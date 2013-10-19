@@ -29,11 +29,11 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.FluentIterable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.filippodeluca.geogson.model.AreaPositions;
-import org.filippodeluca.geogson.model.LinearPositions;
-import org.filippodeluca.geogson.model.MultiDimensionalPositions;
-import org.filippodeluca.geogson.model.Position;
-import org.filippodeluca.geogson.model.Positions;
+import org.filippodeluca.geogson.model.positions.AreaPositions;
+import org.filippodeluca.geogson.model.Coordinates;
+import org.filippodeluca.geogson.model.positions.LinearPositions;
+import org.filippodeluca.geogson.model.positions.MultiDimensionalPositions;
+import org.filippodeluca.geogson.model.positions.Positions;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,7 +60,7 @@ public class PositionsAdapterTest {
     @Test
     public void readShouldReadLinearPositions() throws Exception {
 
-        Positions positions = toTest.fromJson(givenLinearPositionsJson(Position.of(12.5, 45.8), Position.of(13.5, 33.7)), Positions.class);
+        Positions positions = toTest.fromJson(givenLinearPositionsJson(Coordinates.of(12.5, 45.8), Coordinates.of(13.5, 33.7)), Positions.class);
 
         assertThat(positions, instanceOf(LinearPositions.class));
     }
@@ -70,9 +70,9 @@ public class PositionsAdapterTest {
 
         Positions positions = toTest.fromJson(
                 givenAreaPositionsJson(
-                        asList(Position.of(12.5, 45.8), Position.of(13.5, 33.7)),
-                        asList(Position.of(22.5, 45.8), Position.of(23.5, 33.7)),
-                        asList(Position.of(32.5, 45.8), Position.of(33.5, 33.7))
+                        asList(Coordinates.of(12.5, 45.8), Coordinates.of(13.5, 33.7)),
+                        asList(Coordinates.of(22.5, 45.8), Coordinates.of(23.5, 33.7)),
+                        asList(Coordinates.of(32.5, 45.8), Coordinates.of(33.5, 33.7))
                 ),
                 Positions.class
         );
@@ -86,14 +86,14 @@ public class PositionsAdapterTest {
         Positions positions = toTest.fromJson(
                 givenMultiDimensionalPositionsJson(
                         asList(
-                                asList(Position.of(12.5, 45.8), Position.of(13.5, 33.7)),
-                                asList(Position.of(22.5, 45.8), Position.of(23.5, 33.7)),
-                                asList(Position.of(32.5, 45.8), Position.of(33.5, 33.7))
+                                asList(Coordinates.of(12.5, 45.8), Coordinates.of(13.5, 33.7)),
+                                asList(Coordinates.of(22.5, 45.8), Coordinates.of(23.5, 33.7)),
+                                asList(Coordinates.of(32.5, 45.8), Coordinates.of(33.5, 33.7))
                         ),
                         asList(
-                                asList(Position.of(13.5, 45.8), Position.of(13.5, 53.7)),
-                                asList(Position.of(24.5, 45.8), Position.of(23.5, 53.7)),
-                                asList(Position.of(35.5, 45.8), Position.of(33.5, 53.7))
+                                asList(Coordinates.of(13.5, 45.8), Coordinates.of(13.5, 53.7)),
+                                asList(Coordinates.of(24.5, 45.8), Coordinates.of(23.5, 53.7)),
+                                asList(Coordinates.of(35.5, 45.8), Coordinates.of(33.5, 53.7))
                         )
                 ),
                 Positions.class
@@ -105,7 +105,7 @@ public class PositionsAdapterTest {
     @Test
     public void readWithEmptyJsonShouldReturnNull() throws Exception {
 
-        assertThat(toTest.fromJson("", Position.class), is(nullValue()));
+        assertThat(toTest.fromJson("", Coordinates.class), is(nullValue()));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -114,31 +114,31 @@ public class PositionsAdapterTest {
         toTest.fromJson("123", Positions.class);
     }
 
-    protected String givenMultiDimensionalPositionsJson(Iterable<? extends Iterable<Position>>... areas) {
+    protected String givenMultiDimensionalPositionsJson(Iterable<? extends Iterable<Coordinates>>... areas) {
 
-        return "[" + Joiner.on(',').join(FluentIterable.from(asList(areas)).transform(new Function<Iterable<? extends Iterable<Position>>, String>() {
+        return "[" + Joiner.on(',').join(FluentIterable.from(asList(areas)).transform(new Function<Iterable<? extends Iterable<Coordinates>>, String>() {
             @Override
-            public String apply(Iterable<? extends Iterable<Position>> input) {
+            public String apply(Iterable<? extends Iterable<Coordinates>> input) {
                 return givenAreaPositionsJson(toArray(input, Iterable.class));
             }
         })) + "]";
     }
 
-    protected String givenAreaPositionsJson(Iterable<Position>... lines) {
+    protected String givenAreaPositionsJson(Iterable<Coordinates>... lines) {
 
-        return "[" + Joiner.on(',').join(FluentIterable.from(asList(lines)).transform(new Function<Iterable<Position>, String>() {
+        return "[" + Joiner.on(',').join(FluentIterable.from(asList(lines)).transform(new Function<Iterable<Coordinates>, String>() {
             @Override
-            public String apply(Iterable<Position> input) {
-                return givenLinearPositionsJson(toArray(input, Position.class));
+            public String apply(Iterable<Coordinates> input) {
+                return givenLinearPositionsJson(toArray(input, Coordinates.class));
             }
         })) + "]";
     }
 
-    protected String givenLinearPositionsJson(Position... positions) {
+    protected String givenLinearPositionsJson(Coordinates... coordinateses) {
 
-        return "[" + Joiner.on(',').join(FluentIterable.from(asList(positions)).transform(new Function<Position, String>() {
+        return "[" + Joiner.on(',').join(FluentIterable.from(asList(coordinateses)).transform(new Function<Coordinates, String>() {
             @Override
-            public String apply(Position input) {
+            public String apply(Coordinates input) {
                 return givenPositionJson(input.getLon(), input.getLat());
             }
         })) + "]";

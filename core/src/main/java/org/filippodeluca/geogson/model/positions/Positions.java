@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package org.filippodeluca.geogson.model;
+package org.filippodeluca.geogson.model.positions;
+
+import java.io.Serializable;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public interface Positions {
+public interface Positions extends Serializable {
 
     Positions merge(Positions other);
 

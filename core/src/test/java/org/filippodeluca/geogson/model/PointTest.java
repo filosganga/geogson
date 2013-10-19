@@ -39,9 +39,9 @@ public class PointTest {
     @Test
     public void ofCoordinateShouldReturnRightValues() {
 
-        Position position = Position.of(-10, 60);
+        Coordinates coordinates = Coordinates.of(-10, 60);
 
-        assertThat(Point.of(position), is(pointThatHave(is(position))));
+        assertThat(Point.of(coordinates), is(pointThatHave(is(coordinates))));
     }
 
     @Test

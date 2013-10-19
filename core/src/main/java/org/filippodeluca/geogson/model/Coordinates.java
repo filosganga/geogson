@@ -26,13 +26,13 @@ import com.google.common.base.Objects;
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class Position implements Serializable {
+public class Coordinates implements Serializable {
 
     private final double lon;
 
     private final double lat;
 
-    private Position(double lon, double lat) {
+    private Coordinates(double lon, double lat) {
 
         checkArgument(abs(lon) <= 180, "lon is out of range -180:180: " + lon);
         checkArgument(abs(lat) <= 90, "lat is out of range -90:90: " + lat);
@@ -41,8 +41,8 @@ public class Position implements Serializable {
         this.lat = lat;
     }
 
-    public static Position of(double lon, double lat) {
-        return new Position(lon, lat);
+    public static Coordinates of(double lon, double lat) {
+        return new Coordinates(lon, lat);
     }
 
     public double getLon() {
@@ -53,17 +53,17 @@ public class Position implements Serializable {
         return lat;
     }
 
-    public Position withLon(double lon) {
-        return Position.of(lon, lat);
+    public Coordinates withLon(double lon) {
+        return Coordinates.of(lon, lat);
     }
 
-    public Position withLat(double lat) {
-        return Position.of(lon, lat);
+    public Coordinates withLat(double lat) {
+        return Coordinates.of(lon, lat);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(Position.class, lon, lat);
+        return Objects.hashCode(Coordinates.class, lon, lat);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class Position implements Serializable {
         } else if (obj == null || getClass() != obj.getClass()) {
             return false;
         } else {
-            final Position other = (Position) obj;
+            final Coordinates other = (Coordinates) obj;
             return Objects.equal(this.lon, other.lon) && Objects.equal(this.lat, other.lat);
         }
     }

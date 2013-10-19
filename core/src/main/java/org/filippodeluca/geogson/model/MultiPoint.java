@@ -16,11 +16,10 @@
 
 package org.filippodeluca.geogson.model;
 
-import static java.util.Arrays.asList;
+import static com.google.common.collect.Iterables.transform;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
+import org.filippodeluca.geogson.model.positions.LinearPositions;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
@@ -31,21 +30,16 @@ public class MultiPoint extends LinearGeometry {
         super(coordinates);
     }
 
-    public static MultiPoint of(Position...positions) {
-        return new MultiPoint(new LinearPositions(ImmutableList.copyOf(positions)));
+    public static MultiPoint of(Point...points) {
+        return of(ImmutableList.copyOf(points));
     }
 
-    public static MultiPoint of(Point...points) {
-        return new MultiPoint(new LinearPositions(ImmutableList.copyOf(FluentIterable.from(asList(points)).transform(new Function<Point, Position>() {
-            @Override
-            public Position apply(Point input) {
-                return input.getPosition();
-            }
-        }))));
+    public static MultiPoint of(Iterable<Point> points) {
+        return new MultiPoint(new LinearPositions(transform(points, Point.getPositionsFn())));
     }
 
     public LineString toLineString() {
-        return new LineString(coordinates);
+        return new LineString(positions);
     }
 
     @Override
