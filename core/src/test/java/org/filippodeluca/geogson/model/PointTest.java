@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
+import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
 /**
@@ -59,32 +60,16 @@ public class PointTest {
     @Test
     public void equalsHashCodeShouldDependByCoordinate() {
 
-        Point one = Point.from(10, 20);
-        Point two = Point.from(10, 20);
+        Point base = Point.from(10, 20);
+        Point same = Point.from(10, 20);
 
-        assertThat(one, equalTo(two));
-        assertThat(one.hashCode(), equalTo(two.hashCode()));
+        Point different = Point.from(10, 21);
 
-        one = one.withLon(15);
 
-        assertThat(one, not(equalTo(two)));
-        assertThat(one.hashCode(), not(equalTo(two.hashCode())));
+        assertThat(base.equals(null), is(false));
+        assertThat(base.equals(base), is(true));
 
-        two = two.withLon(15);
-
-        assertThat(one, equalTo(two));
-        assertThat(one.hashCode(), equalTo(two.hashCode()));
-
-        one = one.withLat(25);
-
-        assertThat(one, not(equalTo(two)));
-        assertThat(one.hashCode(), not(equalTo(two.hashCode())));
-
-        two = two.withLat(25);
-
-        assertThat(one, equalTo(two));
-        assertThat(one.hashCode(), equalTo(two.hashCode()));
-
+        assertThat(ImmutableSet.of(base, same, different).size(), is(2));
     }
 
 }

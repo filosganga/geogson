@@ -18,9 +18,12 @@ package org.filippodeluca.geogson.model;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.transform;
+import static com.google.common.collect.Lists.asList;
+import static com.google.common.collect.Lists.newArrayList;
 
 import com.google.common.collect.ImmutableList;
 import org.filippodeluca.geogson.model.positions.LinearPositions;
+import org.filippodeluca.geogson.model.positions.SinglePosition;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
@@ -32,17 +35,17 @@ public class LineString extends LinearGeometry {
     }
 
     private static LinearPositions checkPositions(LinearPositions toCheck) {
-        checkArgument(toCheck.size() >= 2);
+        checkArgument(toCheck.size() >= 2, "LineString must be composed by a minimum of 2 points.");
 
         return toCheck;
     }
 
     public static LineString of(Point... points) {
-        return of(ImmutableList.copyOf(points));
+        return LineString.of(ImmutableList.copyOf(newArrayList(points)));
     }
 
     public static LineString of(Iterable<Point> points) {
-        return new LineString(new LinearPositions(transform(points, Point.positionsFn())));
+        return new LineString(new LinearPositions(transform(points, positionsFn(SinglePosition.class))));
     }
 
     @Override

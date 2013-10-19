@@ -16,26 +16,16 @@
 
 package org.filippodeluca.geogson.model;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
-import java.io.Serializable;
-
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
 import org.filippodeluca.geogson.model.positions.SinglePosition;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class Point implements Geometry, Serializable {
-
-    private final SinglePosition positions;
+public class Point extends AbstractGeometry<SinglePosition> {
 
     public Point(SinglePosition positions) {
-
-        checkArgument(positions != null, "coordinate must be not null");
-
-        this.positions = positions;
+        super(positions);
     }
 
     public static Point from(double lon, double lat) {
@@ -46,16 +36,12 @@ public class Point implements Geometry, Serializable {
         return new Point(new SinglePosition(coordinates));
     }
 
-    public static Function<Point, SinglePosition> positionsFn() {
-        return PositionFn.INSTANCE;
-    }
-
     public static Function<Point, Coordinates> coordinatesFn() {
         return CoordinatesFn.INSTANCE;
     }
 
     public Coordinates coordinates() {
-        return positions.coordinates();
+        return positions().coordinates();
     }
 
     public double lon() {
@@ -77,42 +63,6 @@ public class Point implements Geometry, Serializable {
     @Override
     public Type type() {
         return Type.POINT;
-    }
-
-    @Override
-    public SinglePosition positions() {
-        return positions;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getClass(), positions);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final Point other = (Point) obj;
-        return Objects.equal(this.positions, other.positions);
-    }
-
-    @Override
-    public String toString() {
-        return Objects.toStringHelper(this).add("positions", positions).toString();
-    }
-
-    private static enum PositionFn implements Function<Point, SinglePosition> {
-        INSTANCE;
-
-        @Override
-        public SinglePosition apply(Point input) {
-            return input.positions;
-        }
     }
 
     private static enum CoordinatesFn implements Function<Point, Coordinates> {

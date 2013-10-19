@@ -22,7 +22,7 @@ import org.filippodeluca.geogson.model.positions.Positions;
  *
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public interface Geometry {
+public interface Geometry<P extends Positions> {
 
     public static enum Type {
         POINT("Point"),
@@ -47,5 +47,7 @@ public interface Geometry {
 
     Type type();
 
-    Positions positions();
+    P positions();
+
+    int size();
 }

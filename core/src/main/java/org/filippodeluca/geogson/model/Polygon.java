@@ -53,7 +53,7 @@ public class Polygon extends MultiLineString {
 
         AreaPositions positions = new AreaPositions(ImmutableList.<LinearPositions>builder()
                 .add(perimeter.positions())
-                .addAll(transform(holes, LinearRing.positionsFn()))
+                .addAll(transform(holes, positionsFn(LinearPositions.class)))
                 .build());
 
         return new Polygon(positions);
@@ -62,9 +62,5 @@ public class Polygon extends MultiLineString {
     @Override
     public Type type() {
         return Type.POLYGON;
-    }
-
-    public MultiLineString toMultiLineString() {
-        return new MultiLineString(positions());
     }
 }
