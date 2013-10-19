@@ -20,7 +20,6 @@ import java.io.IOException;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;

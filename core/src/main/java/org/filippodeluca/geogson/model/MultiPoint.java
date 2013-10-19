@@ -19,7 +19,6 @@ package org.filippodeluca.geogson.model;
 import static java.util.Arrays.asList;
 
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 

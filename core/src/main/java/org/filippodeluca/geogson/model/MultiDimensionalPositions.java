@@ -17,9 +17,7 @@
 package org.filippodeluca.geogson.model;
 
 import static com.google.common.collect.Iterables.concat;
-import static com.google.common.collect.Iterables.transform;
 
-import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
