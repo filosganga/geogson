@@ -33,7 +33,7 @@ public class PointTest {
     @Test
     public void ofLonLatShouldReturnRightValues() {
 
-        assertThat(Point.of(10, 20), is(pointWithLonLat(10, 20)));
+        assertThat(Point.from(10, 20), is(pointWithLonLat(10, 20)));
     }
 
     @Test
@@ -41,26 +41,26 @@ public class PointTest {
 
         Coordinates coordinates = Coordinates.of(-10, 60);
 
-        assertThat(Point.of(coordinates), is(pointThatHave(is(coordinates))));
+        assertThat(Point.from(coordinates), is(pointThatHave(is(coordinates))));
     }
 
     @Test
     public void withLonShouldReturnRightValues() {
 
-        assertThat(Point.of(10, 20).withLon(15), is(pointWithLonLat(15, 20)));
+        assertThat(Point.from(10, 20).withLon(15), is(pointWithLonLat(15, 20)));
     }
 
     @Test
     public void withLatShouldReturnRightValues() {
 
-        assertThat(Point.of(10, 20).withLat(25), is(pointWithLonLat(10, 25)));
+        assertThat(Point.from(10, 20).withLat(25), is(pointWithLonLat(10, 25)));
     }
 
     @Test
     public void equalsHashCodeShouldDependByCoordinate() {
 
-        Point one = Point.of(10, 20);
-        Point two = Point.of(10, 20);
+        Point one = Point.from(10, 20);
+        Point two = Point.from(10, 20);
 
         assertThat(one, equalTo(two));
         assertThat(one.hashCode(), equalTo(two.hashCode()));

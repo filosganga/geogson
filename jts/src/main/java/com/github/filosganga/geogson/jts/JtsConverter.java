@@ -103,7 +103,7 @@ class JtsConverter {
     }
 
     public static Point fromJtsPoint(com.vividsolutions.jts.geom.Point src) {
-        return Point.of(fromJtsCoordinate(src.getCoordinate()));
+        return Point.from(fromJtsCoordinate(src.getCoordinate()));
     }
 
     public static com.vividsolutions.jts.geom.Point toJtsPoint(Point src) {

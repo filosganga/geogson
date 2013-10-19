@@ -29,7 +29,7 @@ public class GeometryAdapterFactoryTest {
     @Test
     public void shouldHandlePoint() {
 
-        Point point = Point.of(56.7, 83.6);
+        Point point = Point.from(56.7, 83.6);
 
         Point parsed = toTest.fromJson(toTest.toJson(point), Point.class);
 
@@ -39,7 +39,7 @@ public class GeometryAdapterFactoryTest {
     @Test
     public void shouldHandleMultiPoint() {
 
-        MultiPoint source = MultiPoint.of(Point.of(12.3, 45.3), Point.of(43.9, 5.8));
+        MultiPoint source = MultiPoint.of(Point.from(12.3, 45.3), Point.from(43.9, 5.8));
 
         MultiPoint parsed = toTest.fromJson(toTest.toJson(source), MultiPoint.class);
 
@@ -49,7 +49,7 @@ public class GeometryAdapterFactoryTest {
     @Test
     public void shouldHandleLineString() {
 
-        LineString source = LineString.of(Point.of(12.3, 45.3), Point.of(43.9, 5.8));
+        LineString source = LineString.of(Point.from(12.3, 45.3), Point.from(43.9, 5.8));
 
         LineString parsed = toTest.fromJson(toTest.toJson(source), LineString.class);
 
@@ -60,8 +60,8 @@ public class GeometryAdapterFactoryTest {
     public void shouldHandlePolygon() {
 
         Polygon source = Polygon.of(
-                LinearRing.of(Point.of(120.3, 45.3), Point.of(100, -50.8), Point.of(100, 5.8), Point.of(120.3, 45.3)),
-                LinearRing.of(Point.of(120.3, 45.3), Point.of(100, -50.8), Point.of(100, 5.8), Point.of(120.3, 45.3))
+                LinearRing.of(Point.from(120.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(120.3, 45.3)),
+                LinearRing.of(Point.from(120.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(120.3, 45.3))
         );
 
         Polygon parsed = toTest.fromJson(toTest.toJson(source), Polygon.class);
@@ -74,12 +74,12 @@ public class GeometryAdapterFactoryTest {
 
         MultiPolygon source = MultiPolygon.of(
                 Polygon.of(
-                        LinearRing.of(Point.of(120.3, 45.3), Point.of(100, -50.8), Point.of(100, 5.8), Point.of(120.3, 45.3)),
-                        LinearRing.of(Point.of(120.3, 45.3), Point.of(100, -50.8), Point.of(100, 5.8), Point.of(120.3, 45.3))
+                        LinearRing.of(Point.from(120.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(120.3, 45.3)),
+                        LinearRing.of(Point.from(120.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(120.3, 45.3))
                 ),
                 Polygon.of(
-                        LinearRing.of(Point.of(120.3, 45.3), Point.of(100, -50.8), Point.of(100, 5.8), Point.of(120.3, 45.3)),
-                        LinearRing.of(Point.of(120.3, 45.3), Point.of(100, -50.8), Point.of(100, 5.8), Point.of(120.3, 45.3))
+                        LinearRing.of(Point.from(120.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(120.3, 45.3)),
+                        LinearRing.of(Point.from(120.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(120.3, 45.3))
                 )
         );
 

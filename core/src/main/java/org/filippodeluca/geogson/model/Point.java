@@ -38,11 +38,11 @@ public class Point implements Geometry, Serializable {
         this.positions = positions;
     }
 
-    public static Point of(double lon, double lat) {
-        return of(Coordinates.of(lon, lat));
+    public static Point from(double lon, double lat) {
+        return from(Coordinates.of(lon, lat));
     }
 
-    public static Point of(Coordinates coordinates) {
+    public static Point from(Coordinates coordinates) {
         return new Point(new SinglePosition(coordinates));
     }
 
@@ -60,11 +60,11 @@ public class Point implements Geometry, Serializable {
     }
 
     public Point withLon(double lon) {
-        return of(lon, getCoordinates().getLat());
+        return from(lon, getCoordinates().getLat());
     }
 
     public Point withLat(double lat) {
-        return of(getCoordinates().getLon(), lat);
+        return from(getCoordinates().getLon(), lat);
     }
 
     @Override
