@@ -29,12 +29,12 @@ public class MultiLineString implements Geometry, Serializable {
     }
 
     @Override
-    public Type getType() {
+    public Type type() {
         return Type.MULTI_LINE_STRING;
     }
 
     @Override
-    public AreaPositions getPositions() {
+    public AreaPositions positions() {
         return positions;
     }
 
@@ -59,7 +59,7 @@ public class MultiLineString implements Geometry, Serializable {
         return new Function<MultiLineString, AreaPositions>() {
             @Override
             public AreaPositions apply(MultiLineString input) {
-                return input.getPositions();
+                return input.positions();
             }
         };
     }

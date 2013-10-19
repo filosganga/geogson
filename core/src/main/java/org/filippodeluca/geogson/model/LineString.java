@@ -27,10 +27,14 @@ import org.filippodeluca.geogson.model.positions.LinearPositions;
  */
 public class LineString extends LinearGeometry {
 
-    public LineString(LinearPositions coordinates) {
-        super(coordinates);
+    public LineString(LinearPositions positions) {
+        super(checkPositionsSize(positions));
+    }
 
-        checkArgument(getSize() >= 2);
+    private static LinearPositions checkPositionsSize(LinearPositions toCheck) {
+        checkArgument(toCheck.getSize() > 2);
+
+        return toCheck;
     }
 
     public static LineString of(Point...points) {
@@ -42,12 +46,12 @@ public class LineString extends LinearGeometry {
     }
 
     @Override
-    public Type getType() {
+    public Type type() {
         return Type.LINE_STRING;
     }
 
     public boolean isClosed() {
-        return getPositions().isClosed();
+        return positions().isClosed();
     }
 
     public MultiPoint toMultiPoint() {
@@ -55,7 +59,7 @@ public class LineString extends LinearGeometry {
     }
 
     public LinearRing toLinearRing() {
-        return new LinearRing(getPositions());
+        return new LinearRing(positions());
     }
 
 }

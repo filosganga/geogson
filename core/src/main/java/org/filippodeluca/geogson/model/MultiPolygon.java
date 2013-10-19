@@ -33,12 +33,12 @@ public class MultiPolygon implements Geometry, Serializable {
     }
 
     @Override
-    public Type getType() {
+    public Type type() {
         return Type.MULTI_POLYGON;
     }
 
     @Override
-    public MultiDimensionalPositions getPositions() {
+    public MultiDimensionalPositions positions() {
         return positions;
     }
 
@@ -63,7 +63,7 @@ public class MultiPolygon implements Geometry, Serializable {
         return new Function<MultiPolygon, MultiDimensionalPositions>() {
             @Override
             public MultiDimensionalPositions apply(MultiPolygon input) {
-                return input.getPositions();
+                return input.positions();
             }
         };
     }

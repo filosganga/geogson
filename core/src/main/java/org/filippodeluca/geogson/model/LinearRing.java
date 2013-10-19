@@ -26,7 +26,7 @@ public class LinearRing extends LineString {
     }
 
     @Override
-    public Type getType() {
+    public Type type() {
         return Type.LINEAR_RING;
     }
 

@@ -68,12 +68,12 @@ public class Point implements Geometry, Serializable {
     }
 
     @Override
-    public Type getType() {
+    public Type type() {
         return Type.POINT;
     }
 
     @Override
-    public SinglePosition getPositions() {
+    public SinglePosition positions() {
         return positions;
     }
 
@@ -103,7 +103,7 @@ public class Point implements Geometry, Serializable {
         return new Function<Point, SinglePosition>() {
             @Override
             public SinglePosition apply(Point input) {
-                return input.getPositions();
+                return input.positions();
             }
         };
     }

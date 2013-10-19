@@ -45,7 +45,7 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
                 SinglePosition sp = (SinglePosition) value;
                 out.value(sp.getCoordinates().getLon()).value(sp.getCoordinates().getLat());
             } else {
-                for (Positions child : value.getChildren()) {
+                for (Positions child : value.children()) {
                     write(out, child);
                 }
             }

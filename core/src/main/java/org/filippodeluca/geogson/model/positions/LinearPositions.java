@@ -53,7 +53,7 @@ public class LinearPositions implements Positions {
     }
 
     @Override
-    public Iterable<SinglePosition> getChildren() {
+    public Iterable<SinglePosition> children() {
         return children;
     }
 

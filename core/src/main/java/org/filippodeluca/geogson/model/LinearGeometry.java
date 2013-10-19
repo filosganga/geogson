@@ -37,12 +37,12 @@ public abstract class LinearGeometry implements Geometry, Serializable {
     }
 
     @Override
-    public LinearPositions getPositions() {
+    public LinearPositions positions() {
         return positions;
     }
 
     public Iterable<Coordinates> getCoordinates() {
-        return transform(positions.getChildren(), getCoordinatesFn());
+        return transform(positions.children(), getCoordinatesFn());
     }
 
     public int getSize() {
@@ -77,7 +77,7 @@ public abstract class LinearGeometry implements Geometry, Serializable {
         return new Function<LinearGeometry, LinearPositions>() {
             @Override
             public LinearPositions apply(LinearGeometry input) {
-                return input.getPositions();
+                return input.positions();
             }
         };
     }

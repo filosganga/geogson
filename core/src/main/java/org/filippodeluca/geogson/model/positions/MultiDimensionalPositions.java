@@ -58,7 +58,7 @@ public class MultiDimensionalPositions implements Positions {
     }
 
     @Override
-    public Iterable<AreaPositions> getChildren() {
+    public Iterable<AreaPositions> children() {
         return positions;
     }
 

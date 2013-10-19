@@ -52,7 +52,7 @@ public class SinglePosition implements Positions {
     }
 
     @Override
-    public Iterable<Positions> getChildren() {
+    public Iterable<Positions> children() {
         return CHILDREN;
     }
 

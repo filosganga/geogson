@@ -43,7 +43,7 @@ public class MultiPoint extends LinearGeometry {
     }
 
     @Override
-    public Type getType() {
+    public Type type() {
         return Type.MULTI_POINT;
     }
 

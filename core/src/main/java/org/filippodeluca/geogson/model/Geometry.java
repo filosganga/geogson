@@ -45,7 +45,7 @@ public interface Geometry {
         }
     }
 
-    Type getType();
+    Type type();
 
-    Positions getPositions();
+    Positions positions();
 }

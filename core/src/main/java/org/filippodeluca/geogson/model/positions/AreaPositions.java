@@ -55,7 +55,7 @@ public class AreaPositions implements Positions {
     }
 
     @Override
-    public Iterable<LinearPositions> getChildren() {
+    public Iterable<LinearPositions> children() {
         return children;
     }
 

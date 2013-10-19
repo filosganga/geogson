@@ -39,7 +39,7 @@ public class Polygon extends MultiLineString {
     public static Polygon of(LinearRing perimeter, Iterable<LinearRing> holes) {
 
         AreaPositions positions = new AreaPositions(ImmutableList.<LinearPositions>builder()
-                .add(perimeter.getPositions())
+                .add(perimeter.positions())
                 .addAll(transform(holes, LinearRing.getPositionsFn()))
                 .build());
 
@@ -47,7 +47,7 @@ public class Polygon extends MultiLineString {
     }
 
     @Override
-    public Type getType() {
+    public Type type() {
         return Type.POLYGON;
     }
 }

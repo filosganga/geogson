@@ -70,10 +70,10 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             } else {
                 out.beginObject();
 
-                out.name("type").value(value.getType().getValue());
-                if (value.getType() != Geometry.Type.GEOMETRY_COLLECTION) {
+                out.name("type").value(value.type().getValue());
+                if (value.type() != Geometry.Type.GEOMETRY_COLLECTION) {
                     out.name("positions");
-                    gson.getAdapter(Positions.class).write(out, value.getPositions());
+                    gson.getAdapter(Positions.class).write(out, value.positions());
                 } else {
                     // TODO
                 }
