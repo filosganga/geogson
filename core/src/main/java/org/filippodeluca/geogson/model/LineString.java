@@ -17,8 +17,6 @@
 package org.filippodeluca.geogson.model;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Iterables.getLast;
 import static com.google.common.collect.Iterables.transform;
 
 import com.google.common.collect.ImmutableList;

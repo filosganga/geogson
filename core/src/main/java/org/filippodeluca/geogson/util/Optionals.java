@@ -1,21 +1,23 @@
 package org.filippodeluca.geogson.util;
 
-import static com.google.common.collect.Iterables.isEmpty;
 import static com.google.common.collect.Iterables.transform;
 
-import java.util.Set;
-
-import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
-import com.google.common.base.Supplier;
 
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
 public final class Optionals {
+
+    private static final Predicate<Optional<?>> IS_PRESENT_PR = new Predicate<Optional<?>>() {
+        @Override
+        public boolean apply(Optional<?> input) {
+            return input.isPresent();
+        }
+    };
 
     private Optionals() {
     }
@@ -33,12 +35,7 @@ public final class Optionals {
     }
 
     public static Predicate<Optional<?>> isPresentPr() {
-        return new Predicate<Optional<?>>() {
-            @Override
-            public boolean apply(Optional<?> input) {
-                return input.isPresent();
-            }
-        };
+        return IS_PRESENT_PR;
     }
 
 }

@@ -1,8 +1,6 @@
 package com.github.filosganga.geogson.jts;
 
 import com.google.common.collect.UnmodifiableIterator;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 

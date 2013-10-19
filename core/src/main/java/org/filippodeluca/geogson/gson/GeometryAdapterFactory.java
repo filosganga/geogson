@@ -27,15 +27,15 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
-import org.filippodeluca.geogson.model.positions.AreaPositions;
 import org.filippodeluca.geogson.model.Geometry;
 import org.filippodeluca.geogson.model.LineString;
-import org.filippodeluca.geogson.model.positions.LinearPositions;
-import org.filippodeluca.geogson.model.positions.MultiDimensionalPositions;
 import org.filippodeluca.geogson.model.MultiPoint;
 import org.filippodeluca.geogson.model.MultiPolygon;
 import org.filippodeluca.geogson.model.Point;
 import org.filippodeluca.geogson.model.Polygon;
+import org.filippodeluca.geogson.model.positions.AreaPositions;
+import org.filippodeluca.geogson.model.positions.LinearPositions;
+import org.filippodeluca.geogson.model.positions.MultiDimensionalPositions;
 import org.filippodeluca.geogson.model.positions.Positions;
 import org.filippodeluca.geogson.model.positions.SinglePosition;
 

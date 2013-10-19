@@ -5,7 +5,6 @@ import static com.google.common.collect.Iterables.transform;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import org.filippodeluca.geogson.model.Coordinates;
 import org.filippodeluca.geogson.model.Geometry;

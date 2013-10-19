@@ -16,8 +16,6 @@
 
 package org.filippodeluca.geogson.model.positions;
 
-import static com.google.common.collect.Iterables.concat;
-
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 

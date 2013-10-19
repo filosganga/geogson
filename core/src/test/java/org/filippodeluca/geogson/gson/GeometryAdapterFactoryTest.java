@@ -1,12 +1,10 @@
 package org.filippodeluca.geogson.gson;
 
-import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.filippodeluca.geogson.model.Coordinates;
 import org.filippodeluca.geogson.model.LineString;
 import org.filippodeluca.geogson.model.LinearRing;
 import org.filippodeluca.geogson.model.MultiPoint;
