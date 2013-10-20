@@ -4,6 +4,8 @@ import static com.google.common.collect.Iterables.transform;
 
 import com.github.filosganga.geogson.model.positions.AreaPositions;
 import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -30,6 +32,16 @@ public class MultiPolygon extends AbstractGeometry<MultiDimensionalPositions> {
     @Override
     public Type type() {
         return Type.MULTI_POLYGON;
+    }
+
+    public Iterable<Polygon> polygons() {
+        return FluentIterable.from(positions().children())
+                .transform(new Function<AreaPositions, Polygon>() {
+                    @Override
+                    public Polygon apply(AreaPositions input) {
+                        return new Polygon(input);
+                    }
+                });
     }
 
 }

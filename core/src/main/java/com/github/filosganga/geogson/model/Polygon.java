@@ -16,7 +16,10 @@
 
 package com.github.filosganga.geogson.model;
 
+import static com.github.filosganga.geogson.model.LinearGeometry.toLinearRingFn;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Iterables.getFirst;
+import static com.google.common.collect.Iterables.skip;
 import static com.google.common.collect.Iterables.transform;
 import static java.util.Arrays.asList;
 
@@ -62,5 +65,17 @@ public class Polygon extends MultiLineString {
     @Override
     public Type type() {
         return Type.POLYGON;
+    }
+
+    public Iterable<LinearRing> linearRings() {
+        return transform(lineStrings(), toLinearRingFn());
+    }
+
+    public LinearRing perimeter() {
+        return getFirst(linearRings(), null);
+    }
+
+    public Iterable<LinearRing> holes() {
+        return skip(linearRings(), 1);
     }
 }

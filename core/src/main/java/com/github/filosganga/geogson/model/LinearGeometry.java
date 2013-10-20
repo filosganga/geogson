@@ -17,7 +17,9 @@
 package com.github.filosganga.geogson.model;
 
 import com.github.filosganga.geogson.model.positions.LinearPositions;
+import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
@@ -50,6 +52,17 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
 
     public LinearRing toLinearRing() {
         return new LinearRing(positions());
+    }
+
+    public Iterable<Point> points() {
+        return FluentIterable.from(positions().children())
+                .transform(SinglePosition.coordinatesFn())
+                .transform(new Function<Coordinates, Point>() {
+                    @Override
+                    public Point apply(com.github.filosganga.geogson.model.Coordinates input) {
+                        return Point.from(input);
+                    }
+                });
     }
 
     private enum ToMultiPointFn implements Function<LinearGeometry, MultiPoint> {
