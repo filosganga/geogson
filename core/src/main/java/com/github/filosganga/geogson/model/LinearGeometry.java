@@ -30,16 +30,31 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
         super(positions);
     }
 
-    public static Function<LinearGeometry, MultiPoint> toMultiPointFn() {
-        return ToMultiPointFn.INSTANCE;
+    public static <T extends LinearGeometry> Function<T, MultiPoint> toMultiPointFn() {
+        return new Function<T, MultiPoint>() {
+            @Override
+            public MultiPoint apply(T input) {
+                return input.toMultiPoint();
+            }
+        };
     }
 
-    public static Function<LinearGeometry, LineString> toLineStringFn() {
-        return ToLineStringFn.INSTANCE;
+    public static <T extends LinearGeometry> Function<T, LineString> toLineStringFn() {
+        return new Function<T, LineString>() {
+            @Override
+            public LineString apply(T input) {
+                return input.toLineString();
+            }
+        };
     }
 
-    public static Function<LinearGeometry, LinearRing> toLinearRingFn() {
-        return ToLinearRingFn.INSTANCE;
+    public static <T extends LinearGeometry> Function<T, LinearRing> toLinearRingFn() {
+        return new Function<T, LinearRing>() {
+            @Override
+            public LinearRing apply(T input) {
+                return input.toLinearRing();
+            }
+        };
     }
 
     public MultiPoint toMultiPoint() {
@@ -65,33 +80,4 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
                 });
     }
 
-    private enum ToMultiPointFn implements Function<LinearGeometry, MultiPoint> {
-        INSTANCE;
-
-        @Override
-        public MultiPoint apply(LinearGeometry input) {
-            return input.toMultiPoint();
-        }
-
-    }
-
-    private enum ToLineStringFn implements Function<LinearGeometry, LineString> {
-        INSTANCE;
-
-        @Override
-        public LineString apply(LinearGeometry input) {
-            return input.toLineString();
-        }
-
-    }
-
-    private enum ToLinearRingFn implements Function<LinearGeometry, LinearRing> {
-        INSTANCE;
-
-        @Override
-        public LinearRing apply(LinearGeometry input) {
-            return input.toLinearRing();
-        }
-
-    }
 }
