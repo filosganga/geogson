@@ -26,6 +26,7 @@
     <modules>
         <module>core</module>
         <module>jts</module>
+        <module>spatial4j</module>
     </modules>
 
     <name>GeoGson</name>
@@ -98,6 +99,12 @@
                 <artifactId>jts</artifactId>
                 <version>1.13</version>
             </dependency>
+            <dependency>
+                <groupId>com.spatial4j</groupId>
+                <artifactId>spatial4j</artifactId>
+                <version>0.3</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>junit</groupId>
