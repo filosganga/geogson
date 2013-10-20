@@ -41,8 +41,17 @@
             <groupId>com.spatial4j</groupId>
             <artifactId>spatial4j</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts</artifactId>
+        </dependency>
 
 
+        <dependency>
+            <groupId>com.github.filosganga</groupId>
+            <artifactId>geogson-core</artifactId>
+            <type>test-jar</type>
+        </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>

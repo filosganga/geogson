@@ -84,6 +84,13 @@
             </dependency>
 
             <dependency>
+                <groupId>com.github.filosganga</groupId>
+                <artifactId>geogson-core</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+            </dependency>
+
+            <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>15.0</version>
@@ -137,6 +144,12 @@
                         <source>1.6</source>
                         <target>1.6</target>
                     </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.2</version>
                 </plugin>
             </plugins>
         </pluginManagement>

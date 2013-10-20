@@ -18,6 +18,7 @@ package com.github.filosganga.geogson.model;
 
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
+import com.google.common.base.Optional;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -79,5 +80,21 @@ public final class Matchers {
                 description.appendText("Point with that have ").appendDescriptionOf(positionMatcher);
             }
         };
+    }
+
+    public static <T> Matcher<Optional<? extends T>> optionalThatContain(final Matcher<? extends T> matcher) {
+
+        return new TypeSafeMatcher<Optional<? extends T>>() {
+            @Override
+            protected boolean matchesSafely(Optional<? extends T> item) {
+                return item.isPresent() && matcher.matches(item.get());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Optional that contains ").appendDescriptionOf(matcher);
+            }
+        };
+
     }
 }
