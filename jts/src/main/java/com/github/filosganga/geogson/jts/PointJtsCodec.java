@@ -1,24 +1,21 @@
 package com.github.filosganga.geogson.jts;
 
-import com.github.filosganga.geogson.model.Geometry;
-import com.google.common.base.Optional;
+import com.github.filosganga.geogson.model.Point;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class PointJtsCodec implements JtsCodec {
+public class PointJtsCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.Point, Point> {
 
     @Override
-    public Optional<Geometry> toGeometry(com.vividsolutions.jts.geom.Geometry src) {
-        if (src instanceof com.vividsolutions.jts.geom.Point) {
-            return Optional.<Geometry>of(JtsConverter.fromJtsPoint((com.vividsolutions.jts.geom.Point) src));
-        } else {
-            return Optional.absent();
-        }
+    public Point toGeometry(com.vividsolutions.jts.geom.Point src) {
+        return JtsConverter.fromJtsPoint(src);
     }
 
     @Override
-    public Optional<com.vividsolutions.jts.geom.Geometry> fromGeometry(Geometry src) {
-        return Optional.absent();
+    public com.vividsolutions.jts.geom.Point fromGeometry(Point src) {
+        return geometryFactory.createPoint(new Coordinate(src.lon(), src.lat()));
     }
+
 }

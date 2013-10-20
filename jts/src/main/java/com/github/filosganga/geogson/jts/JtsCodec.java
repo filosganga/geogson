@@ -6,9 +6,9 @@ import com.google.common.base.Optional;
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public interface JtsCodec {
+public interface JtsCodec<S extends Object, T extends Geometry<?>> {
 
-    Optional<Geometry> toGeometry(com.vividsolutions.jts.geom.Geometry src);
+    T toGeometry(S src);
 
-    Optional<com.vividsolutions.jts.geom.Geometry> fromGeometry(Geometry src);
+    S fromGeometry(T src);
 }
