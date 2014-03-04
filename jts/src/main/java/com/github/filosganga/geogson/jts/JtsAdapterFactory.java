@@ -26,7 +26,6 @@ public class JtsAdapterFactory implements TypeAdapterFactory {
         }
     }
 
-
 }
 
 class JtsGeometryAdapter extends TypeAdapter<com.vividsolutions.jts.geom.Geometry> {
