@@ -57,6 +57,16 @@ public class GeometryAdapterFactoryTest {
     }
 
     @Test
+    public void shouldHandleLinearRing() {
+
+        LinearRing source = LinearRing.of(Point.from(12.3, 45.3), Point.from(43.9, 5.8), Point.from(43.9, 5.8), Point.from(12.3, 45.3));
+
+        LinearRing parsed = toTest.fromJson(toTest.toJson(source), LinearRing.class);
+
+        assertThat(parsed, equalTo(source));
+    }
+
+    @Test
     public void shouldHandlePolygon() {
 
         Polygon source = Polygon.of(

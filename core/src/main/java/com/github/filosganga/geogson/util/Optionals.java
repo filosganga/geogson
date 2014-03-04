@@ -5,6 +5,7 @@ import static com.google.common.collect.Iterables.transform;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
+import com.google.common.base.Supplier;
 
 
 /**
@@ -13,6 +14,14 @@ import com.google.common.base.Predicate;
 public final class Optionals {
 
     private Optionals() {
+    }
+
+    public static <T> Optional<T> or(Optional<T> mayT, Supplier<Optional<T>> alternative) {
+        if (mayT.isPresent()) {
+            return mayT;
+        } else {
+            return alternative.get();
+        }
     }
 
     public static <T> Optional<T> flatten(Optional<Optional<T>> mayMayT) {
