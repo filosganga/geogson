@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import com.github.filosganga.geogson.model.Geometry;
 import com.github.filosganga.geogson.model.LineString;
+import com.github.filosganga.geogson.model.LinearRing;
 import com.github.filosganga.geogson.model.MultiPoint;
 import com.github.filosganga.geogson.model.MultiPolygon;
 import com.github.filosganga.geogson.model.Point;
@@ -29,6 +30,7 @@ import com.github.filosganga.geogson.model.positions.LinearPositions;
 import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
+import com.github.filosganga.geogson.util.ChainableOptional;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.gson.Gson;
@@ -112,7 +114,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
                 in.endObject();
             } else {
-                throw new IllegalArgumentException("The give json is not a valid Geometry: " + in.peek());
+                throw new IllegalArgumentException("The given json is not a valid Geometry: " + in.peek());
             }
 
             return geometry;
@@ -123,13 +125,16 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
         }
 
         private Geometry buildGeometry(final String type, Positions positions, Iterable<Geometry> geometries) {
-            return buildPoint(type, positions)
-                    .or(buildMultiPoint(type, positions))
-                    .or(buildLineString(type, positions))
-                    .or(buildPolygon(type, positions))
+
+            // Take care, the order is important!
+            return ChainableOptional.of(buildGeometryCollection(type, geometries))
                     .or(buildMultiPolygon(type, positions))
-                    .or(buildGeometryCollection(type, geometries))
-                    .or(new Supplier<Geometry>() {
+                    .or(buildPolygon(type, positions))
+                    .or(buildLinearRing(type, positions))
+                    .or(buildLineString(type, positions))
+                    .or(buildMultiPoint(type, positions))
+                    .or(buildPoint(type, positions))
+                    .orFinally(new Supplier<Geometry>() {
                         @Override
                         public Geometry get() {
                             throw new IllegalArgumentException("Cannot build a geometry for type: " + type);
@@ -137,69 +142,123 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                     });
         }
 
-        private Optional<Geometry> buildPoint(String type, Positions coordinates) {
+        private Supplier<Optional<? extends Geometry>> buildPoint(final String type, final Positions coordinates) {
 
-            Optional<Geometry> mayGeometry = Optional.absent();
+            return new Supplier<Optional<? extends Geometry>>() {
+                @Override
+                public Optional<Geometry> get() {
+                    Optional<Geometry> mayGeometry = Optional.absent();
 
-            if (type.equals(Geometry.Type.POINT.getValue())) {
-                mayGeometry = Optional.<Geometry>of(Point.from(((SinglePosition) coordinates).coordinates()));
-            }
+                    if (type.equals(Geometry.Type.POINT.getValue())) {
+                        mayGeometry = Optional.<Geometry>of(Point.from(((SinglePosition) coordinates).coordinates()));
+                    }
 
-            return mayGeometry;
+                    return mayGeometry;
+                }
+            };
+
+
         }
 
-        private Optional<Geometry> buildMultiPoint(String type, Positions coordinates) {
+        private Supplier<Optional<? extends Geometry>> buildMultiPoint(final String type, final Positions coordinates) {
 
-            Optional<Geometry> mayGeometry = Optional.absent();
+            return new Supplier<Optional<? extends Geometry>>() {
+                @Override
+                public Optional<Geometry> get() {
+                    Optional<Geometry> mayGeometry = Optional.absent();
 
-            if (type.equals(Geometry.Type.MULTI_POINT.getValue())) {
-                mayGeometry = Optional.<Geometry>of(new MultiPoint((LinearPositions) coordinates));
-            }
+                    if (type.equals(Geometry.Type.MULTI_POINT.getValue())) {
+                        mayGeometry = Optional.<Geometry>of(new MultiPoint((LinearPositions) coordinates));
+                    }
 
-            return mayGeometry;
+                    return mayGeometry;
+                }
+            };
+
         }
 
-        private Optional<Geometry> buildLineString(String type, Positions coordinates) {
+        private Supplier<Optional<? extends Geometry>> buildLineString(final String type, final Positions coordinates) {
 
-            Optional<Geometry> mayGeometry = Optional.absent();
+            return new Supplier<Optional<? extends Geometry>>() {
+                @Override
+                public Optional<Geometry> get() {
+                    Optional<Geometry> mayGeometry = Optional.absent();
 
-            if (type.equals(Geometry.Type.LINE_STRING.getValue())) {
-                mayGeometry = Optional.<Geometry>of(new LineString((LinearPositions) coordinates));
-            }
+                    if (type.equals(Geometry.Type.LINE_STRING.getValue())) {
+                        mayGeometry = Optional.<Geometry>of(new LineString((LinearPositions) coordinates));
+                    }
 
-            return mayGeometry;
+                    return mayGeometry;
+                }
+            };
         }
 
-        private Optional<Geometry> buildPolygon(String type, Positions coordinates) {
+        private Supplier<Optional<? extends Geometry>> buildLinearRing(final String type, final Positions coordinates) {
 
-            Optional<Geometry> mayGeometry = Optional.absent();
+            return new Supplier<Optional<? extends Geometry>>() {
+                @Override
+                public Optional<Geometry> get() {
+                    Optional<Geometry> mayGeometry = Optional.absent();
 
-            if (Geometry.Type.POLYGON.getValue().equals(type)) {
+                    if (type.equals(Geometry.Type.LINEAR_RING.getValue())) {
+                        LinearPositions linearPositions = (LinearPositions) coordinates;
+                        if (linearPositions.isClosed()) {
+                            mayGeometry = Optional.<Geometry>of(new LinearRing(linearPositions));
+                        }
+                    }
 
-                mayGeometry = Optional.<Geometry>of(new Polygon((AreaPositions) coordinates));
-            }
+                    return mayGeometry;
+                }
+            };
 
 
-            return mayGeometry;
         }
 
-        private Optional<Geometry> buildMultiPolygon(String type, Positions coordinates) {
+        private Supplier<Optional<? extends Geometry>> buildPolygon(final String type, final Positions coordinates) {
 
-            Optional<Geometry> mayGeometry = Optional.absent();
-            if (Geometry.Type.MULTI_POLYGON.getValue().equals(type)) {
-                mayGeometry = Optional.<Geometry>of(new MultiPolygon((MultiDimensionalPositions) coordinates));
-            }
+            return new Supplier<Optional<? extends Geometry>>() {
+                @Override
+                public Optional<Geometry> get() {
+                    Optional<Geometry> mayGeometry = Optional.absent();
+
+                    if (Geometry.Type.POLYGON.getValue().equals(type)) {
+                        mayGeometry = Optional.<Geometry>of(new Polygon((AreaPositions) coordinates));
+                    }
+
+                    return mayGeometry;
+                }
+            };
 
 
-            return mayGeometry;
         }
 
-        private Optional<Geometry> buildGeometryCollection(String type, Iterable<Geometry> geometries) {
+        private Supplier<Optional<? extends Geometry>> buildMultiPolygon(final String type, final Positions coordinates) {
 
-            Optional<Geometry> mayGeometry = Optional.absent();
+            return new Supplier<Optional<? extends Geometry>>() {
+                @Override
+                public Optional<Geometry> get() {
+                    Optional<Geometry> mayGeometry = Optional.absent();
+                    if (Geometry.Type.MULTI_POLYGON.getValue().equals(type)) {
+                        mayGeometry = Optional.<Geometry>of(new MultiPolygon((MultiDimensionalPositions) coordinates));
+                    }
 
+                    return mayGeometry;
+                }
+            };
+        }
 
-            return mayGeometry;
+        private Supplier<Optional<? extends Geometry>> buildGeometryCollection(final String type, final Iterable<Geometry> geometries) {
+
+            return new Supplier<Optional<? extends Geometry>>() {
+                @Override
+                public Optional<Geometry> get() {
+
+                    // TODO Not supported at this time
+
+                    return Optional.absent();
+                }
+            };
+
         }
 
     }
