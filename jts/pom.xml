@@ -27,7 +27,7 @@
     <artifactId>geogson-jts</artifactId>
     <packaging>jar</packaging>
 
-    <name>GeoGson Core</name>
+    <name>GeoGson JTS</name>
     <description>GeoJSON support for Google Gson - JTS</description>
 
     <dependencies>
