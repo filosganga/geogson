@@ -1,8 +1,8 @@
 package com.github.filosganga.geogson.jts;
 
-import static com.google.common.collect.Iterables.indexOf;
 import static com.google.common.collect.Iterables.transform;
 
+import com.github.filosganga.geogson.codec.Codec;
 import com.github.filosganga.geogson.model.Coordinates;
 import com.github.filosganga.geogson.model.Geometry;
 import com.github.filosganga.geogson.model.LineString;
@@ -13,13 +13,12 @@ import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public abstract class AbstractJtsCodec<S extends Object, T extends Geometry<?>> implements JtsCodec<S, T> {
+public abstract class AbstractJtsCodec<S extends Object, T extends Geometry<?>> implements Codec<S, T> {
 
     protected final GeometryFactory geometryFactory = new GeometryFactory();
 

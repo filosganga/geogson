@@ -6,11 +6,11 @@ import com.vividsolutions.jts.geom.Coordinate;
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
-public class PointJtsCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.Point, Point> {
+public class PointCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.Point, Point> {
 
     @Override
     public Point toGeometry(com.vividsolutions.jts.geom.Point src) {
-        return JtsConverter.fromJtsPoint(src);
+        return fromJtsPoint(src);
     }
 
     @Override
