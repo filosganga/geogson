@@ -74,7 +74,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
                 out.name("type").value(value.type().getValue());
                 if (value.type() != Geometry.Type.GEOMETRY_COLLECTION) {
-                    out.name("positions");
+                    out.name("coordinates");
                     gson.getAdapter(Positions.class).write(out, value.positions());
                 } else {
                     // TODO
@@ -101,7 +101,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                     String name = in.nextName();
                     if ("type".equals(name)) {
                         type = in.nextString();
-                    } else if ("positions".equals(name)) {
+                    } else if ("coordinates".equals(name)) {
                         positions = readPosition(in);
                     } else if ("geometries".equals(name)) {
                         // TODO
