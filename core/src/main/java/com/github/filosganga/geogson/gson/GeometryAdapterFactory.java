@@ -16,6 +16,9 @@
 
 package com.github.filosganga.geogson.gson;
 
+import static com.google.common.collect.Iterables.transform;
+
+import java.awt.geom.Area;
 import java.io.IOException;
 
 import com.github.filosganga.geogson.model.Geometry;
@@ -31,8 +34,10 @@ import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.github.filosganga.geogson.util.ChainableOptional;
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
@@ -127,7 +132,8 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
         private Geometry buildGeometry(final String type, Positions positions, Iterable<Geometry> geometries) {
 
             // Take care, the order is important!
-            return ChainableOptional.of(buildGeometryCollection(type, geometries))
+            return ChainableOptional
+                    .of(buildGeometryCollection(type, geometries))
                     .or(buildMultiPolygon(type, positions))
                     .or(buildPolygon(type, positions))
                     .or(buildLinearRing(type, positions))
@@ -149,7 +155,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 public Optional<Geometry> get() {
                     Optional<Geometry> mayGeometry = Optional.absent();
 
-                    if (type.equals(Geometry.Type.POINT.getValue())) {
+                    if (type.equalsIgnoreCase(Geometry.Type.POINT.getValue())) {
                         mayGeometry = Optional.<Geometry>of(Point.from(((SinglePosition) coordinates).coordinates()));
                     }
 
@@ -167,7 +173,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 public Optional<Geometry> get() {
                     Optional<Geometry> mayGeometry = Optional.absent();
 
-                    if (type.equals(Geometry.Type.MULTI_POINT.getValue())) {
+                    if (type.equalsIgnoreCase(Geometry.Type.MULTI_POINT.getValue())) {
                         mayGeometry = Optional.<Geometry>of(new MultiPoint((LinearPositions) coordinates));
                     }
 
@@ -184,7 +190,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 public Optional<Geometry> get() {
                     Optional<Geometry> mayGeometry = Optional.absent();
 
-                    if (type.equals(Geometry.Type.LINE_STRING.getValue())) {
+                    if (type.equalsIgnoreCase(Geometry.Type.LINE_STRING.getValue())) {
                         mayGeometry = Optional.<Geometry>of(new LineString((LinearPositions) coordinates));
                     }
 
@@ -200,7 +206,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 public Optional<Geometry> get() {
                     Optional<Geometry> mayGeometry = Optional.absent();
 
-                    if (type.equals(Geometry.Type.LINEAR_RING.getValue())) {
+                    if (type.equalsIgnoreCase(Geometry.Type.LINEAR_RING.getValue())) {
                         LinearPositions linearPositions = (LinearPositions) coordinates;
                         if (linearPositions.isClosed()) {
                             mayGeometry = Optional.<Geometry>of(new LinearRing(linearPositions));
@@ -221,8 +227,17 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 public Optional<Geometry> get() {
                     Optional<Geometry> mayGeometry = Optional.absent();
 
-                    if (Geometry.Type.POLYGON.getValue().equals(type)) {
-                        mayGeometry = Optional.<Geometry>of(new Polygon((AreaPositions) coordinates));
+                    if (Geometry.Type.POLYGON.getValue().equalsIgnoreCase(type)) {
+
+                        AreaPositions positions;
+                        if (coordinates instanceof LinearPositions) {
+                            LinearPositions lp = (LinearPositions) coordinates;
+                            positions = new AreaPositions(ImmutableList.of(lp));
+                        } else {
+                            positions = (AreaPositions) coordinates;
+                        }
+
+                        mayGeometry = Optional.<Geometry>of(new Polygon(positions));
                     }
 
                     return mayGeometry;
@@ -238,8 +253,23 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 @Override
                 public Optional<Geometry> get() {
                     Optional<Geometry> mayGeometry = Optional.absent();
-                    if (Geometry.Type.MULTI_POLYGON.getValue().equals(type)) {
-                        mayGeometry = Optional.<Geometry>of(new MultiPolygon((MultiDimensionalPositions) coordinates));
+                    if (Geometry.Type.MULTI_POLYGON.getValue().equalsIgnoreCase(type)) {
+
+                        MultiDimensionalPositions positions;
+                        if (coordinates instanceof AreaPositions) {
+                            AreaPositions ap = (AreaPositions) coordinates;
+
+                            positions = new MultiDimensionalPositions(transform(ap.children(), new Function<LinearPositions, AreaPositions>() {
+                                @Override
+                                public AreaPositions apply(LinearPositions input) {
+                                    return new AreaPositions(ImmutableList.of(input));
+                                }
+                            }));
+                        } else {
+                            positions = (MultiDimensionalPositions) coordinates;
+                        }
+
+                        mayGeometry = Optional.<Geometry>of(new MultiPolygon(positions));
                     }
 
                     return mayGeometry;
