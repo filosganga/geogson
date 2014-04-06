@@ -42,8 +42,8 @@
     <inceptionYear>2013</inceptionYear>
 
     <scm>
-        <connection>scm:git:git://github.com/filosganga/geogson.git</connection>
-        <developerConnection>scm:git:git://github.com/filosganga/geogson.git</developerConnection>
+        <connection>scm:git:git@github.com:filosganga/geogson.git</connection>
+        <developerConnection>scm:git:git@github.com:filosganga/geogson.git</developerConnection>
     </scm>
 
     <issueManagement>
