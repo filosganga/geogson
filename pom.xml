@@ -216,7 +216,8 @@
                             <goal>sign</goal>
                         </goals>
                         <configuration>
-                            <secretKeyring>${project.main.basedir}/build/secret-key.gpg</secretKeyring>
+                            <secretKeyring>${project.main.basedir}/build/secret_key.gpg</secretKeyring>
+                            <publicKeyring>${project.main.basedir}/build/public_key.gpg</publicKeyring>
                         </configuration>
                     </execution>
                 </executions>
