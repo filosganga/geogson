@@ -36,7 +36,7 @@ class JtsGeometryAdapter extends TypeAdapter<com.vividsolutions.jts.geom.Geometr
 
     public JtsGeometryAdapter(Gson gson) {
         this.gson = gson;
-        this.codecRegistry = new CodecRegistry<com.vividsolutions.jts.geom.Geometry, Geometry<?>>();
+        this.codecRegistry = new CodecRegistry<>();
         codecRegistry.addCodec(new PointCodec());
         codecRegistry.addCodec(new MultiPointCodec());
         codecRegistry.addCodec(new LineStringCodec());

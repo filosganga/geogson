@@ -1,5 +1,10 @@
 language: java
 
+script: ./build/travis-build.sh
+
 jdk:
   - openjdk7
   - oraclejdk7
+
+env:
+  secure: gC3BXvfE0ALkeXWaxm4Qu7C/9jBWKKg1x7m5Sp5RwaKhYapi0VLCauB1C0wc6vggbnXPP6pPBsPaP7nXhRDMEjlO47CXmuYEXUsDLDuGQ6oQ+MPSKAZL47D3f5jKfL9G2FBAQZrCoU15vbmlKfXon3ftNL3QOaFgefN/nv7qQbM=
