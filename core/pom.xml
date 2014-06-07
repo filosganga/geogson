@@ -29,6 +29,10 @@
     <name>GeoGson Core</name>
     <description>GeoJSON support for Google Gson - Core</description>
 
+    <properties>
+        <project.main.basedir>${project.parent.basedir}</project.main.basedir>
+    </properties>
+
     <dependencies>
 
         <dependency>

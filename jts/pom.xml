@@ -29,6 +29,11 @@
     <name>GeoGson JTS</name>
     <description>GeoJSON support for Google Gson - JTS</description>
 
+    <properties>
+        <project.main.basedir>${project.parent.basedir}</project.main.basedir>
+    </properties>
+
+
     <dependencies>
 
         <dependency>
