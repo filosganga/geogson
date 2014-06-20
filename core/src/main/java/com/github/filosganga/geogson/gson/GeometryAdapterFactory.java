@@ -58,7 +58,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
         } else if (Positions.class.isAssignableFrom(type.getRawType())) {
             return (TypeAdapter<T>) new PositionsAdapter();
         } else {
-            return gson.getAdapter(type);
+            return null;
         }
     }
 
