@@ -19,7 +19,7 @@ package com.github.filosganga.geogson.model.positions;
 import com.google.common.collect.ImmutableList;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * It represent a collection of Area coordinates.
  */
 public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> {
 
@@ -35,17 +35,18 @@ public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> 
     public Positions merge(Positions other) {
         if (other instanceof SinglePosition) {
 
-            throw new IllegalArgumentException("Cannot merge single position and multidimensionl positions");
+            throw new IllegalArgumentException("Cannot merge single position and multidimensional positions");
         } else if (other instanceof LinearPositions) {
+            // It can happen when a Polygon does not have holes and is represented by linear position see bug #19
+            return merge(new AreaPositions(ImmutableList.of((LinearPositions) other)));
 
-            throw new IllegalArgumentException("Cannot merge linear position and multidimensionl positions");
         } else if (other instanceof AreaPositions) {
 
             AreaPositions that = (AreaPositions) other;
             return new MultiDimensionalPositions(ImmutableList.<AreaPositions>builder().addAll(children).add(that).build());
         } else {
 
-            throw new RuntimeException("Cannot merge wtih: " + other);
+            throw new RuntimeException("Cannot merge with: " + other);
         }
     }
 
