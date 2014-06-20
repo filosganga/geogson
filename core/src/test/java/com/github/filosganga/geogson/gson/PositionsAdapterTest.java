@@ -42,112 +42,112 @@ import org.junit.Test;
  */
 public class PositionsAdapterTest {
 
-    private Gson toTest;
+  private Gson toTest;
 
-    @Before
-    public void initToTest() {
-        toTest = new GsonBuilder().registerTypeAdapter(Positions.class, new PositionsAdapter()).create();
-    }
+  @Before
+  public void initToTest() {
+    toTest = new GsonBuilder().registerTypeAdapter(Positions.class, new PositionsAdapter()).create();
+  }
 
-    @Test
-    public void readShouldReadSinglePosition() throws Exception {
+  @Test
+  public void readShouldReadSinglePosition() throws Exception {
 
-        Positions positions = toTest.fromJson(givenPositionJson(12.5, 45.8), Positions.class);
+    Positions positions = toTest.fromJson(givenPositionJson(12.5, 45.8), Positions.class);
 
-        assertThat(positions, is(singlePositionsWithLonLat(12.5, 45.8)));
-    }
+    assertThat(positions, is(singlePositionsWithLonLat(12.5, 45.8)));
+  }
 
-    @Test
-    public void readShouldReadLinearPositions() throws Exception {
+  @Test
+  public void readShouldReadLinearPositions() throws Exception {
 
-        Positions positions = toTest.fromJson(givenLinearPositionsJson(Coordinates.of(12.5, 45.8), Coordinates.of(13.5, 33.7)), Positions.class);
+    Positions positions = toTest.fromJson(givenLinearPositionsJson(Coordinates.of(12.5, 45.8), Coordinates.of(13.5, 33.7)), Positions.class);
 
-        assertThat(positions, instanceOf(LinearPositions.class));
-    }
+    assertThat(positions, instanceOf(LinearPositions.class));
+  }
 
-    @Test
-    public void readShouldReadAreaPositions() throws Exception {
+  @Test
+  public void readShouldReadAreaPositions() throws Exception {
 
-        Positions positions = toTest.fromJson(
-                givenAreaPositionsJson(
-                        asList(Coordinates.of(12.5, 45.8), Coordinates.of(13.5, 33.7)),
-                        asList(Coordinates.of(22.5, 45.8), Coordinates.of(23.5, 33.7)),
-                        asList(Coordinates.of(32.5, 45.8), Coordinates.of(33.5, 33.7))
-                ),
-                Positions.class
-        );
+    Positions positions = toTest.fromJson(
+            givenAreaPositionsJson(
+                    asList(Coordinates.of(12.5, 45.8), Coordinates.of(13.5, 33.7)),
+                    asList(Coordinates.of(22.5, 45.8), Coordinates.of(23.5, 33.7)),
+                    asList(Coordinates.of(32.5, 45.8), Coordinates.of(33.5, 33.7))
+            ),
+            Positions.class
+    );
 
-        assertThat(positions, instanceOf(AreaPositions.class));
-    }
+    assertThat(positions, instanceOf(AreaPositions.class));
+  }
 
-    @Test
-    public void readShouldReadMultiDimensionalPositions() throws Exception {
+  @Test
+  public void readShouldReadMultiDimensionalPositions() throws Exception {
 
-        Positions positions = toTest.fromJson(
-                givenMultiDimensionalPositionsJson(
-                        asList(
-                                asList(Coordinates.of(12.5, 45.8), Coordinates.of(13.5, 33.7)),
-                                asList(Coordinates.of(22.5, 45.8), Coordinates.of(23.5, 33.7)),
-                                asList(Coordinates.of(32.5, 45.8), Coordinates.of(33.5, 33.7))
-                        ),
-                        asList(
-                                asList(Coordinates.of(13.5, 45.8), Coordinates.of(13.5, 53.7)),
-                                asList(Coordinates.of(24.5, 45.8), Coordinates.of(23.5, 53.7)),
-                                asList(Coordinates.of(35.5, 45.8), Coordinates.of(33.5, 53.7))
-                        )
-                ),
-                Positions.class
-        );
+    Positions positions = toTest.fromJson(
+            givenMultiDimensionalPositionsJson(
+                    asList(
+                            asList(Coordinates.of(12.5, 45.8), Coordinates.of(13.5, 33.7)),
+                            asList(Coordinates.of(22.5, 45.8), Coordinates.of(23.5, 33.7)),
+                            asList(Coordinates.of(32.5, 45.8), Coordinates.of(33.5, 33.7))
+                    ),
+                    asList(
+                            asList(Coordinates.of(13.5, 45.8), Coordinates.of(13.5, 53.7)),
+                            asList(Coordinates.of(24.5, 45.8), Coordinates.of(23.5, 53.7)),
+                            asList(Coordinates.of(35.5, 45.8), Coordinates.of(33.5, 53.7))
+                    )
+            ),
+            Positions.class
+    );
 
-        assertThat(positions, instanceOf(MultiDimensionalPositions.class));
-    }
+    assertThat(positions, instanceOf(MultiDimensionalPositions.class));
+  }
 
-    @Test
-    public void readWithEmptyJsonShouldReturnNull() throws Exception {
+  @Test
+  public void readWithEmptyJsonShouldReturnNull() throws Exception {
 
-        assertThat(toTest.fromJson("", Coordinates.class), is(nullValue()));
-    }
+    assertThat(toTest.fromJson("", Coordinates.class), is(nullValue()));
+  }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void readWithInvalidJsonShouldRaiseException() throws Exception {
+  @Test(expected = IllegalArgumentException.class)
+  public void readWithInvalidJsonShouldRaiseException() throws Exception {
 
-        toTest.fromJson("123", Positions.class);
-    }
+    toTest.fromJson("123", Positions.class);
+  }
 
-    protected String givenMultiDimensionalPositionsJson(Iterable<? extends Iterable<Coordinates>>... areas) {
+  protected String givenMultiDimensionalPositionsJson(Iterable<? extends Iterable<Coordinates>>... areas) {
 
-        return "[" + Joiner.on(',').join(FluentIterable.from(asList(areas)).transform(new Function<Iterable<? extends Iterable<Coordinates>>, String>() {
-            @Override
-            public String apply(Iterable<? extends Iterable<Coordinates>> input) {
-                return givenAreaPositionsJson(toArray(input, Iterable.class));
-            }
-        })) + "]";
-    }
+    return "[" + Joiner.on(',').join(FluentIterable.from(asList(areas)).transform(new Function<Iterable<? extends Iterable<Coordinates>>, String>() {
+      @Override
+      public String apply(Iterable<? extends Iterable<Coordinates>> input) {
+        return givenAreaPositionsJson(toArray(input, Iterable.class));
+      }
+    })) + "]";
+  }
 
-    protected String givenAreaPositionsJson(Iterable<Coordinates>... lines) {
+  protected String givenAreaPositionsJson(Iterable<Coordinates>... lines) {
 
-        return "[" + Joiner.on(',').join(FluentIterable.from(asList(lines)).transform(new Function<Iterable<Coordinates>, String>() {
-            @Override
-            public String apply(Iterable<Coordinates> input) {
-                return givenLinearPositionsJson(toArray(input, Coordinates.class));
-            }
-        })) + "]";
-    }
+    return "[" + Joiner.on(',').join(FluentIterable.from(asList(lines)).transform(new Function<Iterable<Coordinates>, String>() {
+      @Override
+      public String apply(Iterable<Coordinates> input) {
+        return givenLinearPositionsJson(toArray(input, Coordinates.class));
+      }
+    })) + "]";
+  }
 
-    protected String givenLinearPositionsJson(Coordinates... coordinateses) {
+  protected String givenLinearPositionsJson(Coordinates... coordinateses) {
 
-        return "[" + Joiner.on(',').join(FluentIterable.from(asList(coordinateses)).transform(new Function<Coordinates, String>() {
-            @Override
-            public String apply(Coordinates input) {
-                return givenPositionJson(input.getLon(), input.getLat());
-            }
-        })) + "]";
-    }
+    return "[" + Joiner.on(',').join(FluentIterable.from(asList(coordinateses)).transform(new Function<Coordinates, String>() {
+      @Override
+      public String apply(Coordinates input) {
+        return givenPositionJson(input.getLon(), input.getLat());
+      }
+    })) + "]";
+  }
 
-    protected String givenPositionJson(double lon, double lat) {
+  protected String givenPositionJson(double lon, double lat) {
 
-        return "[" + lon + "," + lat + "]";
-    }
+    return "[" + lon + "," + lat + "]";
+  }
 
 
 }

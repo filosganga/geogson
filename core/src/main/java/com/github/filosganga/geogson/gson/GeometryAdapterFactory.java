@@ -18,7 +18,6 @@ package com.github.filosganga.geogson.gson;
 
 import static com.google.common.collect.Iterables.transform;
 
-import java.awt.geom.Area;
 import java.io.IOException;
 
 import com.github.filosganga.geogson.model.Geometry;
@@ -118,6 +117,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 geometry = buildGeometry(type, positions, geometries);
 
                 in.endObject();
+
             } else {
                 throw new IllegalArgumentException("The given json is not a valid Geometry: " + in.peek());
             }

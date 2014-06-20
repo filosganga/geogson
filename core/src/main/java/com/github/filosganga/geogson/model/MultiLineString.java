@@ -4,7 +4,6 @@ import static com.google.common.collect.Iterables.transform;
 
 import com.github.filosganga.geogson.model.positions.AreaPositions;
 import com.github.filosganga.geogson.model.positions.LinearPositions;
-import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
