@@ -17,7 +17,7 @@ else
     IS_MASTER=false
 fi
 
-if [ IS_MASTER -a IS_NOT_PULL_REQUEST ]; then
+if [ $IS_MASTER == true ] && [ $IS_NOT_PULL_REQUEST == true ]; then
 
     BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
 
