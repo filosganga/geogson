@@ -1871,6 +1871,15 @@ public class JtsAdapterFactoryTest {
 
     }
 
+    @Test
+    public void shouldHandleNullGeometry() {
+    	assertThat(toTest.toJson(null), equalTo("null"));
+    	
+    	// empty geometry without any coordinates
+    	Geometry emptyGeometry = gf.createPolygon(null, null);
+    	
+    	assertThat(toTest.toJson(emptyGeometry), equalTo("null"));
+    }
 
 
 }
