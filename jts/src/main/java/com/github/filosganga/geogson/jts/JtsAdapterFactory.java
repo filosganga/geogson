@@ -48,6 +48,11 @@ class JtsGeometryAdapter extends TypeAdapter<com.vividsolutions.jts.geom.Geometr
 
     @Override
     public void write(JsonWriter out, com.vividsolutions.jts.geom.Geometry value) throws IOException {
+        if (value == null || value.getCoordinates().length == 0) {
+    		out.nullValue();
+    		return;
+    	}
+    	
         Geometry<?> to = codecRegistry.toGeometry(value);
 
         gson.getAdapter(new TypeToken<Geometry<?>>(){}).write(out, to);
