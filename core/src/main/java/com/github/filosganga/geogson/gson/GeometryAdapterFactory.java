@@ -21,6 +21,7 @@ import static com.google.common.collect.Iterables.transform;
 import java.io.IOException;
 
 import com.github.filosganga.geogson.model.Geometry;
+import com.github.filosganga.geogson.model.GeometryCollection;
 import com.github.filosganga.geogson.model.LineString;
 import com.github.filosganga.geogson.model.LinearRing;
 import com.github.filosganga.geogson.model.MultiPoint;
@@ -80,6 +81,9 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 if (value.type() != Geometry.Type.GEOMETRY_COLLECTION) {
                     out.name("coordinates");
                     gson.getAdapter(Positions.class).write(out, value.positions());
+                } else if (value.type() == Geometry.Type.GEOMETRY_COLLECTION) {
+                	out.name("geometries");
+                	gson.getAdapter(Positions.class).write(out, value.positions());
                 } else {
                     // TODO
                 }
@@ -109,6 +113,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                         positions = readPosition(in);
                     } else if ("geometries".equals(name)) {
                         // TODO
+                    	geometries = readGeometries(in);
                     } else {
                         // Ignore
                     }
@@ -127,6 +132,13 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
         private Positions readPosition(JsonReader in) throws IOException {
             return gson.getAdapter(Positions.class).read(in);
+        }
+        
+        private Iterable<Geometry> readGeometries(JsonReader in) throws IOException {
+        	Iterable<Geometry> geometries = null;
+        	GeometryCollection geometryCollection = gson.getAdapter(GeometryCollection.class).read(in);
+        	
+        	return geometries;
         }
 
         private Geometry buildGeometry(final String type, Positions positions, Iterable<Geometry> geometries) {
@@ -283,7 +295,12 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 @Override
                 public Optional<Geometry> get() {
 
-                    // TODO Not supported at this time
+                	Optional<Geometry> mayGeometry = Optional.absent();
+                    if (Geometry.Type.GEOMETRY_COLLECTION.getValue().equalsIgnoreCase(type)) {
+                    	System.out.println("is geometry collection");
+                    	
+                    	
+                    }
 
                     return Optional.absent();
                 }

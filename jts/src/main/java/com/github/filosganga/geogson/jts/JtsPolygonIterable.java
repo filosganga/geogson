@@ -1,6 +1,7 @@
 package com.github.filosganga.geogson.jts;
 
 import com.google.common.collect.UnmodifiableIterator;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -13,6 +14,20 @@ class JtsPolygonIterable implements Iterable<Polygon> {
 
     private JtsPolygonIterable(PolygonProvider src) {
         this.src = src;
+    }
+    
+    public static JtsPolygonIterable of(final GeometryCollection src) {
+        return new JtsPolygonIterable(new PolygonProvider() {
+            @Override
+            public int getNumPolygons() {
+                return src.getNumGeometries();
+            }
+
+            @Override
+            public Polygon getPolygonN(int n) {
+                return (Polygon) src.getGeometryN(n);
+            }
+        });
     }
 
     public static JtsPolygonIterable of(final MultiPolygon src) {
