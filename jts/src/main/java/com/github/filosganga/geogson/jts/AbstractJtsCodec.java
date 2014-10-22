@@ -2,9 +2,13 @@ package com.github.filosganga.geogson.jts;
 
 import static com.google.common.collect.Iterables.transform;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.filosganga.geogson.codec.Codec;
 import com.github.filosganga.geogson.model.Coordinates;
 import com.github.filosganga.geogson.model.Geometry;
+import com.github.filosganga.geogson.model.GeometryCollection;
 import com.github.filosganga.geogson.model.LineString;
 import com.github.filosganga.geogson.model.LinearRing;
 import com.github.filosganga.geogson.model.Point;
@@ -51,6 +55,15 @@ public abstract class AbstractJtsCodec<S extends Object, T extends Geometry<?>> 
             }
         };
     }
+    
+    public Function<com.vividsolutions.jts.geom.Geometry, Geometry<?>> fromJtsGeometryCollectionFn() {
+        return new Function<com.vividsolutions.jts.geom.Geometry, Geometry<?>>() {
+            @Override
+            public Geometry<?> apply(com.vividsolutions.jts.geom.Geometry input) {
+                return fromJtsGeometryCollection(input);
+            }
+        };
+    }
 
     protected Polygon fromJtsPolygon(com.vividsolutions.jts.geom.Polygon src) {
 
@@ -59,6 +72,30 @@ public abstract class AbstractJtsCodec<S extends Object, T extends Geometry<?>> 
                         .transform(fromJtsLineStringFn())
                 .transform(LinearRing.toLinearRingFn())
         );
+    }
+    
+    protected Geometry<?> fromJtsGeometryCollection(com.vividsolutions.jts.geom.Geometry src) {
+    	List<Geometry<?>> geometries = new ArrayList<Geometry<?>>();
+    	
+		if (src.getGeometryType().equals("Polygon")) {
+			geometries.add(fromJtsPolygon((com.vividsolutions.jts.geom.Polygon)src));
+		}
+    	
+    	for (int i = 0; i < src.getNumGeometries(); i++) {
+    		Geometry<?> g = null;
+    		
+    		com.vividsolutions.jts.geom.Geometry jtsG = src.getGeometryN(i);
+    		System.out.println(this.getClass().getSimpleName() + "--> fromJtsGeometryCollection: " + src.toText());
+    		if (jtsG.getGeometryType().equals("Polygon")) {
+    			g = fromJtsPolygon((com.vividsolutions.jts.geom.Polygon)jtsG);
+    		} else if (jtsG.getGeometryType().equals("LineString")) {
+    			g = fromJtsLineString((com.vividsolutions.jts.geom.LineString) jtsG);
+    		}
+    		geometries.add(g);
+    	}
+    	
+        return GeometryCollection.of(geometries);
+       
     }
 
     // LinearRing ---

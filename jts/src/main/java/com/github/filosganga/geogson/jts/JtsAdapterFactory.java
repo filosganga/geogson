@@ -10,6 +10,7 @@ import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.vividsolutions.jts.geom.GeometryCollection;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
@@ -44,10 +45,16 @@ class JtsGeometryAdapter extends TypeAdapter<com.vividsolutions.jts.geom.Geometr
         codecRegistry.addCodec(new MultiLineStringCodec());
         codecRegistry.addCodec(new PolygonCodec());
         codecRegistry.addCodec(new MultiPolygonCodec());
+        codecRegistry.addCodec(new GeometryCollectionCodec());
     }
 
     @Override
     public void write(JsonWriter out, com.vividsolutions.jts.geom.Geometry value) throws IOException {
+       if (value == null || value.getCoordinates().length == 0) {
+    		out.nullValue();
+    		return;
+    	}
+    
         Geometry<?> to = codecRegistry.toGeometry(value);
 
         gson.getAdapter(new TypeToken<Geometry<?>>(){}).write(out, to);
