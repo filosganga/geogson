@@ -1871,6 +1871,45 @@ public class JtsAdapterFactoryTest {
 
     }
 
+    @Test
+    public void shouldHandlePointEmpty() {
 
+        Point source = gf.createPoint((Coordinate) null);
 
+        Point parsed = toTest.fromJson(toTest.toJson(source), Point.class);
+
+        assertThat(true, is(source.isEmpty()));
+        assertThat(parsed, equalTo(null));
+    }
+
+    @Test
+    public void shouldHandleMultiPolgonEmpty() {
+
+        MultiPolygon source = gf.createMultiPolygon(null);
+
+        MultiPolygon parsed = toTest.fromJson(toTest.toJson(source), MultiPolygon.class);
+
+        assertThat(true, is(source.isEmpty()));
+        assertThat(parsed, equalTo(null));
+    }
+
+    @Test
+    public void shouldHandlePointNull() {
+
+        Point source = null;
+
+        Point parsed = toTest.fromJson(toTest.toJson(source), Point.class);
+
+        assertThat(parsed, equalTo(source));
+    }
+
+    @Test
+    public void shouldHandleMultiPolgonNull() {
+
+        MultiPolygon source = null;
+
+        MultiPolygon parsed = toTest.fromJson(toTest.toJson(source), MultiPolygon.class);
+
+        assertThat(parsed, equalTo(source));
+    }
 }

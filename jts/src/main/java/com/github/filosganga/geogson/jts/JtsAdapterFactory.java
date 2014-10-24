@@ -62,6 +62,9 @@ class JtsGeometryAdapter extends TypeAdapter<com.vividsolutions.jts.geom.Geometr
 
         Geometry<?> geometry = gson.getAdapter(new TypeToken<Geometry<?>>(){}).read(in);
 
+        if (geometry == null) {
+          return null;
+        }
         return codecRegistry.fromGeometry(geometry);
     }
 }
