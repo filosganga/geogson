@@ -20,6 +20,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.github.filosganga.geogson.gson.GeometryAdapterFactory;
 import com.google.gson.Gson;
@@ -33,24 +37,39 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-import org.junit.Before;
-import org.junit.Test;
-
+import com.vividsolutions.jts.geom.PrecisionModel;
 /**
  * @author Filippo De Luca - fdeluca@expedia.com
  */
 public class JtsAdapterFactoryTest {
 
-    private static final GeometryFactory gf = new GeometryFactory();
+    private static final GeometryFactory gf = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326);
 
     private Gson toTest;
 
     @Before
     public void initToTest() {
+        // use the defined static GeometryFactory (so the conversion will work)
         toTest = new GsonBuilder()
                 .registerTypeAdapterFactory(new GeometryAdapterFactory())
-                .registerTypeAdapterFactory(new JtsAdapterFactory())
+                .registerTypeAdapterFactory(new JtsAdapterFactory(gf))
                 .create();
+    }
+
+    /**
+     * helper method for assertion: the {@link Geometry geometry itself} as well
+     * as the {@link PrecisionModel} and SRID must be equal!
+     * @param parsed
+     *          the parsed data using Gson
+     * @param source
+     *          original data ({@link JTS Geometry})
+     */
+    private void assertGeometryEquals(Geometry parsed, Geometry source) {
+        assertThat(parsed, equalTo(source));
+        if (parsed != null && source != null) {
+            assertThat(parsed.getPrecisionModel(), equalTo(source.getPrecisionModel()));
+            assertThat(parsed.getSRID(), equalTo(source.getSRID()));
+        }
     }
 
     @Test
@@ -60,7 +79,7 @@ public class JtsAdapterFactoryTest {
 
         Point parsed = toTest.fromJson(toTest.toJson(source), Point.class);
 
-        assertThat(parsed, equalTo(source));
+        assertGeometryEquals(parsed, source);
     }
 
     @Test
@@ -70,7 +89,7 @@ public class JtsAdapterFactoryTest {
 
         MultiPoint parsed = toTest.fromJson(toTest.toJson(source), MultiPoint.class);
 
-        assertThat(parsed, equalTo(source));
+        assertGeometryEquals(parsed, source);
     }
 
     @Test
@@ -80,7 +99,7 @@ public class JtsAdapterFactoryTest {
 
         LineString parsed = toTest.fromJson(toTest.toJson(source), LineString.class);
 
-        assertThat(parsed, equalTo(source));
+        assertGeometryEquals(parsed, source);
     }
 
     @Test
@@ -90,7 +109,7 @@ public class JtsAdapterFactoryTest {
 
         LinearRing parsed = toTest.fromJson(toTest.toJson(source), LinearRing.class);
 
-        assertThat(parsed, equalTo(source));
+        assertGeometryEquals(parsed, source);
     }
 
 
@@ -106,7 +125,7 @@ public class JtsAdapterFactoryTest {
 
         Polygon parsed = toTest.fromJson(toTest.toJson(source), Polygon.class);
 
-        assertThat(parsed, equalTo(source));
+        assertGeometryEquals(parsed, source);
     }
 
 
@@ -130,7 +149,7 @@ public class JtsAdapterFactoryTest {
 
         MultiPolygon parsed = toTest.fromJson(toTest.toJson(source), MultiPolygon.class);
 
-        assertThat(parsed, equalTo(source));
+        assertGeometryEquals(parsed, source);
     }
 
     @Test
@@ -1873,4 +1892,18 @@ public class JtsAdapterFactoryTest {
 
 
 
+
+    @Test
+    public void shouldHandlePointWithDefaultConstructor() {
+
+        Point source = new GeometryFactory().createPoint(new Coordinate(10, 20));
+
+        Gson toTest = new GsonBuilder()
+            .registerTypeAdapterFactory(new GeometryAdapterFactory())
+            .registerTypeAdapterFactory(new JtsAdapterFactory()).create();
+
+        Point parsed = toTest.fromJson(toTest.toJson(source), Point.class);
+
+        assertGeometryEquals(parsed, source);
+    }
 }

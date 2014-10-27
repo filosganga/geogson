@@ -71,5 +71,14 @@ The Gson building code:
 Please note that you need the ``GeometryAdapterFactory`` anyway. The JTS
 support is a thin layer on top of the native geometry domain.
 
+You can optionally configure ``GeometryFactory`` as well. In this example all 
+GeoJSON geometries are parsed as JTS geometries in WGS84 in centimeter precision:
+
+    Gson gson = new GsonBuilder()
+       .registerTypeAdapterFactory(new JtsAdapterFactory(
+           new GeometryFactory(new PrecisionModel(100), 4326)))
+       .registerTypeAdapterFactory(new GeometryAdapterFactory())
+       .create();
+
 ## Enjoy beer with your friends, and buy me one!
 

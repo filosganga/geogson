@@ -20,7 +20,30 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  */
 public abstract class AbstractJtsCodec<S extends Object, T extends Geometry<?>> implements Codec<S, T> {
 
-    protected final GeometryFactory geometryFactory = new GeometryFactory();
+    /**
+     * {@link GeometryFactory} defining a PrecisionModel and a SRID
+     */
+    protected final GeometryFactory geometryFactory;
+
+    /**
+     * Get the {@link GeometryFactory} of this {@link AbstractJtsCodec} (gotten
+     * via constructor)
+     *
+     * @return the {@link GeometryFactory} defining a PrecisionModel and a SRID
+     */
+    public GeometryFactory getGeometryFactory() {
+        return this.geometryFactory;
+    }
+
+    /**
+     * Create a codec with a given {@link GeometryFactory}
+     *
+     * @param geometryFactory
+     *          a {@link GeometryFactory} defining a PrecisionModel and a SRID
+     */
+    public AbstractJtsCodec(GeometryFactory geometryFactory) {
+        this.geometryFactory = geometryFactory;
+    }
 
     // Polygon ---
 
@@ -35,7 +58,7 @@ public abstract class AbstractJtsCodec<S extends Object, T extends Geometry<?>> 
 
     protected com.vividsolutions.jts.geom.Polygon toJtsPolygon(Polygon src) {
 
-        return geometryFactory.createPolygon(
+        return this.geometryFactory.createPolygon(
                 toJtsLinearRing(src.perimeter()),
                 FluentIterable.from(src.holes())
                         .transform(toJtsLinearRingFn())
@@ -74,7 +97,7 @@ public abstract class AbstractJtsCodec<S extends Object, T extends Geometry<?>> 
 
     protected com.vividsolutions.jts.geom.LinearRing toJtsLinearRing(LinearRing src) {
 
-        return  geometryFactory.createLinearRing(
+        return this.geometryFactory.createLinearRing(
                 FluentIterable.from(src.positions().children())
                         .transform(SinglePosition.coordinatesFn())
                         .transform(toJtsCoordinateFn())
@@ -109,7 +132,7 @@ public abstract class AbstractJtsCodec<S extends Object, T extends Geometry<?>> 
 
     protected com.vividsolutions.jts.geom.LineString toJtsLineString(LineString src) {
 
-        return  geometryFactory.createLineString(
+        return this.geometryFactory.createLineString(
                 FluentIterable.from(src.positions().children())
                         .transform(SinglePosition.coordinatesFn())
                         .transform(toJtsCoordinateFn())
