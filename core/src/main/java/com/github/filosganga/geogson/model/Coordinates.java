@@ -16,6 +16,9 @@
 
 package com.github.filosganga.geogson.model;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.Math.abs;
+
 import java.io.Serializable;
 
 import com.google.common.base.Objects;
@@ -25,30 +28,13 @@ import com.google.common.base.Objects;
  */
 public class Coordinates implements Serializable {
 
-    /**
-     * The x-axis coordinate in map units (degree, kilometer, meter, mile, foot
-     * and inch). If your map is in a geographic projection, this will be the
-     * Longitude. Otherwise, it will be the x coordinate of the map location in
-     * your map units.
-     */
     private final double lon;
-    /**
-     * The y-axis coordinate in map units (degree, kilometer, meter, mile, foot
-     * and inch). If your map is in a geographic projection, this will be the
-     * Latitude. Otherwise, it will be the y coordinate of the map location in
-     * your map units.
-     */
     private final double lat;
 
-    /**
-     * Create a new coordinate (a location on a map).
-     *
-     * @param lon
-     *          longitude, x-axis coordinate, see {@link Coordinates#lon lon}
-     * @param lat
-     *          latitude, y-axis coordinate, see {@link Coordinates#lat lat}
-     */
     private Coordinates(double lon, double lat) {
+
+        checkArgument(abs(lon) <= 180, "lon is out of range -180:180: " + lon);
+        checkArgument(abs(lat) <= 90, "lat is out of range -90:90: " + lat);
 
         this.lon = lon;
         this.lat = lat;
