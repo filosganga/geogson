@@ -12,6 +12,9 @@ If you are not familiar with the GeoJSON format, please take a look at the [The 
 The Travis-CI build status is:
 [![The Build Status](https://travis-ci.org/filosganga/geogson.png?branch=master)](https://travis-ci.org/filosganga/geogson)
 
+Download the last version from bintray:
+[![Download](https://api.bintray.com/packages/filosganga/maven/geogson/images/download.svg)](https://bintray.com/filosganga/maven/geogson/_latestVersion)
+
 ## Quick Start
 How to use the GeoGson in few easy steps.
 
