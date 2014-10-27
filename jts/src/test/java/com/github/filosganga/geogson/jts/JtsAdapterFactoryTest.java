@@ -1890,8 +1890,65 @@ public class JtsAdapterFactoryTest {
 
     }
 
+    @Test
+    public void shouldHandlePointEmpty() {
 
+        Point source = gf.createPoint((Coordinate) null);
 
+        Point parsed = toTest.fromJson(toTest.toJson(source), Point.class);
+
+        assertThat(true, is(source.isEmpty()));
+        assertGeometryEquals(parsed, null);
+    }
+
+    @Test
+    public void shouldHandleMultiPolgonEmpty() {
+
+        MultiPolygon source = gf.createMultiPolygon(null);
+
+        MultiPolygon parsed = toTest.fromJson(toTest.toJson(source), MultiPolygon.class);
+
+        assertThat(true, is(source.isEmpty()));
+        assertGeometryEquals(parsed, null);
+    }
+
+    @Test
+    public void shouldHandlePointNull() {
+
+        Point source = null;
+
+        Point parsed = toTest.fromJson(toTest.toJson(source), Point.class);
+
+        assertGeometryEquals(parsed, source);
+    }
+
+    @Test
+    public void shouldHandleMultiPolgonNull() {
+
+        MultiPolygon source = null;
+
+        MultiPolygon parsed = toTest.fromJson(toTest.toJson(source), MultiPolygon.class);
+
+        assertGeometryEquals(parsed, source);
+    }
+
+    @Test
+    public void shouldHandlePoint32633() {
+
+        // Center of Vienna, Austria in UTM 33, precision in centimeter
+        Point source = new GeometryFactory(new PrecisionModel(100), 32633).createPoint(new Coordinate(602010, 5340367));
+
+        Point parsed = toTest.fromJson(toTest.toJson(source), Point.class);
+
+        // this works with any GeometryFactory
+        assertThat(parsed, equalTo(source));
+        // should match the defined static GeometryFactory
+        assertThat(parsed.getPrecisionModel(), equalTo(new PrecisionModel(PrecisionModel.FLOATING)));
+        assertThat(parsed.getSRID(), equalTo(4326));
+        // should not match with given source (as GeometryFactory of source and toTest differ!)
+        assertThat(parsed.getPrecisionModel(), is(not(equalTo(source.getPrecisionModel()))));
+        assertThat(parsed.getSRID(), is(not(equalTo(source.getSRID()))));
+    }
 
     @Test
     public void shouldHandlePointWithDefaultConstructor() {
