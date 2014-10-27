@@ -20,37 +20,14 @@ import static com.github.filosganga.geogson.model.Matchers.positionWithLonLat;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * @author Filippo De Luca - me@filippodeluca.com
  */
 public class CoordinatesTest {
-
-    @Test(expected = IllegalArgumentException.class)
-    public void constructorWithTooBigLonShouldRaiseException() {
-
-        Coordinates.of(181, 60);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void constructorWithTooSmallLonShouldRaiseException() {
-
-        Coordinates.of(-181, 60);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void constructorWithTooBigLatShouldRaiseException() {
-
-        Coordinates.of(0, 91);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void constructorWithTooSmallLatShouldRaiseException() {
-
-        Coordinates.of(0, -91);
-    }
 
     @Test
     public void constructorWithBigLimitLonLatShouldReturnCoordinate() {
