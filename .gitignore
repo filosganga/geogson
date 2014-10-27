@@ -1,6 +1,10 @@
 target
 
 .idea
+.idea_modules
 *.iml
+
+.classpath
+.project
 
 .DS_Store
