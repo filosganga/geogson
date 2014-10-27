@@ -19,9 +19,9 @@ How to use the GeoGson in few easy steps.
 Add the following statement to your pom.xml.
 
     <dependency>
-       <groupId>org.filippodeluca.geogson</groupId>
+       <groupId>com.github.filosganga</groupId>
        <artifactId>geogson-core</artifactId>
-       <version>1.0</version>
+       <version>1.1.57</version>
     </dependency
 
 ### Register the TypeAdapterFactory with Gson
@@ -56,9 +56,9 @@ register the ``JtsAdapterFactory`` as well.
 In ``pom.xml``:
 
     <dependency>
-       <groupId>org.filippodeluca.geogson</groupId>
+       <groupId>com.github.filosganga</groupId>
        <artifactId>geogson-jts</artifactId>
-       <version>1.0</version>
+       <version>1.1.57</version>
     </dependency
 
 The Gson building code:
