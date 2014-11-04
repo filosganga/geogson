@@ -19,10 +19,14 @@ package com.github.filosganga.geogson.gson;
 import java.io.IOException;
 
 import com.github.filosganga.geogson.model.Coordinates;
+import com.github.filosganga.geogson.model.positions.AreaPositions;
+import com.github.filosganga.geogson.model.positions.LinearPositions;
+import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -63,7 +67,7 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             in.nextNull();
             parsed = null;
         } else if (peek == JsonToken.BEGIN_ARRAY) {
-            parsed = parsePositions(in);
+            parsed = parsePositions(in, 0);
         } else {
             throw new IllegalArgumentException("The json must be an array or null: " + in.peek());
         }
@@ -71,8 +75,10 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
         return parsed;
     }
 
-    private Positions parsePositions(JsonReader in) throws IOException {
+    private Positions parsePositions(JsonReader in, int recursion) throws IOException {
 
+        recursion++;
+        // System.out.println("recursion: " + recursion); //$NON-NLS-1$
         Optional<Positions> parsed = Optional.absent();
 
         if (in.peek() != JsonToken.BEGIN_ARRAY) {
@@ -84,11 +90,29 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             parsed = Optional.of(parseSinglePosition(in));
         } else if (in.peek() == JsonToken.BEGIN_ARRAY) {
             while (in.hasNext()) {
-                Positions thisPositions = parsePositions(in);
-                parsed = parsed.transform(mergeFn(thisPositions)).or(Optional.of(thisPositions));
+                Positions thisPositions = parsePositions(in, recursion);
+                // if (parsed.equals(Optional.absent())) {
+                //     System.out.println("Hey, we are starting with an empty array"); //$NON-NLS-1$
+                //}
+                // fix bug #30: according to the recursion (i.e. the array structure;
+                // recognize that we came from a recursion because no parsed has no
+                // value yet): convert the already parsed Positions to the
+                // LinearPositions/AreaPositions matching the recursion level
+                if (parsed.equals(Optional.absent()) && thisPositions instanceof LinearPositions) {
+                    AreaPositions areaPositions = new AreaPositions(ImmutableList.of((LinearPositions) thisPositions));
+                    parsed = Optional.of((Positions) areaPositions);
+                } else if (parsed.equals(Optional.absent()) && thisPositions instanceof AreaPositions) {
+                    MultiDimensionalPositions multiPositions = new MultiDimensionalPositions(ImmutableList.of((AreaPositions) thisPositions));
+                    parsed = Optional.of((Positions) multiPositions);
+                } else {
+                  // mergeFn() does all the rest, if parsed has a value
+                  parsed = parsed.transform(mergeFn(thisPositions)).or(Optional.of(thisPositions));
+                }
+
             }
         }
 
+        // System.out.println("end recursion: " + recursion); //$NON-NLS-1$
         in.endArray();
 
         return parsed.orNull();

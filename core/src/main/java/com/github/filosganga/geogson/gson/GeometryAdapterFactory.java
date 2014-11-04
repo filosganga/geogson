@@ -16,8 +16,6 @@
 
 package com.github.filosganga.geogson.gson;
 
-import static com.google.common.collect.Iterables.transform;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -25,6 +23,7 @@ import com.github.filosganga.geogson.model.Geometry;
 import com.github.filosganga.geogson.model.GeometryCollection;
 import com.github.filosganga.geogson.model.LineString;
 import com.github.filosganga.geogson.model.LinearRing;
+import com.github.filosganga.geogson.model.MultiLineString;
 import com.github.filosganga.geogson.model.MultiPoint;
 import com.github.filosganga.geogson.model.MultiPolygon;
 import com.github.filosganga.geogson.model.Point;
@@ -35,10 +34,8 @@ import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.github.filosganga.geogson.util.ChainableOptional;
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
@@ -187,6 +184,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                     .or(buildMultiPolygon(type, positions))
                     .or(buildPolygon(type, positions))
                     .or(buildLinearRing(type, positions))
+                    .or(buildMultiLineString(type, positions))
                     .or(buildLineString(type, positions))
                     .or(buildMultiPoint(type, positions))
                     .or(buildPoint(type, positions))
@@ -233,7 +231,23 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
         }
 
-        private Supplier<Optional<? extends Geometry<?>>> buildLineString(final String type, final Positions coordinates) {
+        private Supplier<Optional<? extends Geometry>> buildMultiLineString(final String type, final Positions coordinates) {
+
+            return new Supplier<Optional<? extends Geometry>>() {
+                @Override
+                public Optional<Geometry> get() {
+                    Optional<Geometry> mayGeometry = Optional.absent();
+
+                    if (type.equalsIgnoreCase(Geometry.Type.MULTI_LINE_STRING.getValue())) {
+                        mayGeometry = Optional.<Geometry>of(new MultiLineString((AreaPositions) coordinates));
+                    }
+
+                    return mayGeometry;
+                }
+            };
+        }
+
+        private Supplier<Optional<? extends Geometry>> buildLineString(final String type, final Positions coordinates) {
 
             return new Supplier<Optional<? extends Geometry<?>>>() {
                 @Override
@@ -278,16 +292,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                     Optional<Geometry<?>> mayGeometry = Optional.absent();
 
                     if (Geometry.Type.POLYGON.getValue().equalsIgnoreCase(type)) {
-
-                        AreaPositions positions;
-                        if (coordinates instanceof LinearPositions) {
-                            LinearPositions lp = (LinearPositions) coordinates;
-                            positions = new AreaPositions(ImmutableList.of(lp));
-                        } else {
-                            positions = (AreaPositions) coordinates;
-                        }
-
-                        mayGeometry = Optional.<Geometry<?>>of(new Polygon(positions));
+                        mayGeometry = Optional.<Geometry>of(new Polygon((AreaPositions) coordinates));
                     }
 
                     return mayGeometry;
@@ -304,22 +309,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 public Optional<Geometry<?>> get() {
                     Optional<Geometry<?>> mayGeometry = Optional.absent();
                     if (Geometry.Type.MULTI_POLYGON.getValue().equalsIgnoreCase(type)) {
-
-                        MultiDimensionalPositions positions;
-                        if (coordinates instanceof AreaPositions) {
-                            AreaPositions ap = (AreaPositions) coordinates;
-
-                            positions = new MultiDimensionalPositions(transform(ap.children(), new Function<LinearPositions, AreaPositions>() {
-                                @Override
-                                public AreaPositions apply(LinearPositions input) {
-                                    return new AreaPositions(ImmutableList.of(input));
-                                }
-                            }));
-                        } else {
-                            positions = (MultiDimensionalPositions) coordinates;
-                        }
-
-                        mayGeometry = Optional.<Geometry<?>>of(new MultiPolygon(positions));
+                        mayGeometry = Optional.<Geometry>of(new MultiPolygon((MultiDimensionalPositions) coordinates));
                     }
 
                     return mayGeometry;
