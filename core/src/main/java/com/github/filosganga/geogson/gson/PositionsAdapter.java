@@ -67,7 +67,7 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             in.nextNull();
             parsed = null;
         } else if (peek == JsonToken.BEGIN_ARRAY) {
-            parsed = parsePositions(in, 0);
+            parsed = parsePositions(in);
         } else {
             throw new IllegalArgumentException("The json must be an array or null: " + in.peek());
         }
@@ -75,10 +75,8 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
         return parsed;
     }
 
-    private Positions parsePositions(JsonReader in, int recursion) throws IOException {
+    private Positions parsePositions(JsonReader in) throws IOException {
 
-        recursion++;
-        // System.out.println("recursion: " + recursion); //$NON-NLS-1$
         Optional<Positions> parsed = Optional.absent();
 
         if (in.peek() != JsonToken.BEGIN_ARRAY) {
@@ -90,10 +88,7 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             parsed = Optional.of(parseSinglePosition(in));
         } else if (in.peek() == JsonToken.BEGIN_ARRAY) {
             while (in.hasNext()) {
-                Positions thisPositions = parsePositions(in, recursion);
-                // if (parsed.equals(Optional.absent())) {
-                //     System.out.println("Hey, we are starting with an empty array"); //$NON-NLS-1$
-                //}
+                Positions thisPositions = parsePositions(in);
                 // fix bug #30: according to the recursion (i.e. the array structure;
                 // recognize that we came from a recursion because no parsed has no
                 // value yet): convert the already parsed Positions to the
@@ -112,7 +107,6 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             }
         }
 
-        // System.out.println("end recursion: " + recursion); //$NON-NLS-1$
         in.endArray();
 
         return parsed.orNull();
