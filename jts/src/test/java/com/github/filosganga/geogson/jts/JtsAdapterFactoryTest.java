@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
@@ -38,6 +39,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 /**
  * @author Filippo De Luca - fdeluca@expedia.com
  */
@@ -122,7 +124,6 @@ public class JtsAdapterFactoryTest {
                     gf.createLinearRing(new Coordinate[]{new Coordinate(46.7, 73.6), new Coordinate(33.9, 5.8), new Coordinate(33.9, 9), new Coordinate(46.7, 73.6)})
                 }
         );
-
         Polygon parsed = toTest.fromJson(toTest.toJson(source), Polygon.class);
 
         assertGeometryEquals(parsed, source);
@@ -1962,5 +1963,52 @@ public class JtsAdapterFactoryTest {
         Point parsed = toTest.fromJson(toTest.toJson(source), Point.class);
 
         assertGeometryEquals(parsed, source);
+    }
+
+    @Test
+    public void shouldHandleGeometryCollection() {
+
+      // somewhere in the east of Austria in MGI / Austria GK M34, precision in millimeter
+      GeometryFactory gf = new GeometryFactory(new PrecisionModel(1000), 31259);
+      GeometryCollection source = gf.createGeometryCollection(new Geometry[] {
+          gf.createPoint(new Coordinate(763220, 300880)),
+          gf.createMultiPoint(new Coordinate[] {
+              new Coordinate(763225.1234, 300885.9876),
+              new Coordinate(763230.2345, 300890.0123) }),
+          gf.createLineString(new Coordinate[] { new Coordinate(763390, 300390),
+              new Coordinate(763310, 300310) }),
+          gf.createPolygon(new LinearRing(
+              new CoordinateArraySequence(new Coordinate[] {
+                  new Coordinate(763000, 300000), new Coordinate(763050, 300000),
+                  new Coordinate(763050, 300050), new Coordinate(763000, 300050),
+                  new Coordinate(763000, 300000) }), gf),
+              new LinearRing[] { new LinearRing(new CoordinateArraySequence(
+                  new Coordinate[] { new Coordinate(763010, 300010),
+                      new Coordinate(763020, 300010),
+                      new Coordinate(763020, 300020),
+                      new Coordinate(763010, 300020),
+                      new Coordinate(763010, 300010) }), gf) }),
+          gf.createGeometryCollection(new Polygon[] { new Polygon(new LinearRing(
+              new CoordinateArraySequence(new Coordinate[] {
+                  new Coordinate(763700, 300000), new Coordinate(763750, 300000),
+                  new Coordinate(763750, 300050), new Coordinate(763700, 300050),
+                  new Coordinate(763700, 300000) }), gf),
+              new LinearRing[] { new LinearRing(new CoordinateArraySequence(
+                  new Coordinate[] { new Coordinate(763710, 300010),
+                      new Coordinate(763720, 300010),
+                      new Coordinate(763720, 300020),
+                      new Coordinate(763710, 300020),
+                      new Coordinate(763710, 300010) }), gf) }, gf) }) });
+
+        GeometryCollection parsed = this.toTest.fromJson(this.toTest.toJson(source), GeometryCollection.class);
+
+        // this works with any GeometryFactory
+        assertThat(parsed, equalTo(source));
+        // should match the defined static GeometryFactory
+        assertThat(parsed.getPrecisionModel(), equalTo(new PrecisionModel(PrecisionModel.FLOATING)));
+        assertThat(parsed.getSRID(), equalTo(4326));
+        // should not match with given source (as GeometryFactory of source and toTest differ!)
+        assertThat(parsed.getPrecisionModel(), is(not(equalTo(source.getPrecisionModel()))));
+        assertThat(parsed.getSRID(), is(not(equalTo(source.getSRID()))));
     }
 }
