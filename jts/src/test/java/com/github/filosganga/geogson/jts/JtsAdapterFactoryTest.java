@@ -2065,6 +2065,20 @@ public class JtsAdapterFactoryTest {
               new Coordinate(763230.2345, 300890.0123) }),
           gf.createLineString(new Coordinate[] { new Coordinate(763390, 300390),
               new Coordinate(763310, 300310) }),
+          new MultiLineString(
+              new LineString[] {
+                  gf.createLineString(new Coordinate[] {
+                      new Coordinate(763410, 300410),
+                      new Coordinate(763450, 300400) }),
+                  new LineString(new CoordinateArraySequence(new Coordinate[] {
+                      new Coordinate(763360, 300360),
+                      new Coordinate(763370, 300370),
+                      new Coordinate(763380, 300375) }), gf) }, gf),
+          new MultiLineString(
+              new LineString[] {
+                  gf.createLineString(new Coordinate[] {
+                      new Coordinate(763410, 300410),
+                      new Coordinate(763450, 300400) }) }, gf), 
           gf.createPolygon(new LinearRing(
               new CoordinateArraySequence(new Coordinate[] {
                   new Coordinate(763000, 300000), new Coordinate(763050, 300000),
@@ -2076,6 +2090,17 @@ public class JtsAdapterFactoryTest {
                       new Coordinate(763020, 300020),
                       new Coordinate(763010, 300020),
                       new Coordinate(763010, 300010) }), gf) }),
+          gf.createMultiPolygon(new Polygon[] { new Polygon(new LinearRing(
+              new CoordinateArraySequence(new Coordinate[] {
+                  new Coordinate(763000, 300000), new Coordinate(763050, 300000),
+                  new Coordinate(763050, 300050), new Coordinate(763000, 300050),
+                  new Coordinate(763000, 300000) }), gf),
+              new LinearRing[] { new LinearRing(new CoordinateArraySequence(
+                  new Coordinate[] { new Coordinate(763010, 300010),
+                      new Coordinate(763020, 300010),
+                      new Coordinate(763020, 300020),
+                      new Coordinate(763010, 300020),
+                        new Coordinate(763010, 300010) }), gf) }, gf) }),
           gf.createGeometryCollection(new Polygon[] { new Polygon(new LinearRing(
               new CoordinateArraySequence(new Coordinate[] {
                   new Coordinate(763700, 300000), new Coordinate(763750, 300000),

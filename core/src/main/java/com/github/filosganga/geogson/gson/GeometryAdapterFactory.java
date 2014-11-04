@@ -231,15 +231,15 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
         }
 
-        private Supplier<Optional<? extends Geometry>> buildMultiLineString(final String type, final Positions coordinates) {
+        private Supplier<Optional<? extends Geometry<?>>> buildMultiLineString(final String type, final Positions coordinates) {
 
-            return new Supplier<Optional<? extends Geometry>>() {
+            return new Supplier<Optional<? extends Geometry<?>>>() {
                 @Override
-                public Optional<Geometry> get() {
-                    Optional<Geometry> mayGeometry = Optional.absent();
+                public Optional<Geometry<?>> get() {
+                    Optional<Geometry<?>> mayGeometry = Optional.absent();
 
                     if (type.equalsIgnoreCase(Geometry.Type.MULTI_LINE_STRING.getValue())) {
-                        mayGeometry = Optional.<Geometry>of(new MultiLineString((AreaPositions) coordinates));
+                        mayGeometry = Optional.<Geometry<?>>of(new MultiLineString((AreaPositions) coordinates));
                     }
 
                     return mayGeometry;
@@ -247,7 +247,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             };
         }
 
-        private Supplier<Optional<? extends Geometry>> buildLineString(final String type, final Positions coordinates) {
+        private Supplier<Optional<? extends Geometry<?>>> buildLineString(final String type, final Positions coordinates) {
 
             return new Supplier<Optional<? extends Geometry<?>>>() {
                 @Override
@@ -292,7 +292,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                     Optional<Geometry<?>> mayGeometry = Optional.absent();
 
                     if (Geometry.Type.POLYGON.getValue().equalsIgnoreCase(type)) {
-                        mayGeometry = Optional.<Geometry>of(new Polygon((AreaPositions) coordinates));
+                        mayGeometry = Optional.<Geometry<?>>of(new Polygon((AreaPositions) coordinates));
                     }
 
                     return mayGeometry;
@@ -309,7 +309,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 public Optional<Geometry<?>> get() {
                     Optional<Geometry<?>> mayGeometry = Optional.absent();
                     if (Geometry.Type.MULTI_POLYGON.getValue().equalsIgnoreCase(type)) {
-                        mayGeometry = Optional.<Geometry>of(new MultiPolygon((MultiDimensionalPositions) coordinates));
+                        mayGeometry = Optional.<Geometry<?>>of(new MultiPolygon((MultiDimensionalPositions) coordinates));
                     }
 
                     return mayGeometry;
