@@ -75,6 +75,18 @@ public class GeometryAdapterFactoryTest {
   }
 
   @Test
+  public void shouldHandleMultiLineStringWithSingleLineString() {
+
+    MultiLineString source = MultiLineString.of(
+        LineString.of(Point.from(14.5, 47.3), Point.from(42.19, 3.8))
+    );
+
+    MultiLineString parsed = this.toTest.fromJson(this.toTest.toJson(source), MultiLineString.class);
+
+    assertThat(parsed, equalTo(source));
+  }
+
+  @Test
   public void shouldHandleLinearRing() {
 
     LinearRing source = LinearRing.of(Point.from(12.3, 45.3), Point.from(43.9, 5.8), Point.from(43.9, 5.8), Point.from(12.3, 45.3));

@@ -117,6 +117,18 @@ public class JtsAdapterFactoryTest {
     }
 
     @Test
+    public void shouldHandleMultiLineStringWithSingleLineString() {
+
+        MultiLineString source = gf.createMultiLineString(new LineString[]{
+                gf.createLineString(new Coordinate[]{new Coordinate(26.2, 43.678901), new Coordinate(23.9, 25.8)})
+        });
+
+        MultiLineString parsed = this.toTest.fromJson(this.toTest.toJson(source), MultiLineString.class);
+
+        assertGeometryEquals(parsed, source);
+    }
+
+    @Test
     public void shouldHandleLinearRing() {
 
         LinearRing source = gf.createLinearRing(new Coordinate[]{new Coordinate(56.7, 83.6), new Coordinate(43.9, 5.8), new Coordinate(43.9, 10), new Coordinate(56.7, 83.6)});
