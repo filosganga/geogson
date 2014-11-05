@@ -1,11 +1,22 @@
 language: java
 jdk:
-- openjdk7
-- oraclejdk7
+  - openjdk7
+  - oraclejdk7
 env:
   global:
-  - secure: uIGbVzkGjjki4iONyt56Fsav3RXyEAzzkQg5r9RhMkjat/PhhoKClrsIpa2z9xGvv4nQe+GNjrLsqomp81sdNpywWyxIDK/1n3j7KJfbp+tfqG2BQ34+VPLYq/xsMMjFQrMtV5WlOQEcPqlCosKypcUHjaj82YDMlxjHHe8Qnpg=
-  - secure: vAQu5hXL2hx7fg536azXI49MU3LZP+/0Bw89a/ddEgtZ8lb6HEPlT0Nn699Pc7OLL13manHX3K/3C2pFMiyImFjOZJvbDF8DBfZYjIvKWmqVqqAwsQW0OOJ7eVz7BpPzj5sACFH8ENhqvXKJhuG3Zfv6Q1J7a1Ce4nFOKpWTP+0=
-  - secure: V6LDBTjvwoCZzGuiHaABmre6JpMguVU3E9Db4Hy0xivmcQeQ4R7L3ehXdx6QvBYhIWZe2YvL4JyGQplx+TJN+ckLeApVxFp0tBH/ACY1WWgP9yDBJodMESsC2G84YFlzuumZoa68KD3uUe/e8I01rxmJEgu8RNqGBqwvhnTgKy0=
+    - secure: uIGbVzkGjjki4iONyt56Fsav3RXyEAzzkQg5r9RhMkjat/PhhoKClrsIpa2z9xGvv4nQe+GNjrLsqomp81sdNpywWyxIDK/1n3j7KJfbp+tfqG2BQ34+VPLYq/xsMMjFQrMtV5WlOQEcPqlCosKypcUHjaj82YDMlxjHHe8Qnpg=
+    - secure: vAQu5hXL2hx7fg536azXI49MU3LZP+/0Bw89a/ddEgtZ8lb6HEPlT0Nn699Pc7OLL13manHX3K/3C2pFMiyImFjOZJvbDF8DBfZYjIvKWmqVqqAwsQW0OOJ7eVz7BpPzj5sACFH8ENhqvXKJhuG3Zfv6Q1J7a1Ce4nFOKpWTP+0=
+    - secure: V6LDBTjvwoCZzGuiHaABmre6JpMguVU3E9Db4Hy0xivmcQeQ4R7L3ehXdx6QvBYhIWZe2YvL4JyGQplx+TJN+ckLeApVxFp0tBH/ACY1WWgP9yDBJodMESsC2G84YFlzuumZoa68KD3uUe/e8I01rxmJEgu8RNqGBqwvhnTgKy0=
 
-after_success: ./build/deploy.sh
+script: ./build/build.sh
+
+deploy:
+  provider: releases
+  api-key:
+    secure: "rXE32c0eHJP5H9y2DFmovtcMjAXwAwJX4fId1N8nLqUwGxJJUBQfPCvuzH9HCz10gqY+t95Rfy5/z8GbDBPhyAL7xrvYh0wzTMD17ye0Wz4KwrjIJNyB2L2al37/53XLupwPWYAbuv5g5y/KcsIjVha2ISCIXP6+5KE7N9FKmSc="
+  file:
+    - "core/target/geogson-core-${VERSION}.jar"
+    - "jts/target/geogson-jts-${VERSION}.jar"
+  skip_cleanup: true
+  on:
+    branch: master

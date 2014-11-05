@@ -71,7 +71,7 @@ public class JtsAdapterFactory implements TypeAdapterFactory {
 
 class JtsGeometryAdapter extends TypeAdapter<com.vividsolutions.jts.geom.Geometry> {
 
-    private final Gson gson;
+  private final Gson gson;
 
     private final CodecRegistry<com.vividsolutions.jts.geom.Geometry, Geometry<?>> codecRegistry;
 
