@@ -20,6 +20,7 @@ else
     IS_MASTER=false
 fi
 
+MVN_GOAL="clean"
 if [ ${IS_MASTER} == true ] && [ ${IS_NOT_PULL_REQUEST} == true ]; then
 
     BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
@@ -31,9 +32,15 @@ if [ ${IS_MASTER} == true ] && [ ${IS_NOT_PULL_REQUEST} == true ]; then
     mvn -N versions:update-child-modules
 
     export PROJECT_VERSION
+
+    MVN_GOAL="$MVN_GOAL deploy"
+else
+    MVN_GOAL="$MVN_GOAL package"
 fi
 
-mvn clean package
+MVN_OPTS=""
+
+mvn ${MVN_OPTS} ${MVN_GOAL}
 
 
 
