@@ -10,7 +10,7 @@ env:
 
 script: ./build/build.sh
 
-before_deploy: "echo 'About to deploy version' ${VERSION}"
+after_success: "echo 'Build of geogson version' ${VERSION} ' succeded.'"
 
 deploy:
   provider: releases
