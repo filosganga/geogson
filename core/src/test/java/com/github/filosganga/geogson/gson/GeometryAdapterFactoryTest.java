@@ -5,10 +5,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import com.github.filosganga.geogson.model.Geometry;
+import com.github.filosganga.geogson.model.GeometryCollection;
 import com.github.filosganga.geogson.model.LineString;
 import com.github.filosganga.geogson.model.LinearRing;
 import com.github.filosganga.geogson.model.MultiLineString;
@@ -1948,6 +1951,52 @@ public class GeometryAdapterFactoryTest {
     );
 
     Polygon parsed = this.toTest.fromJson(this.toTest.toJson(source), Polygon.class);
+
+    assertThat(parsed, equalTo(source));
+  }
+
+  @Test
+  public void shouldHandleGeometryCollection() {
+
+    ArrayList<Geometry<?>> geometries = new ArrayList<Geometry<?>>();
+    geometries.add(Point.from(56.7, 83.6));
+    geometries.add(MultiPoint.of(Point.from(12.3, 45.3), Point.from(43.9, 5.8)));
+    geometries.add(LineString.of(Point.from(12.3, 45.3), Point.from(43.9, 5.8)));
+    geometries.add(MultiLineString.of(
+        LineString.of(Point.from(14.5, 47.3), Point.from(42.19, 3.8)),
+        LineString.of(Point.from(11.3, 44.3), Point.from(42.9, 2.8))
+    ));
+    geometries.add(MultiLineString.of(
+        LineString.of(Point.from(14.5, 47.3), Point.from(42.19, 3.8))
+    ));
+    geometries.add(LinearRing.of(Point.from(12.3, 45.3), Point.from(43.9, 5.8), Point.from(43.9, 5.8), Point.from(12.3, 45.3)));
+    geometries.add(Polygon.of(
+        LinearRing.of(Point.from(120.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(120.3, 45.3)),
+        LinearRing.of(Point.from(120.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(120.3, 45.3))
+    ));
+    geometries.add(MultiPolygon.of(
+        Polygon.of(
+                LinearRing.of(Point.from(120.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(120.3, 45.3)),
+                LinearRing.of(Point.from(150.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(150.3, 45.3))
+        ),
+        Polygon.of(
+                LinearRing.of(Point.from(102.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(102.3, 45.3)),
+                LinearRing.of(Point.from(104.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(104.3, 45.3))
+        )
+    ));
+    geometries.add(MultiPolygon.of(
+        Polygon.of(
+                LinearRing.of(Point.from(120.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(120.3, 45.3)),
+                LinearRing.of(Point.from(110.3, 45.3), Point.from(100, -50.8), Point.from(100, 5.8), Point.from(110.3, 45.3))
+        )
+    ));
+
+    ArrayList<Geometry<?>> innerGeometries = (ArrayList<Geometry<?>>) geometries.clone();
+    geometries.add(GeometryCollection.of(innerGeometries));
+
+    GeometryCollection source = GeometryCollection.of(geometries);
+
+    GeometryCollection parsed = this.toTest.fromJson(this.toTest.toJson(source), GeometryCollection.class);
 
     assertThat(parsed, equalTo(source));
   }

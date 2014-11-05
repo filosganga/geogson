@@ -17,8 +17,10 @@
 package com.github.filosganga.geogson.gson;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.github.filosganga.geogson.model.Geometry;
+import com.github.filosganga.geogson.model.GeometryCollection;
 import com.github.filosganga.geogson.model.LineString;
 import com.github.filosganga.geogson.model.LinearRing;
 import com.github.filosganga.geogson.model.MultiLineString;
@@ -77,6 +79,14 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 if (value.type() != Geometry.Type.GEOMETRY_COLLECTION) {
                     out.name("coordinates");
                     gson.getAdapter(Positions.class).write(out, value.positions());
+                } else if (value.type() == Geometry.Type.GEOMETRY_COLLECTION) {
+                    out.name("geometries"); //$NON-NLS-1$
+                    out.beginArray();
+                    GeometryCollection geometries = (GeometryCollection) value;
+                    for (Geometry<?> geometry : geometries.getGeometries()) {
+                        this.gson.getAdapter(Geometry.class).write(out, geometry);
+                    }
+                    out.endArray();
                 } else {
                     // TODO
                 }
@@ -86,9 +96,9 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
         }
 
         @Override
-        public Geometry read(JsonReader in) throws IOException {
+        public Geometry<?> read(JsonReader in) throws IOException {
 
-            Geometry geometry = null;
+            Geometry<?> geometry = null;
             if (in.peek() == JsonToken.NULL) {
                 in.nextNull();
             } else if (in.peek() == JsonToken.BEGIN_OBJECT) {
@@ -96,7 +106,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
                 String type = null;
                 Positions positions = null;
-                Iterable<Geometry> geometries = null;
+                Geometry<?> geometries = null;
 
                 while (in.hasNext()) {
                     String name = in.nextName();
@@ -105,7 +115,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                     } else if ("coordinates".equals(name)) {
                         positions = readPosition(in);
                     } else if ("geometries".equals(name)) {
-                        // TODO
+                        geometries = readGeometries(in);
                     } else {
                         // Ignore
                     }
@@ -123,10 +133,50 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
         }
 
         private Positions readPosition(JsonReader in) throws IOException {
-            return gson.getAdapter(Positions.class).read(in);
+            return this.gson.getAdapter(Positions.class).read(in);
         }
 
-        private Geometry buildGeometry(final String type, Positions positions, Iterable<Geometry> geometries) {
+        private Geometry<?> readGeometries(JsonReader in) throws IOException {
+            Geometry<?> parsed;
+
+            JsonToken peek = in.peek();
+            if (peek == JsonToken.NULL) {
+                in.nextNull();
+                parsed = null;
+            } else if (peek == JsonToken.BEGIN_ARRAY) {
+                parsed = parseGeometries(in);
+            } else {
+                throw new IllegalArgumentException("The json must be an array or null: " + in.peek());
+            }
+
+            return parsed;
+        }
+
+        private Geometry<?> parseGeometries(JsonReader in) throws IOException {
+
+            Optional<Geometry<?>> parsed = Optional.absent();
+
+            if (in.peek() != JsonToken.BEGIN_ARRAY) {
+                throw new IllegalArgumentException("The given json is not a valid GeometryCollection");
+            }
+
+            in.beginArray();
+            if (in.peek() == JsonToken.BEGIN_OBJECT) {
+                ArrayList<Geometry<?>> geometries = new ArrayList<Geometry<?>>();
+                while (in.hasNext()) {
+                    @SuppressWarnings("rawtypes")
+                    Geometry geometry = this.gson.getAdapter(Geometry.class).read(in);
+                    geometries.add(geometry);
+                }
+                parsed = Optional.<Geometry<?>>of(GeometryCollection.of(geometries));
+            }
+
+            in.endArray();
+
+            return parsed.orNull();
+        }
+
+        private Geometry<?> buildGeometry(final String type, Positions positions, Geometry<?> geometries) {
 
             // Take care, the order is important!
             return ChainableOptional
@@ -138,23 +188,23 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                     .or(buildLineString(type, positions))
                     .or(buildMultiPoint(type, positions))
                     .or(buildPoint(type, positions))
-                    .orFinally(new Supplier<Geometry>() {
+                    .orFinally(new Supplier<Geometry<?>>() {
                         @Override
-                        public Geometry get() {
+                        public Geometry<?> get() {
                             throw new IllegalArgumentException("Cannot build a geometry for type: " + type);
                         }
                     });
         }
 
-        private Supplier<Optional<? extends Geometry>> buildPoint(final String type, final Positions coordinates) {
+        private Supplier<Optional<? extends Geometry<?>>> buildPoint(final String type, final Positions coordinates) {
 
-            return new Supplier<Optional<? extends Geometry>>() {
+            return new Supplier<Optional<? extends Geometry<?>>>() {
                 @Override
-                public Optional<Geometry> get() {
-                    Optional<Geometry> mayGeometry = Optional.absent();
+                public Optional<Geometry<?>> get() {
+                    Optional<Geometry<?>> mayGeometry = Optional.absent();
 
                     if (type.equalsIgnoreCase(Geometry.Type.POINT.getValue())) {
-                        mayGeometry = Optional.<Geometry>of(Point.from(((SinglePosition) coordinates).coordinates()));
+                        mayGeometry = Optional.<Geometry<?>>of(Point.from(((SinglePosition) coordinates).coordinates()));
                     }
 
                     return mayGeometry;
@@ -164,15 +214,15 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
         }
 
-        private Supplier<Optional<? extends Geometry>> buildMultiPoint(final String type, final Positions coordinates) {
+        private Supplier<Optional<? extends Geometry<?>>> buildMultiPoint(final String type, final Positions coordinates) {
 
-            return new Supplier<Optional<? extends Geometry>>() {
+            return new Supplier<Optional<? extends Geometry<?>>>() {
                 @Override
-                public Optional<Geometry> get() {
-                    Optional<Geometry> mayGeometry = Optional.absent();
+                public Optional<Geometry<?>> get() {
+                    Optional<Geometry<?>> mayGeometry = Optional.absent();
 
                     if (type.equalsIgnoreCase(Geometry.Type.MULTI_POINT.getValue())) {
-                        mayGeometry = Optional.<Geometry>of(new MultiPoint((LinearPositions) coordinates));
+                        mayGeometry = Optional.<Geometry<?>>of(new MultiPoint((LinearPositions) coordinates));
                     }
 
                     return mayGeometry;
@@ -181,15 +231,15 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
         }
 
-        private Supplier<Optional<? extends Geometry>> buildMultiLineString(final String type, final Positions coordinates) {
+        private Supplier<Optional<? extends Geometry<?>>> buildMultiLineString(final String type, final Positions coordinates) {
 
-            return new Supplier<Optional<? extends Geometry>>() {
+            return new Supplier<Optional<? extends Geometry<?>>>() {
                 @Override
-                public Optional<Geometry> get() {
-                    Optional<Geometry> mayGeometry = Optional.absent();
+                public Optional<Geometry<?>> get() {
+                    Optional<Geometry<?>> mayGeometry = Optional.absent();
 
                     if (type.equalsIgnoreCase(Geometry.Type.MULTI_LINE_STRING.getValue())) {
-                        mayGeometry = Optional.<Geometry>of(new MultiLineString((AreaPositions) coordinates));
+                        mayGeometry = Optional.<Geometry<?>>of(new MultiLineString((AreaPositions) coordinates));
                     }
 
                     return mayGeometry;
@@ -197,15 +247,15 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             };
         }
 
-        private Supplier<Optional<? extends Geometry>> buildLineString(final String type, final Positions coordinates) {
+        private Supplier<Optional<? extends Geometry<?>>> buildLineString(final String type, final Positions coordinates) {
 
-            return new Supplier<Optional<? extends Geometry>>() {
+            return new Supplier<Optional<? extends Geometry<?>>>() {
                 @Override
-                public Optional<Geometry> get() {
-                    Optional<Geometry> mayGeometry = Optional.absent();
+                public Optional<Geometry<?>> get() {
+                    Optional<Geometry<?>> mayGeometry = Optional.absent();
 
                     if (type.equalsIgnoreCase(Geometry.Type.LINE_STRING.getValue())) {
-                        mayGeometry = Optional.<Geometry>of(new LineString((LinearPositions) coordinates));
+                        mayGeometry = Optional.<Geometry<?>>of(new LineString((LinearPositions) coordinates));
                     }
 
                     return mayGeometry;
@@ -213,17 +263,17 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             };
         }
 
-        private Supplier<Optional<? extends Geometry>> buildLinearRing(final String type, final Positions coordinates) {
+        private Supplier<Optional<? extends Geometry<?>>> buildLinearRing(final String type, final Positions coordinates) {
 
-            return new Supplier<Optional<? extends Geometry>>() {
+            return new Supplier<Optional<? extends Geometry<?>>>() {
                 @Override
-                public Optional<Geometry> get() {
-                    Optional<Geometry> mayGeometry = Optional.absent();
+                public Optional<Geometry<?>> get() {
+                    Optional<Geometry<?>> mayGeometry = Optional.absent();
 
                     if (type.equalsIgnoreCase(Geometry.Type.LINEAR_RING.getValue())) {
                         LinearPositions linearPositions = (LinearPositions) coordinates;
                         if (linearPositions.isClosed()) {
-                            mayGeometry = Optional.<Geometry>of(new LinearRing(linearPositions));
+                            mayGeometry = Optional.<Geometry<?>>of(new LinearRing(linearPositions));
                         }
                     }
 
@@ -234,15 +284,15 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
         }
 
-        private Supplier<Optional<? extends Geometry>> buildPolygon(final String type, final Positions coordinates) {
+        private Supplier<Optional<? extends Geometry<?>>> buildPolygon(final String type, final Positions coordinates) {
 
-            return new Supplier<Optional<? extends Geometry>>() {
+            return new Supplier<Optional<? extends Geometry<?>>>() {
                 @Override
-                public Optional<Geometry> get() {
-                    Optional<Geometry> mayGeometry = Optional.absent();
+                public Optional<Geometry<?>> get() {
+                    Optional<Geometry<?>> mayGeometry = Optional.absent();
 
                     if (Geometry.Type.POLYGON.getValue().equalsIgnoreCase(type)) {
-                        mayGeometry = Optional.<Geometry>of(new Polygon((AreaPositions) coordinates));
+                        mayGeometry = Optional.<Geometry<?>>of(new Polygon((AreaPositions) coordinates));
                     }
 
                     return mayGeometry;
@@ -252,14 +302,14 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
         }
 
-        private Supplier<Optional<? extends Geometry>> buildMultiPolygon(final String type, final Positions coordinates) {
+        private Supplier<Optional<? extends Geometry<?>>> buildMultiPolygon(final String type, final Positions coordinates) {
 
-            return new Supplier<Optional<? extends Geometry>>() {
+            return new Supplier<Optional<? extends Geometry<?>>>() {
                 @Override
-                public Optional<Geometry> get() {
-                    Optional<Geometry> mayGeometry = Optional.absent();
+                public Optional<Geometry<?>> get() {
+                    Optional<Geometry<?>> mayGeometry = Optional.absent();
                     if (Geometry.Type.MULTI_POLYGON.getValue().equalsIgnoreCase(type)) {
-                        mayGeometry = Optional.<Geometry>of(new MultiPolygon((MultiDimensionalPositions) coordinates));
+                        mayGeometry = Optional.<Geometry<?>>of(new MultiPolygon((MultiDimensionalPositions) coordinates));
                     }
 
                     return mayGeometry;
@@ -267,15 +317,19 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             };
         }
 
-        private Supplier<Optional<? extends Geometry>> buildGeometryCollection(final String type, final Iterable<Geometry> geometries) {
+        private Supplier<Optional<? extends Geometry<?>>> buildGeometryCollection(final String type, final Geometry<?> geometries) {
 
-            return new Supplier<Optional<? extends Geometry>>() {
+            return new Supplier<Optional<? extends Geometry<?>>>() {
                 @Override
-                public Optional<Geometry> get() {
+                public Optional<Geometry<?>> get() {
+                    Optional<Geometry<?>> mayGeometry = Optional.absent();
+                    if (Geometry.Type.GEOMETRY_COLLECTION.getValue().equalsIgnoreCase(type)) {
 
-                    // TODO Not supported at this time
+                        mayGeometry = Optional.<Geometry<?>>of(geometries);
 
-                    return Optional.absent();
+                    }
+
+                    return mayGeometry;
                 }
             };
 

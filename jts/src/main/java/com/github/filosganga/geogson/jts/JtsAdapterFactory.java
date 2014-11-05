@@ -85,6 +85,7 @@ class JtsGeometryAdapter extends TypeAdapter<com.vividsolutions.jts.geom.Geometr
         codecRegistry.addCodec(new MultiLineStringCodec(geometryFactory));
         codecRegistry.addCodec(new PolygonCodec(geometryFactory));
         codecRegistry.addCodec(new MultiPolygonCodec(geometryFactory));
+        codecRegistry.addCodec(new GeometryCollectionCodec(geometryFactory));
     }
 
     @Override
