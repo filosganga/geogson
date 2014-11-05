@@ -19,10 +19,14 @@ package com.github.filosganga.geogson.gson;
 import java.io.IOException;
 
 import com.github.filosganga.geogson.model.Coordinates;
+import com.github.filosganga.geogson.model.positions.AreaPositions;
+import com.github.filosganga.geogson.model.positions.LinearPositions;
+import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -85,7 +89,21 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
         } else if (in.peek() == JsonToken.BEGIN_ARRAY) {
             while (in.hasNext()) {
                 Positions thisPositions = parsePositions(in);
-                parsed = parsed.transform(mergeFn(thisPositions)).or(Optional.of(thisPositions));
+                // fix bug #30: according to the recursion (i.e. the array structure;
+                // recognize that we came from a recursion because no parsed has no
+                // value yet): convert the already parsed Positions to the
+                // LinearPositions/AreaPositions matching the recursion level
+                if (parsed.equals(Optional.absent()) && thisPositions instanceof LinearPositions) {
+                    AreaPositions areaPositions = new AreaPositions(ImmutableList.of((LinearPositions) thisPositions));
+                    parsed = Optional.of((Positions) areaPositions);
+                } else if (parsed.equals(Optional.absent()) && thisPositions instanceof AreaPositions) {
+                    MultiDimensionalPositions multiPositions = new MultiDimensionalPositions(ImmutableList.of((AreaPositions) thisPositions));
+                    parsed = Optional.of((Positions) multiPositions);
+                } else {
+                  // mergeFn() does all the rest, if parsed has a value
+                  parsed = parsed.transform(mergeFn(thisPositions)).or(Optional.of(thisPositions));
+                }
+
             }
         }
 
