@@ -10,6 +10,8 @@ env:
 
 script: ./build/build.sh
 
+before_deploy: "echo 'About to deploy version' ${VERSION}"
+
 deploy:
   provider: releases
   api-key:
