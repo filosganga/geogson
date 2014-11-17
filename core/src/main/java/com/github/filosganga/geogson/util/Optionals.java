@@ -9,7 +9,7 @@ import com.google.common.base.Supplier;
 
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * Guava Optional support utilities.
  */
 public final class Optionals {
 

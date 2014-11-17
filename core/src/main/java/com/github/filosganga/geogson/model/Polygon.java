@@ -28,9 +28,14 @@ import com.github.filosganga.geogson.model.positions.LinearPositions;
 import com.google.common.collect.ImmutableList;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A Geometry composed by a sequence of {@link LinearRing}s (or closed {@link LineString}s). The first one is the
+ * external perimeter, the followers are the holes.
+ *
+ * GeoJson reference: {@see http://geojson.org/geojson-spec.html#polygon}.
  */
 public class Polygon extends MultiLineString {
+
+    private static final long serialVersionUID = 1L;
 
     public Polygon(AreaPositions positions) {
         super(checkPositions(positions));
@@ -45,13 +50,28 @@ public class Polygon extends MultiLineString {
         }
 
         return src;
-
     }
 
+    /**
+     * Creates a Polygon from the given perimeter and holes.
+     *
+     * @param perimeter The perimeter {@link LinearRing}.
+     * @param holes The holes {@link LinearRing} sequence.
+     *
+     * @return Polygon
+     */
     public static Polygon of(LinearRing perimeter, LinearRing... holes) {
         return Polygon.of(perimeter, asList(holes));
     }
 
+    /**
+     * Creates a Polygon from the given perimeter and holes.
+     *
+     * @param perimeter The perimeter {@link LinearRing}.
+     * @param holes The holes {@link LinearRing} Iterable.
+     *
+     * @return Polygon
+     */
     public static Polygon of(LinearRing perimeter, Iterable<LinearRing> holes) {
 
         AreaPositions positions = new AreaPositions(ImmutableList.<LinearPositions>builder()
@@ -67,14 +87,29 @@ public class Polygon extends MultiLineString {
         return Type.POLYGON;
     }
 
+    /**
+     * Returns the {@link LinearRing}s composing this Polygon.
+     *
+     * @return a Guava lazy Iterable of {@link LinearRing}.
+     */
     public Iterable<LinearRing> linearRings() {
         return transform(lineStrings(), toLinearRingFn());
     }
 
+    /**
+     * Returns the perimeter {@link LinearRing}.
+     *
+     * @return LinearRing
+     */
     public LinearRing perimeter() {
         return getFirst(linearRings(), null);
     }
 
+    /**
+     * Returns the holes {@link LinearRing}s.
+     *
+     * @return a Guava lazy Iterable of {@link LinearRing}.
+     */
     public Iterable<LinearRing> holes() {
         return skip(linearRings(), 1);
     }

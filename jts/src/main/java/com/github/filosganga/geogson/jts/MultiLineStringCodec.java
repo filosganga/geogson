@@ -7,7 +7,8 @@ import com.google.common.collect.FluentIterable;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.MultiLineString} and
+ * {@link MultiLineString}.
  */
 public class MultiLineStringCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.MultiLineString, MultiLineString> {
 

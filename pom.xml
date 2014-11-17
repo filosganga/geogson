@@ -68,12 +68,21 @@
     <developers>
         <developer>
             <id>filosganga</id>
+            <name>Filippo De Luca</name>
             <email>me@filippodeluca.com</email>
             <roles>
                 <role>Lead Developer</role>
             </roles>
             <timezone>GMT</timezone>
             <url>http://filippodeluca.com</url>
+        </developer>
+        <developer>
+            <id>bkiselka</id>
+            <name>Bernhard Kiselka</name>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <url>https://github.com/bkiselka</url>
         </developer>
     </developers>
 

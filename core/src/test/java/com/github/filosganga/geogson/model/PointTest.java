@@ -24,9 +24,6 @@ import static org.hamcrest.Matchers.is;
 import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
-/**
- * @author Filippo De Luca - me@filippodeluca.com
- */
 public class PointTest {
 
     @Test

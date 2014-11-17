@@ -25,9 +25,13 @@ import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.google.common.collect.ImmutableList;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * Specialization of LinearGeometry composed at least by 2 points.
+ *
+ * JeoGson reference: {@see http://geojson.org/geojson-spec.html#linestring}.
  */
 public class LineString extends LinearGeometry {
+
+    private static final long serialVersionUID = 1L;
 
     public LineString(LinearPositions positions) {
         super(checkPositions(positions));
@@ -39,10 +43,22 @@ public class LineString extends LinearGeometry {
         return toCheck;
     }
 
+    /**
+     * Creates a LineString from the given points.
+     *
+     * @param points Sequence of Point composed at least by 2 points.
+     * @return a LineString
+     */
     public static LineString of(Point... points) {
         return LineString.of(ImmutableList.copyOf(newArrayList(points)));
     }
 
+    /**
+     * Creates a LineString from the given points.
+     *
+     * @param points Iterable of Point at least by 2 points.
+     * @return a LineString
+     */
     public static LineString of(Iterable<Point> points) {
         return new LineString(new LinearPositions(transform(points, positionsFn(SinglePosition.class))));
     }
@@ -52,6 +68,15 @@ public class LineString extends LinearGeometry {
         return Type.LINE_STRING;
     }
 
+    /**
+     * Return if this LineString:
+     *  - Is composed by at least 4 points
+     *  - The first and the last Point are the same.
+     *
+     * For more details {@see http://geojson.org/geojson-spec.html#linestring}
+     *
+     * @return true if this Linestring is closed false otherwise.
+     */
     public boolean isClosed() {
         return positions().isClosed();
     }

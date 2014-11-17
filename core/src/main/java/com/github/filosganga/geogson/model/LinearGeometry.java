@@ -22,14 +22,19 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * An abstract Geometry that is composed by a sequence of points.
  */
 public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
+
+    private static final long serialVersionUID = 1L;
 
     protected LinearGeometry(LinearPositions positions) {
         super(positions);
     }
 
+    /**
+     * Guava Function that converts to MultiPoint.
+     */
     public static <T extends LinearGeometry> Function<T, MultiPoint> toMultiPointFn() {
         return new Function<T, MultiPoint>() {
             @Override
@@ -39,6 +44,9 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
         };
     }
 
+    /**
+     * Guava Function that converts to LineString.
+     */
     public static <T extends LinearGeometry> Function<T, LineString> toLineStringFn() {
         return new Function<T, LineString>() {
             @Override
@@ -48,6 +56,9 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
         };
     }
 
+    /**
+     * Guava Function that converts to LinearRing.
+     */
     public static <T extends LinearGeometry> Function<T, LinearRing> toLinearRingFn() {
         return new Function<T, LinearRing>() {
             @Override
@@ -57,18 +68,38 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
         };
     }
 
+    /**
+     * Converts to a MultiPoint.
+     *
+     * @return MultiPoint
+     */
     public MultiPoint toMultiPoint() {
         return new MultiPoint(positions());
     }
 
+    /**
+     * Converts to a LineString.
+     *
+     * @return LineString
+     */
     public LineString toLineString() {
         return new LineString(positions());
     }
 
+    /**
+     * Convert to a LinearRing.
+     *
+     * @return LinearRing
+     */
     public LinearRing toLinearRing() {
         return new LinearRing(positions());
     }
 
+    /**
+     * Returns the points composing this Geometry.
+     *
+     * @return Iterable<Point> a Guava lazy Iterable.
+     */
     public Iterable<Point> points() {
         return FluentIterable.from(positions().children())
                 .transform(SinglePosition.coordinatesFn())

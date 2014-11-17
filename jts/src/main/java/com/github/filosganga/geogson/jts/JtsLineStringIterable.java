@@ -6,7 +6,7 @@ import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Polygon;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A {@link LineString} Iterable, to wrap the getLineStringN and getNumLineStrings JTS methods.
  */
 class JtsLineStringIterable implements Iterable<LineString> {
 

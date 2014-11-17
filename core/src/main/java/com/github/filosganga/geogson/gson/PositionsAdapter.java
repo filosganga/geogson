@@ -34,7 +34,7 @@ import com.google.gson.stream.JsonWriter;
 
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * The Gson TypeAdapter to serialize/de-serialize all the {@link Positions} instances.
  */
 public class PositionsAdapter extends TypeAdapter<Positions> {
 

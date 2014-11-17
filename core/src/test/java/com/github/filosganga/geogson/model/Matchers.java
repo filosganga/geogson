@@ -23,9 +23,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-/**
- * @author Filippo De Luca - me@filippodeluca.com
- */
 public final class Matchers {
 
     private Matchers() {

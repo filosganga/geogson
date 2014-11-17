@@ -21,7 +21,7 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 
 /**
- * @author Filippo De Luca - fdeluca@expedia.com
+ * A Fluent Guava Optional class.
  */
 public class ChainableOptional<T> {
 

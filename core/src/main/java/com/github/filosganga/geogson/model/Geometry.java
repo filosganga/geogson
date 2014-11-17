@@ -19,10 +19,17 @@ package com.github.filosganga.geogson.model;
 import com.github.filosganga.geogson.model.positions.Positions;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A Geometry is a definition of a shape (A collection of coordinates).
+ *
+ * GeoJson reference: {@see http://geojson.org/geojson-spec.html#geometry-objects}.
+ *
+ * @param <P> The Position type param.
  */
 public interface Geometry<P extends Positions> {
 
+    /**
+     * Define the type of the Geometry. As defined in the GeoJson specifications.
+     */
     public static enum Type {
         POINT("Point"),
         MULTI_POINT("MultiPoint"),
@@ -44,9 +51,25 @@ public interface Geometry<P extends Positions> {
         }
     }
 
+    /**
+     * Returns the Geometry type.
+     *
+     * @return Type
+     */
     Type type();
 
+    /**
+     * Returns the Position underlying instance.
+     *
+     * @return Position
+     */
     P positions();
 
+    /**
+     * Returns the size of this Geometry. Depending of the type of this Geometry, it may have different meaning.
+     * eg: For a LineString it is the number of points, for a MultiPolygon it is the number of polygons.
+     *
+     * @return Int
+     */
     int size();
 }

@@ -24,9 +24,6 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableSet;
 
-/**
- * @author Filippo De Luca - me@filippodeluca.com
- */
 public class CoordinatesTest {
 
     @Test

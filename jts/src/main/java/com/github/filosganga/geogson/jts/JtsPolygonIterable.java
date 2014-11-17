@@ -5,7 +5,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A {@link Polygon} Iterable, to wrap the getPolygonN and getNumPolygons JTS methods.
  */
 class JtsPolygonIterable implements Iterable<Polygon> {
 

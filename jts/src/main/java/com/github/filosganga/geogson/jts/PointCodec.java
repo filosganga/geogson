@@ -5,7 +5,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.Point} and
+ * {@link Point}.
  */
 public class PointCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.Point, Point> {
 

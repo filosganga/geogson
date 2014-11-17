@@ -11,7 +11,7 @@ import com.github.filosganga.geogson.model.Geometry;
 import com.google.common.reflect.TypeToken;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A registry of codecs used as façade to convert to and from different geometry systems.
  */
 public class CodecRegistry<T, S extends Geometry<?>> implements Codec<T, S> {
 
@@ -28,6 +28,7 @@ public class CodecRegistry<T, S extends Geometry<?>> implements Codec<T, S> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void addCodec(Codec<? extends T, ? extends S> codec) {
 
         ParameterizedType type = (ParameterizedType) TypeToken.of(codec.getClass()).getSupertype(Codec.class).getType();

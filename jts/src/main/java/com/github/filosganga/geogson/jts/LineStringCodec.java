@@ -4,7 +4,8 @@ import com.github.filosganga.geogson.model.LineString;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.LineString} and
+ * {@link LineString}.
  */
 public class LineStringCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.LineString, LineString> {
 

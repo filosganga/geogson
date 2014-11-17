@@ -4,7 +4,8 @@ import com.github.filosganga.geogson.model.LinearRing;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.LinearRing} and
+ * {@link LinearRing}.
  */
 public class LinearRingCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.LinearRing, LinearRing> {
 

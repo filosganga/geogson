@@ -23,18 +23,41 @@ import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.google.common.collect.ImmutableList;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * Geometry composed by a sequence of {@link Point}.
+ *
+ * GeoJson reference: {@see http://geojson.org/geojson-spec.html#multipoint}
+ *
+ * eg: {@code
+ *     MultiPoint mp = MultiPoint.of(
+ *         Point.from(1,2),
+ *         Point.from(3,4)
+ *     )
+ * }
  */
 public class MultiPoint extends LinearGeometry {
+
+    private static final long serialVersionUID = 1L;
 
     public MultiPoint(LinearPositions coordinates) {
         super(coordinates);
     }
 
+    /**
+     * Creates a MultiPoint from the given points.
+     *
+     * @param points The {@link Point} sequence.
+     * @return MultiPoint
+     */
     public static MultiPoint of(Point... points) {
         return of(ImmutableList.copyOf(points));
     }
 
+    /**
+     * Creates a MultiPoint from the given points.
+     *
+     * @param points The {@link Point} Iterable.
+     * @return MultiPoint
+     */
     public static MultiPoint of(Iterable<Point> points) {
         return new MultiPoint(new LinearPositions(transform(points, positionsFn(SinglePosition.class))));
     }

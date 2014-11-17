@@ -1,5 +1,6 @@
 package com.github.filosganga.geogson.jts;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.transform;
 
 import java.util.ArrayList;
@@ -22,9 +23,11 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * Abstract JTS implementation of Codec.
+ *
+ * It provides support for JTS conversions.
  */
-public abstract class AbstractJtsCodec<S extends Object, T extends Geometry<?>> implements Codec<S, T> {
+public abstract class AbstractJtsCodec<S, T extends Geometry<?>> implements Codec<S, T> {
 
     /**
      * {@link GeometryFactory} defining a PrecisionModel and a SRID
@@ -48,7 +51,7 @@ public abstract class AbstractJtsCodec<S extends Object, T extends Geometry<?>> 
      *          a {@link GeometryFactory} defining a PrecisionModel and a SRID
      */
     public AbstractJtsCodec(GeometryFactory geometryFactory) {
-        this.geometryFactory = geometryFactory;
+        this.geometryFactory = checkNotNull(geometryFactory, "The geometryFactory cannot be null");
     }
 
     // GeometryCollection ---

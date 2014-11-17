@@ -23,12 +23,12 @@ import java.util.Iterator;
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.google.common.base.Objects;
+import com.google.common.collect.Iterables;
 
 /**
  * Collection of {@link Geometry} holding an {@link Iterable} being a
  * {@link Geometry}.
  *
- * @author bernhard.kiselka
  */
 public class GeometryCollection implements Geometry<Positions>, Serializable {
 
@@ -87,20 +87,7 @@ public class GeometryCollection implements Geometry<Positions>, Serializable {
 
     @Override
     public int size() {
-        // if the iterator in fact is a collection, get the size
-        if (this.geometries instanceof Collection) {
-            return ((Collection<?>)this.geometries).size();
-        }
-
-        // else iterate using iterator
-
-        Iterator<Geometry<?>> iterator = this.geometries.iterator();
-        int i = 0;
-        while (iterator.hasNext()) {
-          iterator.next();
-          i++;
-        }
-        return i;
+        return Iterables.size(geometries);
     }
 
     @Override

@@ -1,17 +1,21 @@
 package com.github.filosganga.geogson.model.positions;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * Abstract implementation of {@link Positions}. Provides some basic methods.
  */
 public abstract class AbstractPositions<T extends Positions> implements Positions {
 
+    private static final long serialVersionUID = 1L;
+
     protected final ImmutableList<T> children;
 
-    public AbstractPositions(ImmutableList<T> children) {
-        this.children = children;
+    protected AbstractPositions(ImmutableList<T> children) {
+        this.children = checkNotNull(children, "The children cannot be null");
     }
 
     @Override

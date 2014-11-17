@@ -22,11 +22,14 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A {@link Positions} instance for a single {@link Coordinates}.
  */
 public class SinglePosition extends AbstractPositions<Positions> {
 
+    private static final long serialVersionUID = 1L;
+
     private static final ImmutableList<Positions> CHILDREN = ImmutableList.of();
+
     private final Coordinates coordinates;
 
     public SinglePosition(Coordinates coordinates) {
@@ -35,20 +38,37 @@ public class SinglePosition extends AbstractPositions<Positions> {
         this.coordinates = coordinates;
     }
 
+    /**
+     * Guava Function to extract the {@link Coordinates} from a SinglePosition.
+     */
     public static Function<SinglePosition, Coordinates> coordinatesFn() {
         return CoordinatesFn.INSTANCE;
     }
 
+    /**
+     * Return the underlying {@link Coordinates} instance.
+     *
+     * @return Coordinates
+     */
     public Coordinates coordinates() {
         return coordinates;
     }
 
+    /**
+     * Merge this SinglePosition with another {@link Positions} instance. If the given {@link Positions} is:
+     *  - a SinglePosition, it returns a {@link LinearPositions} composed by this and the given positions, in order.
+     *  - any other {@link Positions}, it delegates to the given {@link Positions} merge.
+     *
+     * @param other Positions instance to merge with.
+     *
+     * @return Positions instance result of merge.
+     */
     @Override
     public Positions merge(Positions other) {
 
         if (other instanceof SinglePosition) {
             SinglePosition that = (SinglePosition) other;
-            return new LinearPositions(ImmutableList.of(new SinglePosition(coordinates), that));
+            return new LinearPositions(ImmutableList.of(this, that));
         } else {
             return other.merge(this);
         }
