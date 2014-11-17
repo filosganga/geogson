@@ -9,9 +9,11 @@ import com.google.common.base.Function;
 import com.google.common.base.Objects;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * Abstract implementation of {@link Geometry} providing generic methods.
  */
 public abstract class AbstractGeometry<P extends Positions> implements Geometry<P>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final P positions;
 
@@ -22,6 +24,9 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
         this.positions = positions;
     }
 
+    /**
+     * Guava {@link Function} extracting the Positions instance from an AbstractGeometry.
+     */
     public static <P extends Positions> Function<AbstractGeometry<P>, P> positionsFn(Class<P> positionsClass) {
         return new Function<AbstractGeometry<P>, P>() {
             @Override
@@ -31,11 +36,21 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
         };
     }
 
+    /**
+     * Returns the underlying {@link Positions} instance.
+     *
+     * @return P
+     */
     @Override
     public P positions() {
         return positions;
     }
 
+    /**
+     * Returns the underlying {@link Positions} size.
+     *
+     * @return int
+     */
     @Override
     public int size() {
         return positions.size();

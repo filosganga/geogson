@@ -10,9 +10,6 @@ import com.github.filosganga.geogson.model.Geometry;
 import com.github.filosganga.geogson.model.Point;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
-/**
- * @author Filippo De Luca - me@filippodeluca.com
- */
 public class CodecRegistryTest {
 
     @Test

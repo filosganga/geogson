@@ -4,9 +4,6 @@ import static java.util.Arrays.asList;
 
 import org.junit.Test;
 
-/**
- * @author Filippo De Luca - me@filippodeluca.com
- */
 public class LineStringTest {
 
     @Test(expected = IllegalArgumentException.class)

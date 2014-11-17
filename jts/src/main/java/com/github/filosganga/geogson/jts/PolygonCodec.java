@@ -4,7 +4,8 @@ import com.github.filosganga.geogson.model.Polygon;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.Polygon} and
+ * {@link Polygon}.
  */
 public class PolygonCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.Polygon, Polygon> {
 

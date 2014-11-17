@@ -19,18 +19,36 @@ package com.github.filosganga.geogson.model.positions;
 import com.google.common.collect.ImmutableList;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ *  a {@link Positions} instance to represent an area Geometry.
  */
 public class AreaPositions extends AbstractPositions<LinearPositions> {
+
+    private static final long serialVersionUID = 1L;
 
     public AreaPositions(ImmutableList<LinearPositions> children) {
         super(children);
     }
 
+    /**
+     * Creates a AreaPositions from a sequence of {@link LinearPositions}.
+     * @param children an Iterable of LinearPositions
+     */
     public AreaPositions(Iterable<LinearPositions> children) {
         this(ImmutableList.copyOf(children));
     }
 
+    /**
+     * Merge this Positions with another one. If the given {@link Positions} is:
+     *  - SinglePosition, it will raise an IllegalArgumentException.
+     *  - LinearPositions, it will return a new AreaPosition by appending the given LinearPositions to this.
+     *  - AreaPositions, it will return a new MultiDimensionalPositions composed by this and the given AreaPositions,
+     *    in order.
+     *  - Any other, it delegates to the other the merge logic.
+     *
+     * @param other Positions instance to merge with.
+     *
+     * @return Positions results of merging.
+     */
     @Override
     public Positions merge(Positions other) {
 

@@ -10,8 +10,6 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  * Codec for a {@link com.vividsolutions.jts.geom.GeometryCollection JTS
  * GeometryCollection}
  *
- * @author lurajon jone@ecc.no
- * @author bernhard.kiselka
  */
 public class GeometryCollectionCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.GeometryCollection, GeometryCollection> {
 

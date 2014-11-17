@@ -37,9 +37,6 @@ import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author Filippo De Luca - me@filippodeluca.com
- */
 public class PositionsAdapterTest {
 
   private Gson toTest;

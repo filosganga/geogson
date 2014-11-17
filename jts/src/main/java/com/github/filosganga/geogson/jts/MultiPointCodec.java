@@ -9,7 +9,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.MultiPoint} and
+ * {@link MultiPoint}.
  */
 public class MultiPointCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.MultiPoint, MultiPoint> {
 

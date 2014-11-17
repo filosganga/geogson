@@ -22,9 +22,7 @@ import com.github.filosganga.geogson.model.Polygon;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-/**
- * @author Filippo De Luca - me@filippodeluca.com
- */
+
 public class GeometryAdapterFactoryTest {
 
   private Gson toTest;
@@ -1928,7 +1926,7 @@ public class GeometryAdapterFactoryTest {
   }
 
   @Test
-  public void shouldHandleMultiPolygonWithSinglePolgyonWithHoles() {
+  public void shouldHandleMultiPolygonWithSinglePolygonWithHoles() {
 
     MultiPolygon source = MultiPolygon.of(
             Polygon.of(

@@ -45,11 +45,12 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * The Gson TypeAdapterFactory responsible to serialize/de-serialize all the {@link Geometry} instances.
  */
 public class GeometryAdapterFactory implements TypeAdapterFactory {
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
         if (Geometry.class.isAssignableFrom(type.getRawType())) {
             return (TypeAdapter<T>) new GeometryAdapter(gson);
@@ -76,10 +77,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 out.beginObject();
 
                 out.name("type").value(value.type().getValue());
-                if (value.type() != Geometry.Type.GEOMETRY_COLLECTION) {
-                    out.name("coordinates");
-                    gson.getAdapter(Positions.class).write(out, value.positions());
-                } else if (value.type() == Geometry.Type.GEOMETRY_COLLECTION) {
+                if (value.type() == Geometry.Type.GEOMETRY_COLLECTION) {
                     out.name("geometries"); //$NON-NLS-1$
                     out.beginArray();
                     GeometryCollection geometries = (GeometryCollection) value;
@@ -88,9 +86,9 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                     }
                     out.endArray();
                 } else {
-                    // TODO
+                    out.name("coordinates");
+                    gson.getAdapter(Positions.class).write(out, value.positions());
                 }
-
                 out.endObject();
             }
         }
@@ -188,12 +186,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                     .or(buildLineString(type, positions))
                     .or(buildMultiPoint(type, positions))
                     .or(buildPoint(type, positions))
-                    .orFinally(new Supplier<Geometry<?>>() {
-                        @Override
-                        public Geometry<?> get() {
-                            throw new IllegalArgumentException("Cannot build a geometry for type: " + type);
-                        }
-                    });
+                    .orFinally(throwUnsupportedType(type));
         }
 
         private Supplier<Optional<? extends Geometry<?>>> buildPoint(final String type, final Positions coordinates) {
@@ -324,9 +317,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                 public Optional<Geometry<?>> get() {
                     Optional<Geometry<?>> mayGeometry = Optional.absent();
                     if (Geometry.Type.GEOMETRY_COLLECTION.getValue().equalsIgnoreCase(type)) {
-
                         mayGeometry = Optional.<Geometry<?>>of(geometries);
-
                     }
 
                     return mayGeometry;
@@ -334,6 +325,16 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             };
 
         }
+
+        private Supplier<Geometry<?>> throwUnsupportedType(final String type) {
+            return new Supplier<Geometry<?>>() {
+                @Override
+                public Geometry<?> get() {
+                    throw new IllegalArgumentException("Cannot build a geometry for type: " + type);
+                }
+            };
+        }
+
 
     }
 }

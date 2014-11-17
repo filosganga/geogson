@@ -21,24 +21,29 @@ import java.io.Serializable;
 import com.google.common.base.Objects;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A couple of coordinates on the X and Y axis. If your map is in a geographic projection they will be Longitute and
+ * Latitude.
+ *
+ * eg:
+ * {@code
+ *     Coordinates cc = Coordinates.of(12, 34);
+ *     cc1 = cc.withLon(9).withLat(13);
+ * }
+ *
+ * TODO Consider rename long to x and lat to y.
  */
 public class Coordinates implements Serializable {
 
-    /**
-     * The x-axis coordinate in map units (degree, kilometer, meter, mile, foot
-     * and inch). If your map is in a geographic projection, this will be the
-     * Longitude. Otherwise, it will be the x coordinate of the map location in
-     * your map units.
-     */
+    private static final long serialVersionUID = 1L;
+
     private final double lon;
-    /**
-     * The y-axis coordinate in map units (degree, kilometer, meter, mile, foot
-     * and inch). If your map is in a geographic projection, this will be the
-     * Latitude. Otherwise, it will be the y coordinate of the map location in
-     * your map units.
-     */
+
     private final double lat;
+
+    private Coordinates(double lon, double lat) {
+        this.lon = lon;
+        this.lat = lat;
+    }
 
     /**
      * Create a new coordinate (a location on a map).
@@ -48,20 +53,26 @@ public class Coordinates implements Serializable {
      * @param lat
      *          latitude, y-axis coordinate, see {@link Coordinates#lat lat}
      */
-    private Coordinates(double lon, double lat) {
-
-        this.lon = lon;
-        this.lat = lat;
-    }
-
     public static Coordinates of(double lon, double lat) {
         return new Coordinates(lon, lat);
     }
 
+    /**
+     * The x-axis coordinate in map units (degree, kilometer, meter, mile, foot
+     * and inch). If your map is in a geographic projection, this will be the
+     * Longitude. Otherwise, it will be the x coordinate of the map location in
+     * your map units.
+     */
     public double getLon() {
         return lon;
     }
 
+    /**
+     * The y-axis coordinate in map units (degree, kilometer, meter, mile, foot
+     * and inch). If your map is in a geographic projection, this will be the
+     * Latitude. Otherwise, it will be the y coordinate of the map location in
+     * your map units.
+     */
     public double getLat() {
         return lat;
     }

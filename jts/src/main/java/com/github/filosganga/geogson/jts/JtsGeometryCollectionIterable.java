@@ -5,7 +5,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 
 /**
- * @author lurajon jone@ecc.no
+ * A {@link Geometry} Iterable, to wrap the getGeometryN and getNumGeometries JTS methods.
  */
 class JtsGeometryCollectionIterable implements Iterable<Geometry> {
 

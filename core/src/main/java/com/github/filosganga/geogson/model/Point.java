@@ -20,42 +20,87 @@ import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.google.common.base.Function;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A Point is identified by a {@link Coordinates}.
+ *
+ * GeoJson reference: {@see http://geojson.org/geojson-spec.html#point}
+ *
+ * eg: {@code Point p = Point.from(1,2)}
  */
 public class Point extends AbstractGeometry<SinglePosition> {
+
+    private static final long serialVersionUID = 1L;
 
     public Point(SinglePosition positions) {
         super(positions);
     }
 
+    /**
+     * Create a Point from the given coordinates.
+     *
+     * @param lon The x axis value. Longitude in a geographic projection.
+     * @param lat The y axis value. Latitude in a geographic projection.
+     *
+     * @return Point instance.
+     */
     public static Point from(double lon, double lat) {
         return from(Coordinates.of(lon, lat));
     }
 
+    /**
+     * Create a Point from the given coordinates.
+     *
+     * @param coordinates The Coordinate instance.
+     *
+     * @return Point instance.
+     */
     public static Point from(Coordinates coordinates) {
         return new Point(new SinglePosition(coordinates));
     }
 
+    /**
+     * The Guava function that extracts Coordinates instance from a Point.
+     */
     public static Function<Point, Coordinates> coordinatesFn() {
         return CoordinatesFn.INSTANCE;
     }
 
+    /**
+     * Returns the underlying {@link Coordinates} instance.
+     */
     public Coordinates coordinates() {
         return positions().coordinates();
     }
 
+    /**
+     * The x-axis coordinate in map units (degree, kilometer, meter, mile, foot
+     * and inch). If your map is in a geographic projection, this will be the
+     * Longitude. Otherwise, it will be the x coordinate of the map location in
+     * your map units.
+     */
     public double lon() {
         return coordinates().getLon();
     }
 
+    /**
+     * The y-axis coordinate in map units (degree, kilometer, meter, mile, foot
+     * and inch). If your map is in a geographic projection, this will be the
+     * Latitude. Otherwise, it will be the y coordinate of the map location in
+     * your map units.
+     */
     public double lat() {
         return coordinates().getLat();
     }
 
+    /**
+     * Returns a new Point instance with the given x-axis value.
+     */
     public Point withLon(double lon) {
         return from(lon, coordinates().getLat());
     }
 
+    /**
+     * Returns a new Point instance with the given x-axis value.
+     */
     public Point withLat(double lat) {
         return from(coordinates().getLon(), lat);
     }

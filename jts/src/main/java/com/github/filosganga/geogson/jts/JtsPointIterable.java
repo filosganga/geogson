@@ -6,7 +6,7 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * A {@link Point} Iterable, to wrap the getPointN and getNumPoints JTS methods.
  */
 class JtsPointIterable implements Iterable<Point> {
 

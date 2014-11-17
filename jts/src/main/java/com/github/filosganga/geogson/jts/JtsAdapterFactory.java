@@ -13,7 +13,18 @@ import com.google.gson.stream.JsonWriter;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 /**
- * @author Filippo De Luca - me@filippodeluca.com
+ * The JTS Gson TypeAdapterFactory.
+ *
+ * It can be built passing a GeometryFactory instance, otherwise it will instantiate a default one.
+ *
+ * How to use it:
+ * <pre>
+ *     Gson gson = new GsonBuilder()
+ *         .registerTypeAdapterFactory(new JtsAdapterFactory(new GeometryFactory(new PrecisionModel(100), 4326)))
+ *         .registerTypeAdapterFactory(new GeometryAdapterFactory())
+ *         .create();
+ * </pre>
+ *
  */
 public class JtsAdapterFactory implements TypeAdapterFactory {
 
