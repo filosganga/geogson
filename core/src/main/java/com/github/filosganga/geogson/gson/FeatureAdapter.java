@@ -2,6 +2,7 @@ package com.github.filosganga.geogson.gson;
 
 import com.github.filosganga.geogson.model.Feature;
 import com.github.filosganga.geogson.model.Geometry;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -14,7 +15,6 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 
 /**
@@ -74,7 +74,7 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
         } else if (in.peek() == JsonToken.BEGIN_OBJECT) {
             in.beginObject();
 
-            Optional<String> id = Optional.empty();
+            Optional<String> id = Optional.absent();
             Map<String, JsonElement> properties = null;
             Geometry<?> geometry = null;
 

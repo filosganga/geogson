@@ -1,10 +1,9 @@
 package com.github.filosganga.geogson.model;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
-
-import java.util.Optional;
 
 /**
  * Feature is a collection of properties and a geometry
