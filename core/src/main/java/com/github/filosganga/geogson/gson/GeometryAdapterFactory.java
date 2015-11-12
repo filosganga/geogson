@@ -19,15 +19,7 @@ package com.github.filosganga.geogson.gson;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.github.filosganga.geogson.model.Geometry;
-import com.github.filosganga.geogson.model.GeometryCollection;
-import com.github.filosganga.geogson.model.LineString;
-import com.github.filosganga.geogson.model.LinearRing;
-import com.github.filosganga.geogson.model.MultiLineString;
-import com.github.filosganga.geogson.model.MultiPoint;
-import com.github.filosganga.geogson.model.MultiPolygon;
-import com.github.filosganga.geogson.model.Point;
-import com.github.filosganga.geogson.model.Polygon;
+import com.github.filosganga.geogson.model.*;
 import com.github.filosganga.geogson.model.positions.AreaPositions;
 import com.github.filosganga.geogson.model.positions.LinearPositions;
 import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
@@ -56,6 +48,8 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             return (TypeAdapter<T>) new GeometryAdapter(gson);
         } else if (Positions.class.isAssignableFrom(type.getRawType())) {
             return (TypeAdapter<T>) new PositionsAdapter();
+        } else if (Feature.class.isAssignableFrom(type.getRawType())) {
+            return (TypeAdapter<T>) new FeatureAdapter(gson);
         } else {
             return null;
         }
