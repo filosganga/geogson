@@ -37,7 +37,8 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * The Gson TypeAdapterFactory responsible to serialize/de-serialize all the {@link Geometry} instances.
+ * The Gson TypeAdapterFactory responsible to serialize/de-serialize all the {@link Geometry}, {@link Feature}
+ * and {@link FeatureCollection} instances.
  */
 public class GeometryAdapterFactory implements TypeAdapterFactory {
 
@@ -50,6 +51,8 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             return (TypeAdapter<T>) new PositionsAdapter();
         } else if (Feature.class.isAssignableFrom(type.getRawType())) {
             return (TypeAdapter<T>) new FeatureAdapter(gson);
+        } else if (FeatureCollection.class.isAssignableFrom(type.getRawType())) {
+            return (TypeAdapter<T>) new FeatureCollectionAdapter(gson);
         } else {
             return null;
         }
