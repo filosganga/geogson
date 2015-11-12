@@ -1,5 +1,6 @@
 package com.github.filosganga.geogson.model;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 
@@ -37,5 +38,24 @@ public class Feature {
 
     public Optional<String> id() {
         return id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getClass(), this.id, this.geometry, this.properties);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final Feature other = (Feature) obj;
+        return Objects.equal(this.id, other.id)
+                && Objects.equal(this.properties, other.properties)
+                && Objects.equal(this.geometry, other.geometry);
     }
 }

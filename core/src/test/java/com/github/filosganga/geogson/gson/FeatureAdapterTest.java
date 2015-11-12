@@ -25,13 +25,13 @@ public class FeatureAdapterTest {
   public void shouldHandleFeaturesWithId() {
     Feature feature = FeatureUtils.featureWithId("testid");
     Feature parsed = toTest.fromJson(toTest.toJson(feature), Feature.class);
-    assertThat(parsed.id().get(), equalTo(feature.id().get()));
+    assertThat(parsed, equalTo(feature));
   }
   @Test
   public void shouldHandleFeaturesWithoutId() {
     Feature feature = FeatureUtils.featureWithGeometry(Point.from(12.3, 45.3));
     Feature parsed = toTest.fromJson(toTest.toJson(feature), Feature.class);
-    assertThat(parsed.id().isPresent(), is(false));
+    assertThat(parsed, is(feature));
   }
 
   @Test
