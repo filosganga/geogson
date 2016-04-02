@@ -42,17 +42,17 @@ public class FeatureCollectionAdapter extends TypeAdapter<FeatureCollection> {
 
     @Override
     public FeatureCollection read(JsonReader in) throws IOException {
-        FeatureCollection featureColelction = null;
+        FeatureCollection featureCollection = null;
+
         if (in.peek() == JsonToken.NULL) {
             in.nextNull();
         } else if (in.peek() == JsonToken.BEGIN_OBJECT) {
             in.beginObject();
-
             List<Feature> features = null;
 
             while (in.hasNext()) {
                 String name = in.nextName();
-                if ("features".equals(name)) {
+                if ("features".equalsIgnoreCase(name)) {
                     in.beginArray();
                     features = new ArrayList<>();
                     while(in.peek() == JsonToken.BEGIN_OBJECT) {
@@ -61,21 +61,21 @@ public class FeatureCollectionAdapter extends TypeAdapter<FeatureCollection> {
                     }
                     in.endArray();
                 } else {
-                    // Ignore
+                    in.skipValue();
                 }
             }
 
             if (features == null) {
                 throw new IllegalArgumentException("Required field 'features' is missing");
             }
-            featureColelction = new FeatureCollection(ImmutableList.copyOf(features));
+            featureCollection = new FeatureCollection(ImmutableList.copyOf(features));
             in.endObject();
 
         } else {
             throw new IllegalArgumentException("The given json is not a valid FeatureCollection: " + in.peek());
         }
 
-        return featureColelction;
+        return featureCollection;
     }
 
 }
