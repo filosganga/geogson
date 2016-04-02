@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * A closed {@link LineString}.
  *
- * JeoGson reference: {@see http://geojson.org/geojson-spec.html#linestring}.
+ * JeoGson reference: @see http://geojson.org/geojson-spec.html#linestring.
  *
  * eg: {@code
  *     LinearRing lr = LinearRing.of(

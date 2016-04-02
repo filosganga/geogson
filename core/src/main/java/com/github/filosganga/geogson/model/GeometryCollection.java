@@ -29,6 +29,7 @@ import com.google.common.collect.Iterables;
  * Collection of {@link Geometry} holding an {@link Iterable} being a
  * {@link Geometry}.
  *
+ * GeoJson reference: @see http://geojson.org/geojson-spec.html#geometry-collection
  */
 public class GeometryCollection implements Geometry<Positions>, Serializable {
 

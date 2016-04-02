@@ -52,6 +52,8 @@ public class Coordinates implements Serializable {
      *          longitude, x-axis coordinate, see {@link Coordinates#lon lon}
      * @param lat
      *          latitude, y-axis coordinate, see {@link Coordinates#lat lat}
+     *
+     * @return a Cordinates instances with the given longitude and latitude.
      */
     public static Coordinates of(double lon, double lat) {
         return new Coordinates(lon, lat);
@@ -62,6 +64,8 @@ public class Coordinates implements Serializable {
      * and inch). If your map is in a geographic projection, this will be the
      * Longitude. Otherwise, it will be the x coordinate of the map location in
      * your map units.
+     *
+     * @return a double x-axis value.
      */
     public double getLon() {
         return lon;
@@ -72,6 +76,8 @@ public class Coordinates implements Serializable {
      * and inch). If your map is in a geographic projection, this will be the
      * Latitude. Otherwise, it will be the y coordinate of the map location in
      * your map units.
+     *
+     * @return a double y-axis value.
      */
     public double getLat() {
         return lat;

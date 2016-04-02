@@ -26,6 +26,9 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
 
     /**
      * Guava {@link Function} extracting the Positions instance from an AbstractGeometry.
+     *
+     * @param <P> The Position type.
+     * @param positionsClass The Position class.
      */
     public static <P extends Positions> Function<AbstractGeometry<P>, P> positionsFn(Class<P> positionsClass) {
         return new Function<AbstractGeometry<P>, P>() {
@@ -39,7 +42,7 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
     /**
      * Returns the underlying {@link Positions} instance.
      *
-     * @return P
+     * @return P instance.
      */
     @Override
     public P positions() {

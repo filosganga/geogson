@@ -6,6 +6,10 @@ import java.util.List;
 
 /**
  * FeatureCollection contains a list of {@link Feature} instances
+ *
+ * GeoJson reference @see http://geojson.org/geojson-spec.html#feature-collection-objects.
+ *
+ *
  */
 public class FeatureCollection {
     private final List<Feature> features;

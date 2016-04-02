@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * Geometry composed by a sequence of {@link Point}.
  *
- * GeoJson reference: {@see http://geojson.org/geojson-spec.html#multipoint}
+ * GeoJson reference: @see http://geojson.org/geojson-spec.html#multipoint.
  *
  * eg: {@code
  *     MultiPoint mp = MultiPoint.of(

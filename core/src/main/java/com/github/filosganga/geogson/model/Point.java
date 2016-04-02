@@ -22,7 +22,7 @@ import com.google.common.base.Function;
 /**
  * A Point is identified by a {@link Coordinates}.
  *
- * GeoJson reference: {@see http://geojson.org/geojson-spec.html#point}
+ * GeoJson reference: @see http://geojson.org/geojson-spec.html#point.
  *
  * eg: {@code Point p = Point.from(1,2)}
  */
@@ -59,6 +59,8 @@ public class Point extends AbstractGeometry<SinglePosition> {
 
     /**
      * The Guava function that extracts Coordinates instance from a Point.
+     *
+     * @return  {@link CoordinatesFn} function instance.
      */
     public static Function<Point, Coordinates> coordinatesFn() {
         return CoordinatesFn.INSTANCE;
@@ -66,6 +68,8 @@ public class Point extends AbstractGeometry<SinglePosition> {
 
     /**
      * Returns the underlying {@link Coordinates} instance.
+     *
+     * @return The Coordinate instance represented by thi Point.
      */
     public Coordinates coordinates() {
         return positions().coordinates();
@@ -76,6 +80,8 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * and inch). If your map is in a geographic projection, this will be the
      * Longitude. Otherwise, it will be the x coordinate of the map location in
      * your map units.
+     *
+     * @return the x-axis value of this point.
      */
     public double lon() {
         return coordinates().getLon();
@@ -86,6 +92,8 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * and inch). If your map is in a geographic projection, this will be the
      * Latitude. Otherwise, it will be the y coordinate of the map location in
      * your map units.
+     *
+     * @return the y-axis value of this point.
      */
     public double lat() {
         return coordinates().getLat();
@@ -93,6 +101,9 @@ public class Point extends AbstractGeometry<SinglePosition> {
 
     /**
      * Returns a new Point instance with the given x-axis value.
+     *
+     * @param lon The new longitude value.
+     * @return A Point instance with this instance latitude and the given longitude
      */
     public Point withLon(double lon) {
         return from(lon, coordinates().getLat());
@@ -100,6 +111,9 @@ public class Point extends AbstractGeometry<SinglePosition> {
 
     /**
      * Returns a new Point instance with the given x-axis value.
+     *
+     * @param lat The new latitude value.
+     * @return A Point instance with this instance longitude and the given latitude.
      */
     public Point withLat(double lat) {
         return from(coordinates().getLon(), lat);

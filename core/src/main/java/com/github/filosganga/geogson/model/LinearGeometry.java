@@ -34,6 +34,8 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
 
     /**
      * Guava Function that converts to MultiPoint.
+     *
+     * @return Guava Function instance to convert to MultiPoint.
      */
     public static <T extends LinearGeometry> Function<T, MultiPoint> toMultiPointFn() {
         return new Function<T, MultiPoint>() {
@@ -46,6 +48,8 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
 
     /**
      * Guava Function that converts to LineString.
+     *
+     * @return Guava Function instance to convert to LineString.
      */
     public static <T extends LinearGeometry> Function<T, LineString> toLineStringFn() {
         return new Function<T, LineString>() {
@@ -58,6 +62,8 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
 
     /**
      * Guava Function that converts to LinearRing.
+     *
+     * @return Guava Function instance to convert to LinearRing.
      */
     public static <T extends LinearGeometry> Function<T, LinearRing> toLinearRingFn() {
         return new Function<T, LinearRing>() {
@@ -98,7 +104,7 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
     /**
      * Returns the points composing this Geometry.
      *
-     * @return Iterable<Point> a Guava lazy Iterable.
+     * @return {@code Iterable<Point>} a Guava lazy Iterable.
      */
     public Iterable<Point> points() {
         return FluentIterable.from(positions().children())

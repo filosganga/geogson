@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * A {@link Geometry} composed by a collection of {@link Polygon}.
  *
- * GeoJson reference: {@see http://geojson.org/geojson-spec.html#multipolygon}.
+ * GeoJson reference: @see http://geojson.org/geojson-spec.html#multipolygon.
  */
 public class MultiPolygon extends AbstractGeometry<MultiDimensionalPositions> {
 
@@ -52,6 +52,8 @@ public class MultiPolygon extends AbstractGeometry<MultiDimensionalPositions> {
 
     /**
      * Returns the Iterable of {@link Polygon} composing this MultiPolygon.
+     *
+     * @return an Iterable of the polygons contained in this MultiPolygon.
      */
     public Iterable<Polygon> polygons() {
         return FluentIterable.from(positions().children())

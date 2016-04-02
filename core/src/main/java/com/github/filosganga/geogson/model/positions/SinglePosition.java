@@ -40,6 +40,8 @@ public class SinglePosition extends AbstractPositions<Positions> {
 
     /**
      * Guava Function to extract the {@link Coordinates} from a SinglePosition.
+     *
+     * @return The {@link CoordinatesFn} instance.
      */
     public static Function<SinglePosition, Coordinates> coordinatesFn() {
         return CoordinatesFn.INSTANCE;
@@ -98,7 +100,7 @@ public class SinglePosition extends AbstractPositions<Positions> {
                 .toString();
     }
 
-    private static enum CoordinatesFn implements Function<SinglePosition, Coordinates> {
+    private enum CoordinatesFn implements Function<SinglePosition, Coordinates> {
         INSTANCE;
 
         @Override

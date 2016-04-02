@@ -27,7 +27,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * Specialization of LinearGeometry composed at least by 2 points.
  *
- * JeoGson reference: {@see http://geojson.org/geojson-spec.html#linestring}.
+ * JeoGson reference: @see http://geojson.org/geojson-spec.html#linestring.
  */
 public class LineString extends LinearGeometry {
 
@@ -73,7 +73,7 @@ public class LineString extends LinearGeometry {
      *  - Is composed by at least 4 points
      *  - The first and the last Point are the same.
      *
-     * For more details {@see http://geojson.org/geojson-spec.html#linestring}
+     * For more details @see http://geojson.org/geojson-spec.html#linestring.
      *
      * @return true if this Linestring is closed false otherwise.
      */

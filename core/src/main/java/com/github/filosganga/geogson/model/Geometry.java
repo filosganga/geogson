@@ -21,7 +21,7 @@ import com.github.filosganga.geogson.model.positions.Positions;
 /**
  * A Geometry is a definition of a shape (A collection of coordinates).
  *
- * GeoJson reference: {@see http://geojson.org/geojson-spec.html#geometry-objects}.
+ * GeoJson reference: @see http://geojson.org/geojson-spec.html#geometry-objects.
  *
  * @param <P> The Position type param.
  */

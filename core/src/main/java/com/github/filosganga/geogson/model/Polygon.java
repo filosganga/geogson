@@ -31,7 +31,7 @@ import com.google.common.collect.ImmutableList;
  * A Geometry composed by a sequence of {@link LinearRing}s (or closed {@link LineString}s). The first one is the
  * external perimeter, the followers are the holes.
  *
- * GeoJson reference: {@see http://geojson.org/geojson-spec.html#polygon}.
+ * GeoJson reference: @see http://geojson.org/geojson-spec.html#polygon.
  */
 public class Polygon extends MultiLineString {
 

@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * Geometry composed by a collection of {@link LineString}.
  *
- * GeoJson reference: {@see http://geojson.org/geojson-spec.html#multilinestring}
+ * GeoJson reference: @see http://geojson.org/geojson-spec.html#multilinestring.
  *
  * eg: {@code
  *     MultiLineString mls = MultiLineString.of(
@@ -78,7 +78,7 @@ public class MultiLineString extends AbstractGeometry<AreaPositions> {
     /**
      * Returns the {@link LineString} Iterable contained by this MultiLineString.
      *
-     * @return Guava lazy Iterable<LineString>.
+     * @return Guava lazy {@code Iterable<LineString>}.
      */
     public Iterable<LineString> lineStrings() {
         return FluentIterable.from(positions().children())

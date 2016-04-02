@@ -21,7 +21,7 @@ import java.io.Serializable;
 /**
  * The Positions represent the set of coordinates.
  *
- * GeoJson reference: {@see http://geojson.org/geojson-spec.html#positions}.
+ * GeoJson reference: @see http://geojson.org/geojson-spec.html#positions.
  */
 public interface Positions extends Serializable {
 
