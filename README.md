@@ -1,5 +1,9 @@
 GeoJSON support for Gson
 ====================================
+[![The Build Status](https://travis-ci.org/filosganga/geogson.png?branch=master)](https://travis-ci.org/filosganga/geogson)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/adc1d942b0c84f7893fd2fa5afdf0dfd)](https://www.codacy.com/app/me_62/geogson)
+[![Download](https://api.bintray.com/packages/filosganga/maven/geogson/images/download.svg)](https://bintray.com/filosganga/maven/geogson/_latestVersion)
+
 This library provide a minimal support to parse and write geo spatial entities
 using the well known GeoJSON standard. I started write it because seems that
 there are no extension to Gson available to support GeoJSON format, and it is
@@ -9,11 +13,6 @@ If you are not familiar with the Gson library take a look at the [Gson project p
 
 If you are not familiar with the GeoJSON format, please take a look at the [The GeoJSON specification](http://geojson.org/geojson-spec.html).
 
-The Travis-CI build status is:
-[![The Build Status](https://travis-ci.org/filosganga/geogson.png?branch=master)](https://travis-ci.org/filosganga/geogson)
-
-Download the last version from bintray:
-[![Download](https://api.bintray.com/packages/filosganga/maven/geogson/images/download.svg)](https://bintray.com/filosganga/maven/geogson/_latestVersion)
 
 ## Quick Start
 How to use the GeoGson in few easy steps.
