@@ -80,8 +80,11 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
 
             while (in.hasNext()) {
                 String name = in.nextName();
-                if (TYPE_NAME.equals(name) && !FEATURE_TYPE.equals(in.nextString())) {
-                    throw new IllegalArgumentException("The given json is not a valid Feature");
+                if (TYPE_NAME.equals(name)) {
+                    String value = in.nextString();
+                    if(!value.equalsIgnoreCase(FEATURE_TYPE)) {
+                        throw new IllegalArgumentException("The given json is not a valid Feature, the type must be Feature, current type=" + value);
+                    }
                 } else if (PROPERTIES_NAME.equals(name)) {
                     properties = readProperties(in);
                 } else if (GEOMETRY_NAME.equals(name)) {
@@ -89,7 +92,8 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
                 } else if (ID_NAME.equals(name)) {
                     id = Optional.of(in.nextString());
                 } else {
-                    // Ignore
+                    // Skip unknown value.
+                    in.skipValue();
                 }
             }
 

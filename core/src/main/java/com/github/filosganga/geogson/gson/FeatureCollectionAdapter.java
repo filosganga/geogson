@@ -48,13 +48,13 @@ public class FeatureCollectionAdapter extends TypeAdapter<FeatureCollection> {
             in.nextNull();
         } else if (in.peek() == JsonToken.BEGIN_OBJECT) {
             in.beginObject();
-            List<Feature> features = null;
+            ImmutableList.Builder<Feature> features = null;
 
             while (in.hasNext()) {
                 String name = in.nextName();
                 if ("features".equalsIgnoreCase(name)) {
                     in.beginArray();
-                    features = new ArrayList<>();
+                    features = ImmutableList.builder();
                     while(in.peek() == JsonToken.BEGIN_OBJECT) {
                         Feature feature = gson.fromJson(in, Feature.class);
                         features.add(feature);
@@ -68,7 +68,8 @@ public class FeatureCollectionAdapter extends TypeAdapter<FeatureCollection> {
             if (features == null) {
                 throw new IllegalArgumentException("Required field 'features' is missing");
             }
-            featureCollection = new FeatureCollection(ImmutableList.copyOf(features));
+
+            featureCollection = new FeatureCollection(features.build());
             in.endObject();
 
         } else {

@@ -30,7 +30,7 @@ public interface Geometry<P extends Positions> {
     /**
      * Define the type of the Geometry. As defined in the GeoJson specifications.
      */
-    public static enum Type {
+    enum Type {
         POINT("Point"),
         MULTI_POINT("MultiPoint"),
         LINE_STRING("LineString"),
@@ -42,7 +42,7 @@ public interface Geometry<P extends Positions> {
 
         private final String value;
 
-        private Type(String value) {
+        Type(String value) {
             this.value = value;
         }
 

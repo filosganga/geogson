@@ -112,7 +112,7 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                     } else if ("geometries".equals(name)) {
                         geometries = readGeometries(in);
                     } else {
-                        // Ignore
+                        in.skipValue();
                     }
                 }
 
