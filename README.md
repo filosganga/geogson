@@ -23,7 +23,7 @@ Add the following statement to your pom.xml.
     <dependency>
        <groupId>com.github.filosganga</groupId>
        <artifactId>geogson-core</artifactId>
-       <version>1.1.72</version>
+       <version>1.1.97</version>
     </dependency
 
 ### Register the TypeAdapterFactory with Gson
@@ -60,7 +60,7 @@ In ``pom.xml``:
     <dependency>
        <groupId>com.github.filosganga</groupId>
        <artifactId>geogson-jts</artifactId>
-       <version>1.1.72</version>
+       <version>1.1.97</version>
     </dependency
 
 The Gson building code:
