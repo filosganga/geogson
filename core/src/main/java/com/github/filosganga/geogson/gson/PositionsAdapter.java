@@ -47,7 +47,7 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             out.beginArray();
             if (value instanceof SinglePosition) {
                 SinglePosition sp = (SinglePosition) value;
-                out.value(sp.coordinates().getLon()).value(sp.coordinates().getLat());
+                out.value(sp.coordinates().getLon()).value(sp.coordinates().getLat()).value(sp.coordinates().getAlt());
             } else {
                 for (Positions child : value.children()) {
                     write(out, child);
@@ -125,13 +125,18 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
         Positions parsed;
         double lon = in.nextDouble();
         double lat = in.nextDouble();
+        double alt = 0.0;
+
+        if (in.hasNext()) {
+            alt = in.nextDouble();
+        }
 
         // Skip eventual altitude or other dimensions
         while (in.peek() != JsonToken.END_ARRAY) {
             in.skipValue();
         }
 
-        parsed = new SinglePosition(Coordinates.of(lon, lat));
+        parsed = new SinglePosition(Coordinates.of(lon, lat, alt));
         return parsed;
     }
 

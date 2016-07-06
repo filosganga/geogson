@@ -49,6 +49,19 @@ public class Point extends AbstractGeometry<SinglePosition> {
     /**
      * Create a Point from the given coordinates.
      *
+     * @param lon The x axis value. Longitude in a geographic projection.
+     * @param lat The y axis value. Latitude in a geographic projection.
+     * @param alt The z axis value. Altitude in a geographic projection.
+     *
+     * @return Point instance.
+     */
+    public static Point from(double lon, double lat, double alt) {
+        return from(Coordinates.of(lon, lat, alt));
+    }
+
+    /**
+     * Create a Point from the given coordinates.
+     *
      * @param coordinates The Coordinate instance.
      *
      * @return Point instance.
@@ -100,13 +113,25 @@ public class Point extends AbstractGeometry<SinglePosition> {
     }
 
     /**
+     * The z-axis coordinate in map units (degree, kilometer, meter, mile, foot
+     * and inch). If your map is in a geographic projection, this will be the
+     * Altitude. Otherwise, it will be the z coordinate of the map location in
+     * your map units.
+     *
+     * @return the z-axis value of this point.
+     */
+    public double alt() {
+        return coordinates().getAlt();
+    }
+
+    /**
      * Returns a new Point instance with the given x-axis value.
      *
      * @param lon The new longitude value.
      * @return A Point instance with this instance latitude and the given longitude
      */
     public Point withLon(double lon) {
-        return from(lon, coordinates().getLat());
+        return from(lon, coordinates().getLat(), coordinates().getAlt());
     }
 
     /**
@@ -116,8 +141,19 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return A Point instance with this instance longitude and the given latitude.
      */
     public Point withLat(double lat) {
-        return from(coordinates().getLon(), lat);
+        return from(coordinates().getLon(), lat, coordinates().getAlt());
     }
+
+    /**
+     * Returns a new Point instance with the given z-axis value.
+     *
+     * @param alt The new latitude value.
+     * @return A Point instance with this instance longitude and the given latitude.
+     */
+    public Point withAlt(double alt) {
+        return from(coordinates().getLon(), coordinates().getLat(), alt());
+    }
+
 
     @Override
     public Type type() {
