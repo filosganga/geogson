@@ -60,7 +60,7 @@ public class Coordinates implements Serializable {
      * @return a Coordinates instances with the given longitude and latitude.
      */
     public static Coordinates of(double lon, double lat) {
-        return new Coordinates(lon, lat, 0.0);
+        return new Coordinates(lon, lat, Double.NaN);
     }
 
     /**

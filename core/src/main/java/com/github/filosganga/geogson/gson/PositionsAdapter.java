@@ -47,7 +47,11 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             out.beginArray();
             if (value instanceof SinglePosition) {
                 SinglePosition sp = (SinglePosition) value;
-                out.value(sp.coordinates().getLon()).value(sp.coordinates().getLat()).value(sp.coordinates().getAlt());
+                out.value(sp.coordinates().getLon());
+                out.value(sp.coordinates().getLat());
+                if (!Double.isNaN(sp.coordinates().getAlt())) {
+                    out.value(sp.coordinates().getAlt());
+                }
             } else {
                 for (Positions child : value.children()) {
                     write(out, child);
@@ -125,7 +129,7 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
         Positions parsed;
         double lon = in.nextDouble();
         double lat = in.nextDouble();
-        double alt = 0.0;
+        double alt = Double.NaN;
 
         if (in.hasNext()) {
             alt = in.nextDouble();

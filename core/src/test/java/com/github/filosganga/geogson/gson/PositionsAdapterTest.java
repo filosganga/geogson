@@ -53,14 +53,18 @@ public class PositionsAdapterTest {
     Positions positions = toTest.fromJson(givenPositionJson(12.5, 45.8), Positions.class);
 
     assertThat(positions, is(singlePositionsWithLonLat(12.5, 45.8)));
+
+    assertThat(toTest.toJson(positions, Positions.class), is("[12.5,45.8]"));
   }
 
   @Test
   public void readShouldReadSinglePositionWithAlt() throws Exception {
 
-    Positions positions = toTest.fromJson(givenPositionJson(12.5, 45.8, 56.8), Positions.class);
+    Positions positions = toTest.fromJson("[12.5,45.8,56.8]", Positions.class);
 
     assertThat(positions, is(singlePositionsWithLonLatAlt(12.5, 45.8, 56.8)));
+
+    assertThat(toTest.toJson(positions, Positions.class), is("[12.5,45.8,56.8]"));
   }
 
   @Test
@@ -153,11 +157,6 @@ public class PositionsAdapterTest {
   protected String givenPositionJson(double lon, double lat) {
 
     return "[" + lon + "," + lat + "]";
-  }
-
-  protected String givenPositionJson(double lon, double lat, double alt) {
-
-    return "[" + lon + "," + lat + "," + alt + "]";
   }
 
 }
