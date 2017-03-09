@@ -21,7 +21,7 @@ import java.io.Serializable;
 import com.google.common.base.Objects;
 
 /**
- * A couple of coordinates on the X and Y axis. If your map is in a geographic projection they will be Longitute and
+ * A couple of coordinates on the X and Y axis. If your map is in a geographic projection they will be Longitude and
  * Latitude.
  *
  * eg:
@@ -53,7 +53,7 @@ public class Coordinates implements Serializable {
      * @param lat
      *          latitude, y-axis coordinate, see {@link Coordinates#lat lat}
      *
-     * @return a Cordinates instances with the given longitude and latitude.
+     * @return a Coordinates instances with the given longitude and latitude.
      */
     public static Coordinates of(double lon, double lat) {
         return new Coordinates(lon, lat);
