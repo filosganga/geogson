@@ -25,9 +25,7 @@ import com.github.filosganga.geogson.model.positions.LinearPositions;
 import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
-import com.github.filosganga.geogson.util.ChainableOptional;
 import com.google.common.base.Optional;
-import com.google.common.base.Supplier;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
@@ -172,164 +170,27 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
         }
 
         private Geometry<?> buildGeometry(final String type, Positions positions, Geometry<?> geometries) {
-
-            // Take care, the order is important!
-            return ChainableOptional
-                    .of(buildGeometryCollection(type, geometries))
-                    .or(buildMultiPolygon(type, positions))
-                    .or(buildPolygon(type, positions))
-                    .or(buildLinearRing(type, positions))
-                    .or(buildMultiLineString(type, positions))
-                    .or(buildLineString(type, positions))
-                    .or(buildMultiPoint(type, positions))
-                    .or(buildPoint(type, positions))
-                    .orFinally(throwUnsupportedType(type));
-        }
-
-        private Supplier<Optional<? extends Geometry<?>>> buildPoint(final String type, final Positions coordinates) {
-
-            return new Supplier<Optional<? extends Geometry<?>>>() {
-                @Override
-                public Optional<Geometry<?>> get() {
-                    Optional<Geometry<?>> mayGeometry = Optional.absent();
-
-                    if (type.equalsIgnoreCase(Geometry.Type.POINT.getValue())) {
-                        mayGeometry = Optional.<Geometry<?>>of(Point.from(((SinglePosition) coordinates).coordinates()));
-                    }
-
-                    return mayGeometry;
-                }
-            };
-
-
-        }
-
-        private Supplier<Optional<? extends Geometry<?>>> buildMultiPoint(final String type, final Positions coordinates) {
-
-            return new Supplier<Optional<? extends Geometry<?>>>() {
-                @Override
-                public Optional<Geometry<?>> get() {
-                    Optional<Geometry<?>> mayGeometry = Optional.absent();
-
-                    if (type.equalsIgnoreCase(Geometry.Type.MULTI_POINT.getValue())) {
-                        mayGeometry = Optional.<Geometry<?>>of(new MultiPoint((LinearPositions) coordinates));
-                    }
-
-                    return mayGeometry;
-                }
-            };
-
-        }
-
-        private Supplier<Optional<? extends Geometry<?>>> buildMultiLineString(final String type, final Positions coordinates) {
-
-            return new Supplier<Optional<? extends Geometry<?>>>() {
-                @Override
-                public Optional<Geometry<?>> get() {
-                    Optional<Geometry<?>> mayGeometry = Optional.absent();
-
-                    if (type.equalsIgnoreCase(Geometry.Type.MULTI_LINE_STRING.getValue())) {
-                        mayGeometry = Optional.<Geometry<?>>of(new MultiLineString((AreaPositions) coordinates));
-                    }
-
-                    return mayGeometry;
-                }
-            };
-        }
-
-        private Supplier<Optional<? extends Geometry<?>>> buildLineString(final String type, final Positions coordinates) {
-
-            return new Supplier<Optional<? extends Geometry<?>>>() {
-                @Override
-                public Optional<Geometry<?>> get() {
-                    Optional<Geometry<?>> mayGeometry = Optional.absent();
-
-                    if (type.equalsIgnoreCase(Geometry.Type.LINE_STRING.getValue())) {
-                        mayGeometry = Optional.<Geometry<?>>of(new LineString((LinearPositions) coordinates));
-                    }
-
-                    return mayGeometry;
-                }
-            };
-        }
-
-        private Supplier<Optional<? extends Geometry<?>>> buildLinearRing(final String type, final Positions coordinates) {
-
-            return new Supplier<Optional<? extends Geometry<?>>>() {
-                @Override
-                public Optional<Geometry<?>> get() {
-                    Optional<Geometry<?>> mayGeometry = Optional.absent();
-
-                    if (type.equalsIgnoreCase(Geometry.Type.LINEAR_RING.getValue())) {
-                        LinearPositions linearPositions = (LinearPositions) coordinates;
-                        if (linearPositions.isClosed()) {
-                            mayGeometry = Optional.<Geometry<?>>of(new LinearRing(linearPositions));
-                        }
-                    }
-
-                    return mayGeometry;
-                }
-            };
-
-
-        }
-
-        private Supplier<Optional<? extends Geometry<?>>> buildPolygon(final String type, final Positions coordinates) {
-
-            return new Supplier<Optional<? extends Geometry<?>>>() {
-                @Override
-                public Optional<Geometry<?>> get() {
-                    Optional<Geometry<?>> mayGeometry = Optional.absent();
-
-                    if (Geometry.Type.POLYGON.getValue().equalsIgnoreCase(type)) {
-                        mayGeometry = Optional.<Geometry<?>>of(new Polygon((AreaPositions) coordinates));
-                    }
-
-                    return mayGeometry;
-                }
-            };
-
-
-        }
-
-        private Supplier<Optional<? extends Geometry<?>>> buildMultiPolygon(final String type, final Positions coordinates) {
-
-            return new Supplier<Optional<? extends Geometry<?>>>() {
-                @Override
-                public Optional<Geometry<?>> get() {
-                    Optional<Geometry<?>> mayGeometry = Optional.absent();
-                    if (Geometry.Type.MULTI_POLYGON.getValue().equalsIgnoreCase(type)) {
-                        mayGeometry = Optional.<Geometry<?>>of(new MultiPolygon((MultiDimensionalPositions) coordinates));
-                    }
-
-                    return mayGeometry;
-                }
-            };
-        }
-
-        private Supplier<Optional<? extends Geometry<?>>> buildGeometryCollection(final String type, final Geometry<?> geometries) {
-
-            return new Supplier<Optional<? extends Geometry<?>>>() {
-                @Override
-                public Optional<Geometry<?>> get() {
-                    Optional<Geometry<?>> mayGeometry = Optional.absent();
-                    if (Geometry.Type.GEOMETRY_COLLECTION.getValue().equalsIgnoreCase(type)) {
-                        mayGeometry = Optional.<Geometry<?>>of(geometries);
-                    }
-
-                    return mayGeometry;
-                }
-            };
-
-        }
-
-        private Supplier<Geometry<?>> throwUnsupportedType(final String type) {
-            return new Supplier<Geometry<?>>() {
-                @Override
-                public Geometry<?> get() {
+            switch (Geometry.Type.forValue(type)) {
+                case GEOMETRY_COLLECTION:
+                    return geometries;
+                case MULTI_POLYGON:
+                    return new MultiPolygon((MultiDimensionalPositions) positions);
+                case POLYGON:
+                    return new Polygon((AreaPositions) positions);
+                case MULTI_LINE_STRING:
+                    return new MultiLineString((AreaPositions) positions);
+                case LINEAR_RING:
+                case LINE_STRING:
+                    return ((LinearPositions) positions).isClosed()
+                            ? new LinearRing((LinearPositions) positions)
+                            : new LineString((LinearPositions) positions);
+                case MULTI_POINT:
+                    return new MultiPoint((LinearPositions) positions);
+                case POINT:
+                    return Point.from(((SinglePosition) positions).coordinates());
+                default:
                     throw new IllegalArgumentException("Cannot build a geometry for type: " + type);
-                }
-            };
+            }
         }
 
 

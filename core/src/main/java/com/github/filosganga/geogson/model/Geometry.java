@@ -49,6 +49,15 @@ public interface Geometry<P extends Positions> {
         public String getValue() {
             return value;
         }
+
+        public static Type forValue(String value) {
+            for (Type type : values()) {
+                if (type.getValue().equalsIgnoreCase(value)) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException("Cannot build a geometry for type: " + value);
+        }
     }
 
     /**
