@@ -17,13 +17,12 @@
 package com.github.filosganga.geogson.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 
 /**
@@ -94,7 +93,7 @@ public class GeometryCollection implements Geometry<Positions>, Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getClass(), this.geometries);
+        return Objects.hash(getClass(), this.geometries);
     }
 
     @Override
@@ -106,7 +105,7 @@ public class GeometryCollection implements Geometry<Positions>, Serializable {
             return false;
         }
         final GeometryCollection other = (GeometryCollection) obj;
-        return Objects.equal(this.geometries, other.geometries);
+        return Objects.equals(this.geometries, other.geometries);
     }
 
     @Override

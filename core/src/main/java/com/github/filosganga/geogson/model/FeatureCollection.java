@@ -1,8 +1,7 @@
 package com.github.filosganga.geogson.model;
 
-import com.google.common.base.Objects;
-
 import java.util.List;
+import java.util.Objects;
 
 /**
  * FeatureCollection contains a list of {@link Feature} instances
@@ -24,7 +23,7 @@ public class FeatureCollection {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getClass(), this.features);
+        return Objects.hash(getClass(), this.features);
     }
 
     @Override
@@ -36,6 +35,6 @@ public class FeatureCollection {
             return false;
         }
         final FeatureCollection other = (FeatureCollection) obj;
-        return Objects.equal(this.features, other.features);
+        return Objects.equals(this.features, other.features);
     }
 }

@@ -17,9 +17,9 @@
 package com.github.filosganga.geogson.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 
 /**
  * A couple of coordinates on the X and Y axis. If your map is in a geographic projection they will be Longitute and
@@ -94,7 +94,7 @@ public class Coordinates implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(Coordinates.class, lon, lat);
+        return Objects.hash(Coordinates.class, lon, lat);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class Coordinates implements Serializable {
             return false;
         } else {
             final Coordinates other = (Coordinates) obj;
-            return Objects.equal(this.lon, other.lon) && Objects.equal(this.lat, other.lat);
+            return Objects.equals(this.lon, other.lon) && Objects.equals(this.lat, other.lat);
         }
     }
 

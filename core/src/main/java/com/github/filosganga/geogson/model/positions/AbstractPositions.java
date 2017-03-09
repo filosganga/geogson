@@ -2,7 +2,8 @@ package com.github.filosganga.geogson.model.positions;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
+
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -30,7 +31,7 @@ public abstract class AbstractPositions<T extends Positions> implements Position
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getClass(), children);
+        return Objects.hash(getClass(), children);
     }
 
     @Override
@@ -42,6 +43,6 @@ public abstract class AbstractPositions<T extends Positions> implements Position
             return false;
         }
         final AbstractPositions other = (AbstractPositions) obj;
-        return Objects.equal(this.children, other.children);
+        return Objects.equals(this.children, other.children);
     }
 }
