@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 
@@ -110,7 +111,7 @@ public class GeometryCollection implements Geometry<Positions>, Serializable {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("geometries", this.geometries) //$NON-NLS-1$
                 .toString();
     }

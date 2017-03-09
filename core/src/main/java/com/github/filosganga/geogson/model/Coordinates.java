@@ -18,6 +18,7 @@ package com.github.filosganga.geogson.model;
 
 import java.io.Serializable;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -110,6 +111,6 @@ public class Coordinates implements Serializable {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("lon", lon).add("lat", lat).toString();
+        return MoreObjects.toStringHelper(this).add("lon", lon).add("lat", lat).toString();
     }
 }

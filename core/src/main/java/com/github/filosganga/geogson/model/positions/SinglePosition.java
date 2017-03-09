@@ -18,6 +18,7 @@ package com.github.filosganga.geogson.model.positions;
 
 import com.github.filosganga.geogson.model.Coordinates;
 import com.google.common.base.Function;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
@@ -95,7 +96,7 @@ public class SinglePosition extends AbstractPositions<Positions> {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("coordinates", coordinates)
                 .toString();
     }

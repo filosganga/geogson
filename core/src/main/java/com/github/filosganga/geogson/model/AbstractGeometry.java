@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.google.common.base.Function;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 /**
@@ -78,7 +79,7 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("positions", positions)
                 .toString();
     }
