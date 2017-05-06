@@ -32,7 +32,9 @@ public class FeatureCollectionAdapterTest {
     @Test
     public void shouldHandleEmptyFeatureCollection() {
         FeatureCollection collection = new FeatureCollection(Collections.<Feature>emptyList());
-        FeatureCollection parsed = toTest.fromJson(toTest.toJson(collection), FeatureCollection.class);
+        final String json = toTest.toJson(collection);
+        assertThat(json, is("{\"type\":\"FeatureCollection\",\"features\":[]}"));
+        FeatureCollection parsed = toTest.fromJson(json, FeatureCollection.class);
         assertThat(parsed, equalTo(collection));
     }
 

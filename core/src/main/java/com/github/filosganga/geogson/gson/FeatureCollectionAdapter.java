@@ -30,6 +30,7 @@ public class FeatureCollectionAdapter extends TypeAdapter<FeatureCollection> {
             out.nullValue();
         } else {
             out.beginObject();
+            out.name("type").value("FeatureCollection");
             out.name("features");
             out.beginArray();
             for(Feature feature : value.features()) {
