@@ -20,30 +20,36 @@ How to use the GeoGson in few easy steps.
 ### Add the Maven dependency to your pom.xml
 Add the following statement to your pom.xml.
 
-    <dependency>
-       <groupId>com.github.filosganga</groupId>
-       <artifactId>geogson-core</artifactId>
-       <version>1.1.97</version>
-    </dependency
+```xml
+<dependency>
+   <groupId>com.github.filosganga</groupId>
+   <artifactId>geogson-core</artifactId>
+   <version>1.1.97</version>
+</dependency
+```
 
 ### Register the TypeAdapterFactory with Gson
 Use the GsonBuilder to register the ``GeometryAdapterFactory`` supplied.
 
-    Gson gson = new GsonBuilder()
-       .registerTypeAdapterFactory(new GeometryAdapterFactory())
-       .create();
+```java
+Gson gson = new GsonBuilder()
+   .registerTypeAdapterFactory(new GeometryAdapterFactory())
+   .create();
+```
 
 ### Serialize and de-serialize with Gson
 Now your Gson instance is able to parse and write any Geometry instance using
 the GeoJSON format.
 
-    String json = "{\"type\":\"Point\",\"coordinates\": [23.5,20.125]}";
+```java
+String json = "{\"type\":\"Point\",\"coordinates\": [23.5,20.125]}";
 
-    Point point = gson.fromJson(json, Point.class);
+Point point = gson.fromJson(json, Point.class);
 
-    String json = gson.toJson(point);
+String json = gson.toJson(point);
 
-    Geometry geometry = gson.fromJson(json); // It will be an instance of Point.
+Geometry geometry = gson.fromJson(json); // It will be an instance of Point.
+```
 
 ## Additional modules:
 There are currently only one additional module for GeoGSON, the Java Topology
@@ -57,18 +63,22 @@ register the ``JtsAdapterFactory`` as well.
 
 In ``pom.xml``:
 
-    <dependency>
-       <groupId>com.github.filosganga</groupId>
-       <artifactId>geogson-jts</artifactId>
-       <version>1.1.97</version>
-    </dependency
+```xml
+<dependency>
+   <groupId>com.github.filosganga</groupId>
+   <artifactId>geogson-jts</artifactId>
+   <version>1.1.97</version>
+</dependency
+```
 
 The Gson building code:
 
-    Gson gson = new GsonBuilder()
-       .registerTypeAdapterFactory(new JtsAdapterFactory())
-       .registerTypeAdapterFactory(new GeometryAdapterFactory())
-       .create();
+```java
+Gson gson = new GsonBuilder()
+   .registerTypeAdapterFactory(new JtsAdapterFactory())
+   .registerTypeAdapterFactory(new GeometryAdapterFactory())
+   .create();
+```
 
 Please note that you need the ``GeometryAdapterFactory`` anyway. The JTS
 support is a thin layer on top of the native geometry domain.
@@ -76,11 +86,13 @@ support is a thin layer on top of the native geometry domain.
 You can optionally configure ``GeometryFactory`` as well. In this example all 
 GeoJSON geometries are parsed as JTS geometries in WGS84 in centimeter precision:
 
-    Gson gson = new GsonBuilder()
-       .registerTypeAdapterFactory(new JtsAdapterFactory(
-           new GeometryFactory(new PrecisionModel(100), 4326)))
-       .registerTypeAdapterFactory(new GeometryAdapterFactory())
-       .create();
+```java
+Gson gson = new GsonBuilder()
+   .registerTypeAdapterFactory(new JtsAdapterFactory(
+       new GeometryFactory(new PrecisionModel(100), 4326)))
+   .registerTypeAdapterFactory(new GeometryAdapterFactory())
+   .create();
+```
 
 ## Enjoy beer with your friends, and buy me one!
 
