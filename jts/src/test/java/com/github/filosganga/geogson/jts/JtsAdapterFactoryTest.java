@@ -1949,7 +1949,7 @@ public class JtsAdapterFactoryTest {
     }
 
     @Test
-    public void shouldHandleMultiPolygonWithSinglePolgyonWithHoles() {
+    public void shouldHandleMultiPolygonWithSinglePolygonWithHoles() {
 
         MultiPolygon source = gf.createMultiPolygon(new Polygon[]{
             gf.createPolygon(
@@ -1990,7 +1990,7 @@ public class JtsAdapterFactoryTest {
     }
 
     @Test
-    public void shouldHandleMultiPolgonEmpty() {
+    public void shouldHandleMultiPolygonEmpty() {
 
         MultiPolygon source = gf.createMultiPolygon(null);
 
@@ -2011,7 +2011,7 @@ public class JtsAdapterFactoryTest {
     }
 
     @Test
-    public void shouldHandleMultiPolgonNull() {
+    public void shouldHandleMultiPolygonNull() {
 
         MultiPolygon source = null;
 

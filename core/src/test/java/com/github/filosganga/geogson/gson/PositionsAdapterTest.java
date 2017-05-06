@@ -131,9 +131,9 @@ public class PositionsAdapterTest {
     })) + "]";
   }
 
-  protected String givenLinearPositionsJson(Coordinates... coordinateses) {
+  protected String givenLinearPositionsJson(Coordinates... coordinates) {
 
-    return "[" + Joiner.on(',').join(FluentIterable.from(asList(coordinateses)).transform(new Function<Coordinates, String>() {
+    return "[" + Joiner.on(',').join(FluentIterable.from(asList(coordinates)).transform(new Function<Coordinates, String>() {
       @Override
       public String apply(Coordinates input) {
         return givenPositionJson(input.getLon(), input.getLat());

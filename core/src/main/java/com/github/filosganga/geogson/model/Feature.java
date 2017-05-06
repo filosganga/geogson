@@ -48,7 +48,7 @@ public class Feature {
     /**
      * The Geometry of this Feature.
      *
-     * @return a Geomtery instance.
+     * @return a Geometry instance.
      */
     public Geometry<?> geometry() {
         return geometry;
