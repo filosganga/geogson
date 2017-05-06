@@ -3,10 +3,11 @@ package com.github.filosganga.geogson.model;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 /**
  * Abstract implementation of {@link Geometry} providing generic methods.
@@ -61,7 +62,7 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getClass(), positions);
+        return Objects.hash(getClass(), positions);
     }
 
     @Override
@@ -73,12 +74,12 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
             return false;
         }
         final AbstractGeometry other = (AbstractGeometry) obj;
-        return Objects.equal(this.positions, other.positions);
+        return Objects.equals(this.positions, other.positions);
     }
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("positions", positions)
                 .toString();
     }

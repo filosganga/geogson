@@ -16,9 +16,11 @@
 
 package com.github.filosganga.geogson.model.positions;
 
+import java.util.Objects;
+
 import com.github.filosganga.geogson.model.Coordinates;
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -78,7 +80,7 @@ public class SinglePosition extends AbstractPositions<Positions> {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(SinglePosition.class, coordinates);
+        return Objects.hash(SinglePosition.class, coordinates);
     }
 
     @Override
@@ -90,12 +92,12 @@ public class SinglePosition extends AbstractPositions<Positions> {
             return false;
         }
         final SinglePosition other = (SinglePosition) obj;
-        return Objects.equal(this.coordinates, other.coordinates);
+        return Objects.equals(this.coordinates, other.coordinates);
     }
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("coordinates", coordinates)
                 .toString();
     }
