@@ -17,6 +17,7 @@
 package com.github.filosganga.geogson.model;
 
 import static com.github.filosganga.geogson.model.Matchers.positionWithLonLat;
+import static com.github.filosganga.geogson.model.Matchers.positionWithLonLatAlt;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -58,6 +59,17 @@ public class CoordinatesTest {
 
         assertThat(one, is(positionWithLonLat(10, 20)));
         assertThat(two, is(positionWithLonLat(10, 25)));
+    }
+
+    @Test
+    public void withAltShouldReturnNewInstance() {
+
+        Coordinates one = Coordinates.of(10, 20, 30);
+
+        Coordinates two = one.withAlt(25);
+
+        assertThat(one, is(positionWithLonLatAlt(10, 20, 30)));
+        assertThat(two, is(positionWithLonLatAlt(10, 20, 25)));
     }
 
     @Test

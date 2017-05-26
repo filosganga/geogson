@@ -43,6 +43,16 @@ public class GeometryAdapterFactoryTest {
   }
 
   @Test
+  public void shouldHandlePointWithAlt() {
+
+    Point point = Point.from(56.7, 83.6, 95.7);
+
+    Point parsed = toTest.fromJson(toTest.toJson(point), Point.class);
+
+    assertThat(parsed, equalTo(point));
+  }
+
+  @Test
   public void shouldHandleMultiPoint() {
 
     MultiPoint source = MultiPoint.of(Point.from(12.3, 45.3), Point.from(43.9, 5.8));

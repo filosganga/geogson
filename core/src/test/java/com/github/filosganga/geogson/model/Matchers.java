@@ -43,6 +43,21 @@ public final class Matchers {
         };
     }
 
+    public static Matcher<Positions> singlePositionsWithLonLatAlt(final double lon, final double lat, final  double alt) {
+        return new TypeSafeMatcher<Positions>() {
+            @Override
+            protected boolean matchesSafely(Positions item) {
+                return positionWithLonLatAlt(lon, lat, alt).matches(((SinglePosition) item).coordinates());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Single positions with position: ").appendDescriptionOf(positionWithLonLatAlt(lon, lat, alt));
+
+            }
+        };
+    }
+
 
     public static Matcher<Coordinates> positionWithLonLat(final double lon, final double lat) {
         return new TypeSafeMatcher<Coordinates>() {
@@ -57,6 +72,25 @@ public final class Matchers {
                         .appendValue(lon)
                         .appendText(" and lat: ")
                         .appendValue(lat);
+            }
+        };
+    }
+
+    public static Matcher<Coordinates> positionWithLonLatAlt(final double lon, final double lat, final double alt) {
+        return new TypeSafeMatcher<Coordinates>() {
+            @Override
+            protected boolean matchesSafely(Coordinates item) {
+                return item.getLon() == lon && item.getLat() == lat && item.getAlt() == alt;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Position with lon: ")
+                        .appendValue(lon)
+                        .appendText(" and lat: ")
+                        .appendValue(lat)
+                        .appendText(" and alt: ")
+                        .appendValue(alt);
             }
         };
     }
