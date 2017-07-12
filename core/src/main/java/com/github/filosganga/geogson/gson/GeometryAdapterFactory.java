@@ -16,16 +16,10 @@
 
 package com.github.filosganga.geogson.gson;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import com.github.filosganga.geogson.model.*;
-import com.github.filosganga.geogson.model.positions.AreaPositions;
-import com.github.filosganga.geogson.model.positions.LinearPositions;
-import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
-import com.github.filosganga.geogson.model.positions.Positions;
-import com.github.filosganga.geogson.model.positions.SinglePosition;
+import com.github.filosganga.geogson.model.positions.*;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
@@ -33,6 +27,9 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * The Gson TypeAdapterFactory responsible to serialize/de-serialize all the {@link Geometry}, {@link Feature}
@@ -185,7 +182,11 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
                             ? new LinearRing((LinearPositions) positions)
                             : new LineString((LinearPositions) positions);
                 case MULTI_POINT:
-                    return new MultiPoint((LinearPositions) positions);
+                    if (positions instanceof SinglePosition) {
+                        return new MultiPoint(new LinearPositions(ImmutableList.of((SinglePosition) positions)));
+                    } else {
+                        return new MultiPoint((LinearPositions) positions);
+                    }
                 case POINT:
                     return Point.from(((SinglePosition) positions).coordinates());
                 default:
