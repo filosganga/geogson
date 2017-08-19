@@ -21,5 +21,11 @@
             <username>${env.BINTRAY_USERNAME}</username>
             <password>${env.BINTRAY_PASSWORD}</password>
         </server>
+
+        <!-- It is for the gpg plugin -->
+        <server>
+            <id>gpg.passphrase</id>
+            <passphrase>${env.GPG_PASSPHRASE}</passphrase>
+        </server>
     </servers>
 </settings>
