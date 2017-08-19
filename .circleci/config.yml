@@ -14,14 +14,12 @@ jobs:
       - restore_cache:
           key: circleci-geogson-{{ checksum "pom.xml" }}
 
-      - run: mvn dependency:go-offline
+      - run: mvn package
 
       - save_cache:
           paths:
             - ~/.m2
           key: circleci-geogson-{{ checksum "pom.xml" }}
-
-      - run: mvn package
 
       - store_test_results:
           path: target/surefire-reports
