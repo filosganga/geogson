@@ -17,6 +17,8 @@
 package com.github.filosganga.geogson.gson;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.github.filosganga.geogson.model.Coordinates;
 import com.github.filosganga.geogson.model.positions.AreaPositions;
@@ -125,8 +127,7 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
         };
     }
 
-    private Positions parseSinglePosition(JsonReader in) throws IOException {
-        Positions parsed;
+    private static SinglePosition parseSinglePosition(JsonReader in) throws IOException {
         double lon = in.nextDouble();
         double lat = in.nextDouble();
         double alt = Double.NaN;
@@ -140,8 +141,33 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             in.skipValue();
         }
 
-        parsed = new SinglePosition(Coordinates.of(lon, lat, alt));
-        return parsed;
+        return new SinglePosition(Coordinates.of(lon, lat, alt));
     }
+
+    private static LinearPositions parseLinearPosition(JsonReader in) throws IOException {
+        List<SinglePosition> children = new LinkedList<>();
+
+        while (in.hasNext()) {
+            in.beginArray();
+            children.add(parseSinglePosition(in));
+            in.endArray();
+        }
+
+        return new LinearPositions(children);
+    }
+
+    private static AreaPositions parseAreaPosition(JsonReader in) throws IOException {
+        List<LinearPositions> children = new LinkedList<>();
+
+        while (in.hasNext()) {
+            in.beginArray();
+            children.add(parseLinearPosition(in));
+            in.endArray();
+        }
+
+        return new AreaPositions(children);
+    }
+
+
 
 }

@@ -1,5 +1,6 @@
 package com.github.filosganga.geogson.model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,6 +12,7 @@ import java.util.Objects;
  *
  */
 public class FeatureCollection {
+
     private final List<Feature> features;
 
     public FeatureCollection(List<Feature> features) {
@@ -18,7 +20,7 @@ public class FeatureCollection {
     }
 
     public List<Feature> features() {
-        return features;
+        return Collections.unmodifiableList(features);
     }
 
     @Override

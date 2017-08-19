@@ -68,15 +68,11 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
 
     @Override
     public Feature read(JsonReader in) throws IOException {
-        Feature feature = null;
+        Feature.Builder builder = Feature.builder();
         if (in.peek() == JsonToken.NULL) {
             in.nextNull();
         } else if (in.peek() == JsonToken.BEGIN_OBJECT) {
             in.beginObject();
-
-            Optional<String> id = Optional.absent();
-            Map<String, JsonElement> properties = null;
-            Geometry<?> geometry = null;
 
             while (in.hasNext()) {
                 String name = in.nextName();
@@ -86,25 +82,17 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
                         throw new IllegalArgumentException("The given json is not a valid Feature, the type must be Feature, current type=" + value);
                     }
                 } else if (PROPERTIES_NAME.equals(name)) {
-                    properties = readProperties(in);
+                    readProperties(in, builder);
                 } else if (GEOMETRY_NAME.equals(name)) {
-                    geometry = gson.fromJson(in, Geometry.class);
+                    Geometry<?> geometry = gson.fromJson(in, Geometry.class);
+                    builder.withGeometry(geometry);
                 } else if (ID_NAME.equals(name)) {
-                    id = Optional.of(in.nextString());
+                    builder.withId(Optional.fromNullable(in.nextString()));
                 } else {
                     // Skip unknown value.
                     in.skipValue();
                 }
             }
-
-            if (properties == null) {
-                throw new IllegalArgumentException("Required field 'properties' is missing");
-            }
-            if (geometry == null) {
-                throw new IllegalArgumentException("Required field 'geometry' is missing");
-            }
-
-            feature = new Feature(geometry, ImmutableMap.copyOf(properties), id);
 
             in.endObject();
 
@@ -112,20 +100,18 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
             throw new IllegalArgumentException("The given json is not a valid Feature: " + in.peek());
         }
 
-        return feature;
+        return builder.build();
     }
 
-    private Map<String, JsonElement> readProperties(JsonReader in) throws IOException {
-        Map<String, JsonElement> result = new HashMap<>();
+    private void readProperties(JsonReader in, Feature.Builder builder) throws IOException {
         JsonParser parser = new JsonParser();
         in.beginObject();
         while (in.peek() != JsonToken.END_OBJECT) {
             String name = in.nextName();
             JsonElement value = parser.parse(in);
-            result.put(name, value);
+            builder.withProperty(name, value);
         }
         in.endObject();
-        return result;
     }
 
 }

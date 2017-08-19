@@ -25,16 +25,8 @@ public class AreaPositions extends AbstractPositions<LinearPositions> {
 
     private static final long serialVersionUID = 1L;
 
-    public AreaPositions(ImmutableList<LinearPositions> children) {
-        super(children);
-    }
-
-    /**
-     * Creates a AreaPositions from a sequence of {@link LinearPositions}.
-     * @param children an Iterable of LinearPositions
-     */
     public AreaPositions(Iterable<LinearPositions> children) {
-        this(ImmutableList.copyOf(children));
+        super(children);
     }
 
     /**

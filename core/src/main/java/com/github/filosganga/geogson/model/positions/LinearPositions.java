@@ -20,24 +20,35 @@ import static com.google.common.collect.Iterables.getFirst;
 import static com.google.common.collect.Iterables.getLast;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+
+import java.util.Collections;
+import java.util.LinkedList;
 
 /**
  * A {@link Positions} implementation for linear geometries. It is composed by a sequence of SinglePosition (points).
  */
 public class LinearPositions extends AbstractPositions<SinglePosition> {
 
-    private static final long serialVersionUID = 1L;
+    public static class Builder {
 
-    public LinearPositions(ImmutableList<SinglePosition> children) {
-        super(children);
+        private LinkedList<SinglePosition> singlePositions = new LinkedList<>();
+
+        public Builder addSinglePosition(SinglePosition sp) {
+            singlePositions.add(sp);
+            return this;
+        }
+
+        public LinearPositions build() {
+            return new LinearPositions(singlePositions);
+        }
+
     }
 
-    /**
-     * Create a LinearPositions from the given {@link SinglePosition} Iterable.
-     * @param children Iterable of {@link SinglePosition}.
-     */
+    private static final long serialVersionUID = 1L;
+
     public LinearPositions(Iterable<SinglePosition> children) {
-        this(ImmutableList.copyOf(children));
+        super(children);
     }
 
     /**
@@ -55,11 +66,11 @@ public class LinearPositions extends AbstractPositions<SinglePosition> {
         if (other instanceof SinglePosition) {
 
             SinglePosition that = (SinglePosition) other;
-            return new LinearPositions(ImmutableList.<SinglePosition>builder().addAll(children).add(that).build());
+            return new LinearPositions(Iterables.concat(children, ImmutableList.of(that)));
         } else if (other instanceof LinearPositions) {
             LinearPositions that = (LinearPositions) other;
 
-            return new AreaPositions(ImmutableList.<LinearPositions>builder().add(this).add(that).build());
+            return new AreaPositions(ImmutableList.of(this, that));
         } else {
             return other.merge(this);
         }

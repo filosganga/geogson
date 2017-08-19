@@ -11,15 +11,15 @@ import com.google.gson.JsonElement;
 public final class FeatureUtils {
 
     public static Feature featureWithId(String id) {
-        return new Feature(Point.from(12.3, 45.3), ImmutableMap.<String, JsonElement>of(), Optional.of(id));
+        return Feature.builder().withGeometry(Point.from(12.3, 45.3)).withId(id).build();
     }
 
     public static Feature featureWithGeometry(Geometry<?> geometry) {
-        return new Feature(geometry, ImmutableMap.<String, JsonElement>of(), Optional.<String>absent());
+        return Feature.builder().withGeometry(Point.from(12.3, 45.3)).build();
     }
 
     public static Feature featureWithProperties(ImmutableMap<String, JsonElement> properties) {
-        return new Feature(Point.from(12.3, 45.3), properties, Optional.<String>absent());
+        return Feature.builder().withGeometry(Point.from(12.3, 45.3)).withProperties(properties).build();
     }
 
     private FeatureUtils() {
