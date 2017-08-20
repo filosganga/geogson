@@ -1,6 +1,6 @@
 GeoJSON support for Gson
 ====================================
-[![The Build Status](https://travis-ci.org/filosganga/geogson.png?branch=master)](https://travis-ci.org/filosganga/geogson)
+[![CircleCI](https://circleci.com/gh/filosganga/geogson.svg?style=svg)](https://circleci.com/gh/filosganga/geogson)
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/adc1d942b0c84f7893fd2fa5afdf0dfd)](https://www.codacy.com/app/me_62/geogson)
 [![Download](https://api.bintray.com/packages/filosganga/maven/geogson/images/download.svg)](https://bintray.com/filosganga/maven/geogson/_latestVersion)
 
