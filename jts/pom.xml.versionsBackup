@@ -20,28 +20,30 @@
     <parent>
         <groupId>com.github.filosganga</groupId>
         <artifactId>geogson</artifactId>
-        <version>1.2.18</version>
+        <version>1.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>geogson-core</artifactId>
+    <artifactId>geogson-jts</artifactId>
     <packaging>jar</packaging>
 
-    <name>GeoGson Core</name>
-    <description>GeoJSON support for Google Gson - Core</description>
+    <name>GeoGson JTS</name>
+    <description>GeoJSON support for Google Gson - JTS</description>
 
     <properties>
         <project.main.basedir>${project.parent.basedir}</project.main.basedir>
     </properties>
 
+
     <dependencies>
 
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <groupId>com.github.filosganga</groupId>
+            <artifactId>geogson-core</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
+            <groupId>com.vividsolutions</groupId>
+            <artifactId>jts-core</artifactId>
         </dependency>
 
         <dependency>
@@ -54,6 +56,7 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
@@ -62,22 +65,5 @@
 
     </dependencies>
 
-    <build>
-
-        <plugins>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

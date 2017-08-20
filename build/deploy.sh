@@ -1,8 +1,18 @@
 #!/bin/bash
 
-set -ev
+set -e
 
-MYDIR="$(dirname "$(readlink -f "$0")")"
+if [ -z ${BINTRAY_USERNAME+x} ];
+    then echo "BINTRAY_USERNAME is unset";
+    exit 1;
+fi
+
+if [ -z ${BINTRAY_PASSWORD+x} ];
+    then echo "BINTRAY_PASSWORD is unset";
+    exit 1;
+fi
+
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 BUILD_NUMBER=${CIRCLE_BUILD_NUM}
 
