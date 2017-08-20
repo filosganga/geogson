@@ -24,7 +24,7 @@ Add the following statement to your pom.xml.
 <dependency>
    <groupId>com.github.filosganga</groupId>
    <artifactId>geogson-core</artifactId>
-   <version>1.1.97</version>
+   <version>1.2.21</version>
 </dependency
 ```
 
@@ -67,7 +67,7 @@ In ``pom.xml``:
 <dependency>
    <groupId>com.github.filosganga</groupId>
    <artifactId>geogson-jts</artifactId>
-   <version>1.1.97</version>
+   <version>1.2.21</version>
 </dependency
 ```
 
