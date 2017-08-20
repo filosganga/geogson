@@ -11,12 +11,7 @@ jobs:
 
       - checkout
 
-      - run:
-          name: Install System Dependencies
-          command: apt-get update -qq && apt-get install -y bc
-
-
-      - restore_cache:
+     - restore_cache:
           key: circleci-geogson-{{ checksum "pom.xml" }}
 
       - run: mvn package
@@ -32,6 +27,7 @@ jobs:
       - deploy:
           name: Release master
           command: |
+            apt-get install -y bc
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               git config user.email "sayhi@circleci.com" && git config user.name "Circle-CI" && ./build/deploy.sh
             fi
