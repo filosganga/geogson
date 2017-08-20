@@ -28,7 +28,7 @@ jobs:
           name: Release master
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              ./build/deploy.sh
+              git config user.email "sayhi@circleci.com" && git config user.name "Circle-CI" && ./build/deploy.sh
             fi
 
 workflows:
