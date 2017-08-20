@@ -11,7 +11,7 @@ jobs:
 
       - checkout
 
-     - restore_cache:
+      - restore_cache:
           key: circleci-geogson-{{ checksum "pom.xml" }}
 
       - run: mvn package
