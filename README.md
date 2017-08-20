@@ -25,7 +25,7 @@ Add the following statement to your pom.xml.
    <groupId>com.github.filosganga</groupId>
    <artifactId>geogson-core</artifactId>
    <version>1.2.21</version>
-</dependency
+</dependency>
 ```
 
 ### Register the TypeAdapterFactory with Gson
@@ -68,7 +68,7 @@ In ``pom.xml``:
    <groupId>com.github.filosganga</groupId>
    <artifactId>geogson-jts</artifactId>
    <version>1.2.21</version>
-</dependency
+</dependency>
 ```
 
 The Gson building code:
@@ -94,5 +94,5 @@ Gson gson = new GsonBuilder()
    .create();
 ```
 
-## Enjoy beer with your friends, and buy me one!
+**Enjoy beer with your friends, and buy me one!**
 
