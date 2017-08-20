@@ -11,8 +11,9 @@ jobs:
 
       - checkout
 
-      - name: Install System Dependencies
-        command: apt-get update -qq && apt-get install -y bc
+      - run:
+          name: Install System Dependencies
+          command: apt-get update -qq && apt-get install -y bc
 
 
       - restore_cache:
