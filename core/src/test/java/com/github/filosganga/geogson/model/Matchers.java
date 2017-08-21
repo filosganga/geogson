@@ -18,10 +18,11 @@ package com.github.filosganga.geogson.model;
 
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
-import com.google.common.base.Optional;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+
+import java.util.Optional;
 
 public final class Matchers {
 

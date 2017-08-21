@@ -18,8 +18,7 @@ package com.github.filosganga.geogson.model;
 
 import java.io.Serializable;
 import java.util.Objects;
-
-import com.google.common.base.MoreObjects;
+import java.util.Optional;
 
 /**
  * A couple of coordinates on the X and Y axis. If your map is in a geographic projection they will be Longitude and
@@ -42,6 +41,8 @@ public class Coordinates implements Serializable {
     private final double lat;
 
     private final double alt;
+
+    private Optional<Integer> cachedHashCode = Optional.empty();
 
     private Coordinates(double lon, double lat, double alt) {
         this.lon = lon;
@@ -129,7 +130,11 @@ public class Coordinates implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(Coordinates.class, lon, lat, alt);
+        if(!cachedHashCode.isPresent()) {
+            cachedHashCode = Optional.of(Objects.hash(Coordinates.class, lon, lat, alt));
+        }
+
+        return cachedHashCode.get();
     }
 
     @Override
@@ -148,6 +153,13 @@ public class Coordinates implements Serializable {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("lon", lon).add("lat", lat).add("alt", alt).toString();
+        return getClass().getSimpleName() +
+                '{' +
+                "lon: " + lon +
+                ", " +
+                "lat: " + lat +
+                ", " +
+                "alt: " + alt +
+                "}";
     }
 }

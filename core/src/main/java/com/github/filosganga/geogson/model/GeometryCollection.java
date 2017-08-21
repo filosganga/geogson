@@ -16,19 +16,18 @@
 
 package com.github.filosganga.geogson.model;
 
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Objects;
-
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.Iterables;
+import com.github.filosganga.geogson.util.Iterables;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Collection of {@link Geometry} holding an {@link Iterable} being a
  * {@link Geometry}.
- *
+ * <p>
  * GeoJson reference: @see http://geojson.org/geojson-spec.html#geometry-collection
  */
 public class GeometryCollection implements Geometry<Positions>, Serializable {
@@ -44,15 +43,20 @@ public class GeometryCollection implements Geometry<Positions>, Serializable {
      */
     private final Iterable<Geometry<?>> geometries;
 
+    private int cachedSize = -1;
+
     /**
      * Constructor creating a {@link GeometryCollection} out of
      * {@link Iterable} {@link Geometry Geometries}.
      *
-     * @param geometries
-     *          Geometries of this {@link GeometryCollection}
+     * @param geometries Geometries of this {@link GeometryCollection}
      */
     private GeometryCollection(Iterable<Geometry<?>> geometries) {
         this.geometries = geometries;
+    }
+
+    public static GeometryCollection of(Geometry<?>...geometries) {
+        return of(Arrays.asList(geometries));
     }
 
     public static GeometryCollection of(Iterable<Geometry<?>> geometries) {
@@ -64,10 +68,10 @@ public class GeometryCollection implements Geometry<Positions>, Serializable {
      * {@link GeometryCollection}
      *
      * @return all {@link Geometry Geometries} of this {@link Iterable} (e.g.
-     *         Collection)
+     * Collection)
      */
     public Iterable<Geometry<?>> getGeometries() {
-        return this.geometries;
+        return Iterables.unmodifiableIterable(this.geometries);
     }
 
     @Override
@@ -77,10 +81,8 @@ public class GeometryCollection implements Geometry<Positions>, Serializable {
 
     @Override
     public Positions positions() {
-        Positions positions = new SinglePosition(null);
-        Iterator<Geometry<?>> iterator = this.geometries.iterator();
-        while (iterator.hasNext()) {
-            Geometry<?> geometry = iterator.next();
+        Positions positions = new SinglePosition(Double.NaN, Double.NaN, Double.NaN);
+        for (Geometry<?> geometry : this.geometries) {
             positions.merge(geometry.positions());
         }
         return positions;
@@ -88,7 +90,11 @@ public class GeometryCollection implements Geometry<Positions>, Serializable {
 
     @Override
     public int size() {
-        return Iterables.size(geometries);
+        if(cachedSize < 0) {
+            cachedSize = Iterables.size(geometries);
+        }
+
+        return cachedSize;
     }
 
     @Override
@@ -110,9 +116,7 @@ public class GeometryCollection implements Geometry<Positions>, Serializable {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("geometries", this.geometries) //$NON-NLS-1$
-                .toString();
+        return "GeometryCollection{geometries: " + Objects.toString(this.geometries) + "}";
     }
 
 }

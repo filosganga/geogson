@@ -1,9 +1,10 @@
 package com.github.filosganga.geogson.jts;
 
-import com.google.common.collect.UnmodifiableIterator;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
+
+import java.util.Iterator;
 
 /**
  * A {@link Point} Iterable, to wrap the getPointN and getNumPoints JTS methods.
@@ -45,11 +46,11 @@ class JtsPointIterable implements Iterable<Point> {
     }
 
     @Override
-    public UnmodifiableIterator<Point> iterator() {
+    public Iterator<Point> iterator() {
         return new JtsPointIterator(src);
     }
 
-    private class JtsPointIterator extends UnmodifiableIterator<Point> {
+    private class JtsPointIterator implements Iterator<Point> {
 
         private final PointProvider src;
 

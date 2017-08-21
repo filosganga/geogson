@@ -2,7 +2,6 @@ package com.github.filosganga.geogson.gson;
 
 import com.github.filosganga.geogson.model.Feature;
 import com.github.filosganga.geogson.model.FeatureCollection;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -19,9 +18,11 @@ import java.util.*;
 public class FeatureCollectionAdapter extends TypeAdapter<FeatureCollection> {
 
     private final Gson gson;
+    private final TypeAdapter<Feature> featureAdapter;
 
     public FeatureCollectionAdapter(Gson gson) {
         this.gson = gson;
+        this.featureAdapter = gson.getAdapter(Feature.class);
     }
 
     @Override
@@ -34,7 +35,7 @@ public class FeatureCollectionAdapter extends TypeAdapter<FeatureCollection> {
             out.name("features");
             out.beginArray();
             for(Feature feature : value.features()) {
-                gson.getAdapter(Feature.class).write(out, feature);
+                featureAdapter.write(out, feature);
             }
             out.endArray();
             out.endObject();
@@ -49,13 +50,13 @@ public class FeatureCollectionAdapter extends TypeAdapter<FeatureCollection> {
             in.nextNull();
         } else if (in.peek() == JsonToken.BEGIN_OBJECT) {
             in.beginObject();
-            ImmutableList.Builder<Feature> features = null;
+            LinkedList<Feature> features = null;
 
             while (in.hasNext()) {
                 String name = in.nextName();
                 if ("features".equalsIgnoreCase(name)) {
                     in.beginArray();
-                    features = ImmutableList.builder();
+                    features = new LinkedList<>();
                     while(in.peek() == JsonToken.BEGIN_OBJECT) {
                         Feature feature = gson.fromJson(in, Feature.class);
                         features.add(feature);
@@ -70,7 +71,7 @@ public class FeatureCollectionAdapter extends TypeAdapter<FeatureCollection> {
                 throw new IllegalArgumentException("Required field 'features' is missing");
             }
 
-            featureCollection = new FeatureCollection(features.build());
+            featureCollection = new FeatureCollection(features);
             in.endObject();
 
         } else {

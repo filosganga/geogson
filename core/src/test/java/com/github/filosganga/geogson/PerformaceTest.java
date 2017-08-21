@@ -3,13 +3,13 @@ package com.github.filosganga.geogson;
 
 import com.github.filosganga.geogson.gson.GeometryAdapterFactory;
 import com.github.filosganga.geogson.model.FeatureCollection;
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.openjdk.jmh.annotations.Benchmark;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 
 public class PerformaceTest {
@@ -22,7 +22,7 @@ public class PerformaceTest {
     }
 
     private static Reader openReader(String resourceName) throws IOException {
-        return Resources.asCharSource(Resources.getResource(resourceName), Charsets.UTF_8).openStream();
+        return new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(resourceName)));
     }
 
     @Benchmark

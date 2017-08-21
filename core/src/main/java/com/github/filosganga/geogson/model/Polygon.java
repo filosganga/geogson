@@ -16,16 +16,14 @@
 
 package com.github.filosganga.geogson.model;
 
-import static com.github.filosganga.geogson.model.LinearGeometry.toLinearRingFn;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.Iterables.getFirst;
-import static com.google.common.collect.Iterables.skip;
-import static com.google.common.collect.Iterables.transform;
-import static java.util.Arrays.asList;
-
 import com.github.filosganga.geogson.model.positions.AreaPositions;
 import com.github.filosganga.geogson.model.positions.LinearPositions;
-import com.google.common.collect.ImmutableList;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
 
 /**
  * A Geometry composed by a sequence of {@link LinearRing}s (or closed {@link LineString}s). The first one is the
@@ -43,11 +41,8 @@ public class Polygon extends MultiLineString {
 
     private static AreaPositions checkPositions(AreaPositions src) {
 
-        checkArgument(src.size() >= 1);
-
-        for (LinearPositions child : src.children()) {
-            checkArgument(child.isClosed());
-        }
+        checkArgument(src, s -> s.size() >= 1, "A polygon should have at least one perimeter");
+        src.children().forEach(child -> checkArgument(child, LinearPositions::isClosed, "The Polygon perimeters and holes must be closed"));
 
         return src;
     }
@@ -61,7 +56,7 @@ public class Polygon extends MultiLineString {
      * @return Polygon
      */
     public static Polygon of(LinearRing perimeter, LinearRing... holes) {
-        return Polygon.of(perimeter, asList(holes));
+        return Polygon.of(perimeter, Arrays.stream(holes));
     }
 
     /**
@@ -74,13 +69,26 @@ public class Polygon extends MultiLineString {
      */
     public static Polygon of(LinearRing perimeter, Iterable<LinearRing> holes) {
 
-        AreaPositions positions = new AreaPositions(ImmutableList.<LinearPositions>builder()
-                .add(perimeter.positions())
-                .addAll(transform(holes, positionsFn(LinearPositions.class)))
-                .build());
-
-        return new Polygon(positions);
+        return of(perimeter, StreamSupport.stream(holes.spliterator(), false));
     }
+
+    /**
+     * Creates a Polygon from the given perimeter and holes.
+     *
+     * @param perimeter The perimeter {@link LinearRing}.
+     * @param holes The holes {@link LinearRing} Stream.
+     *
+     * @return Polygon
+     */
+    public static Polygon of(LinearRing perimeter, Stream<LinearRing> holes) {
+
+        return new Polygon(AreaPositions.builder()
+                .addLinearPosition(perimeter.positions())
+                .addLinearPositions(holes
+                        .map(LinearRing::positions)::iterator)
+                .build());
+    }
+
 
     @Override
     public Type type() {
@@ -93,7 +101,8 @@ public class Polygon extends MultiLineString {
      * @return a Guava lazy Iterable of {@link LinearRing}.
      */
     public Iterable<LinearRing> linearRings() {
-        return transform(lineStrings(), toLinearRingFn());
+        return StreamSupport.stream(lineStrings().spliterator(), false)
+                .map(LineString::toLinearRing)::iterator;
     }
 
     /**
@@ -102,7 +111,7 @@ public class Polygon extends MultiLineString {
      * @return LinearRing
      */
     public LinearRing perimeter() {
-        return getFirst(linearRings(), null);
+        return linearRings().iterator().next();
     }
 
     /**
@@ -111,6 +120,6 @@ public class Polygon extends MultiLineString {
      * @return a Guava lazy Iterable of {@link LinearRing}.
      */
     public Iterable<LinearRing> holes() {
-        return skip(linearRings(), 1);
+        return StreamSupport.stream(linearRings().spliterator(), false).skip(1)::iterator;
     }
 }

@@ -16,7 +16,8 @@
 
 package com.github.filosganga.geogson.model.positions;
 
-import com.google.common.collect.ImmutableList;
+import java.util.Collections;
+import java.util.LinkedList;
 
 /**
  * It represent a collection of {@link AreaPositions} used to represent composed Are geometries like the
@@ -26,8 +27,32 @@ public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> 
 
     private static final long serialVersionUID = 1L;
 
-    public MultiDimensionalPositions(ImmutableList<AreaPositions> children) {
-        super(children);
+    public static class Builder {
+
+        private LinkedList<AreaPositions> areaPositions = new LinkedList<>();
+
+        public MultiDimensionalPositions.Builder addAreaPosition(AreaPositions ap) {
+            areaPositions.add(ap);
+            return this;
+        }
+
+        public MultiDimensionalPositions.Builder addAreaPositions(Iterable<AreaPositions> aps) {
+            aps.forEach(this::addAreaPosition);
+            return this;
+        }
+
+        public MultiDimensionalPositions build() {
+            return new MultiDimensionalPositions(areaPositions);
+        }
+
+    }
+
+    public static MultiDimensionalPositions.Builder builder() {
+        return new MultiDimensionalPositions.Builder();
+    }
+
+    public static MultiDimensionalPositions.Builder builder(MultiDimensionalPositions positions) {
+        return builder().addAreaPositions(positions.children);
     }
 
     /**
@@ -36,7 +61,7 @@ public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> 
      * @param children Iterable of AreaPositions.
      */
     public MultiDimensionalPositions(Iterable<AreaPositions> children) {
-        this(ImmutableList.copyOf(children));
+        super(children);
     }
 
     /**
@@ -55,16 +80,15 @@ public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> 
     @Override
     public Positions merge(Positions other) {
         if (other instanceof SinglePosition) {
-
             throw new IllegalArgumentException("Cannot merge single position and multidimensional positions");
         } else if (other instanceof LinearPositions) {
             // It can happen when a Polygon does not have holes and is represented by linear position see bug #19
-            return merge(new AreaPositions(ImmutableList.of((LinearPositions) other)));
+            return merge(new AreaPositions(Collections.singleton((LinearPositions) other)));
 
         } else if (other instanceof AreaPositions) {
 
             AreaPositions that = (AreaPositions) other;
-            return new MultiDimensionalPositions(ImmutableList.<AreaPositions>builder().addAll(children).add(that).build());
+            return new MultiDimensionalPositions.Builder().addAreaPositions(children).addAreaPosition(that).build();
         } else {
             throw new IllegalArgumentException("Cannot merge with: " + other);
         }

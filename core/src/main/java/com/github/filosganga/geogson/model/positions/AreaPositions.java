@@ -16,7 +16,7 @@
 
 package com.github.filosganga.geogson.model.positions;
 
-import com.google.common.collect.ImmutableList;
+import java.util.LinkedList;
 
 /**
  *  a {@link Positions} instance to represent an area Geometry.
@@ -24,6 +24,35 @@ import com.google.common.collect.ImmutableList;
 public class AreaPositions extends AbstractPositions<LinearPositions> {
 
     private static final long serialVersionUID = 1L;
+
+    public static class Builder {
+
+        private LinkedList<LinearPositions> linearPositions = new LinkedList<>();
+
+
+        public AreaPositions.Builder addLinearPosition(LinearPositions lp) {
+            linearPositions.add(lp);
+            return this;
+        }
+
+        public AreaPositions.Builder addLinearPositions(Iterable<LinearPositions> lps) {
+            lps.forEach(lp -> linearPositions.add(lp));
+            return this;
+        }
+
+        public AreaPositions build() {
+            return new AreaPositions(linearPositions);
+        }
+
+    }
+
+    public static AreaPositions.Builder builder() {
+        return new AreaPositions.Builder();
+    }
+
+    public static AreaPositions.Builder builder(AreaPositions positions) {
+        return builder().addLinearPositions(positions.children);
+    }
 
     public AreaPositions(Iterable<LinearPositions> children) {
         super(children);
@@ -50,11 +79,11 @@ public class AreaPositions extends AbstractPositions<LinearPositions> {
         } else if (other instanceof LinearPositions) {
 
             LinearPositions that = (LinearPositions) other;
-            return new AreaPositions(ImmutableList.<LinearPositions>builder().addAll(children).add(that).build());
+            return builder().addLinearPosition(that).build();
         } else if (other instanceof AreaPositions) {
 
             AreaPositions that = (AreaPositions) other;
-            return new MultiDimensionalPositions(ImmutableList.of(this, that));
+            return MultiDimensionalPositions.builder().addAreaPosition(this).addAreaPosition(that).build();
         } else {
 
             return other.merge(this);

@@ -16,22 +16,22 @@
 
 package com.github.filosganga.geogson.model;
 
-import static com.google.common.collect.Iterables.transform;
-
 import com.github.filosganga.geogson.model.positions.LinearPositions;
-import com.github.filosganga.geogson.model.positions.SinglePosition;
-import com.google.common.collect.ImmutableList;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Geometry composed by a sequence of {@link Point}.
- *
+ * <p>
  * GeoJson reference: @see http://geojson.org/geojson-spec.html#multipoint.
- *
+ * <p>
  * eg: {@code
- *     MultiPoint mp = MultiPoint.of(
- *         Point.from(1,2),
- *         Point.from(3,4)
- *     )
+ * MultiPoint mp = MultiPoint.of(
+ * Point.from(1,2),
+ * Point.from(3,4)
+ * )
  * }
  */
 public class MultiPoint extends LinearGeometry {
@@ -49,7 +49,7 @@ public class MultiPoint extends LinearGeometry {
      * @return MultiPoint
      */
     public static MultiPoint of(Point... points) {
-        return of(ImmutableList.copyOf(points));
+        return of(Arrays.stream(points));
     }
 
     /**
@@ -59,7 +59,17 @@ public class MultiPoint extends LinearGeometry {
      * @return MultiPoint
      */
     public static MultiPoint of(Iterable<Point> points) {
-        return new MultiPoint(new LinearPositions(transform(points, positionsFn(SinglePosition.class))));
+        return of(StreamSupport.stream(points.spliterator(), false));
+    }
+
+    /**
+     * Creates a MultiPoint from the given points.
+     *
+     * @param points The {@link Point} Iterable.
+     * @return MultiPoint
+     */
+    public static MultiPoint of(Stream<Point> points) {
+        return new MultiPoint(new LinearPositions(points.map(Point::positions)::iterator));
     }
 
     @Override

@@ -16,14 +16,8 @@
 
 package com.github.filosganga.geogson.model.positions;
 
-import static com.google.common.collect.Iterables.getFirst;
-import static com.google.common.collect.Iterables.getLast;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-
-import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Optional;
 
 /**
  * A {@link Positions} implementation for linear geometries. It is composed by a sequence of SinglePosition (points).
@@ -34,21 +28,52 @@ public class LinearPositions extends AbstractPositions<SinglePosition> {
 
         private LinkedList<SinglePosition> singlePositions = new LinkedList<>();
 
+        private Optional<SinglePosition> first = Optional.empty();
+        private Optional<SinglePosition> last = Optional.empty();
+        private int size = 0;
+
         public Builder addSinglePosition(SinglePosition sp) {
             singlePositions.add(sp);
+            if(!first.isPresent()) {
+                first = Optional.of(sp);
+            }
+            last = Optional.of(sp);
+            size++;
+
+            return this;
+        }
+
+        public Builder addSinglePositions(Iterable<SinglePosition> sps) {
+            sps.forEach(this::addSinglePosition);
             return this;
         }
 
         public LinearPositions build() {
-            return new LinearPositions(singlePositions);
+            Boolean isClosed = size >= 4 && first.equals(last);
+            return new LinearPositions(singlePositions, isClosed);
         }
 
     }
 
+    public static LinearPositions.Builder builder() {
+        return new LinearPositions.Builder();
+    }
+
+    public static LinearPositions.Builder builder(LinearPositions positions) {
+        return builder().addSinglePositions(positions.children);
+    }
+
     private static final long serialVersionUID = 1L;
+
+    private Optional<Boolean> cachedIsClosed = Optional.empty();
 
     public LinearPositions(Iterable<SinglePosition> children) {
         super(children);
+    }
+
+    public LinearPositions(Iterable<SinglePosition> children, Boolean isClosed) {
+        this(children);
+        cachedIsClosed = Optional.of(isClosed);
     }
 
     /**
@@ -64,13 +89,11 @@ public class LinearPositions extends AbstractPositions<SinglePosition> {
     @Override
     public Positions merge(Positions other) {
         if (other instanceof SinglePosition) {
-
             SinglePosition that = (SinglePosition) other;
-            return new LinearPositions(Iterables.concat(children, ImmutableList.of(that)));
+            return builder().addSinglePosition(that).build();
         } else if (other instanceof LinearPositions) {
             LinearPositions that = (LinearPositions) other;
-
-            return new AreaPositions(ImmutableList.of(this, that));
+            return AreaPositions.builder().addLinearPosition(this).addLinearPosition(that).build();
         } else {
             return other.merge(this);
         }
@@ -84,7 +107,27 @@ public class LinearPositions extends AbstractPositions<SinglePosition> {
      * @return true if it is closed, false otherwise.
      */
     public boolean isClosed() {
-        return size() >= 4 && getLast(children).equals(getFirst(children, null));
+        if(!cachedIsClosed.isPresent()) {
+
+            int size = 0;
+            SinglePosition first = null;
+            SinglePosition last = null;
+
+
+            for(SinglePosition child : children) {
+                if(first == null) {
+                    first = child;
+                }
+
+                last = child;
+                size = size + 1;
+            }
+
+
+            cachedIsClosed = Optional.of(size() >= 4 && last.equals(first));
+        }
+
+        return cachedIsClosed.get();
     }
 
 }

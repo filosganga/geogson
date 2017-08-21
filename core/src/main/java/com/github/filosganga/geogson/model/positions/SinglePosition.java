@@ -16,38 +16,34 @@
 
 package com.github.filosganga.geogson.model.positions;
 
-import java.util.Objects;
-
 import com.github.filosganga.geogson.model.Coordinates;
-import com.google.common.base.Function;
-import com.google.common.base.MoreObjects;
-import com.google.common.collect.ImmutableList;
+
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A {@link Positions} instance for a single {@link Coordinates}.
  */
 public class SinglePosition extends AbstractPositions<Positions> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
-    private static final ImmutableList<Positions> CHILDREN = ImmutableList.of();
+    private static final Iterable<Positions> CHILDREN = new ArrayList<>();
 
-    private final Coordinates coordinates;
+    private final double lon;
+    private final double lat;
+    private final double alt;
 
-    public SinglePosition(Coordinates coordinates) {
+    private Optional<Integer> cachedHashCode = Optional.empty();
+
+    public SinglePosition(double lon, double lat, double alt) {
         super(CHILDREN);
-
-        this.coordinates = coordinates;
+        this.lon = lon;
+        this.lat = lat;
+        this.alt = alt;
     }
 
-    /**
-     * Guava Function to extract the {@link Coordinates} from a SinglePosition.
-     *
-     * @return The {@link CoordinatesFn} instance.
-     */
-    public static Function<SinglePosition, Coordinates> coordinatesFn() {
-        return CoordinatesFn.INSTANCE;
-    }
 
     /**
      * Return the underlying {@link Coordinates} instance.
@@ -55,7 +51,7 @@ public class SinglePosition extends AbstractPositions<Positions> {
      * @return Coordinates
      */
     public Coordinates coordinates() {
-        return coordinates;
+        return Coordinates.of(lon, lat, alt);
     }
 
     /**
@@ -72,7 +68,7 @@ public class SinglePosition extends AbstractPositions<Positions> {
 
         if (other instanceof SinglePosition) {
             SinglePosition that = (SinglePosition) other;
-            return new LinearPositions(ImmutableList.of(this, that));
+            return LinearPositions.builder().addSinglePosition(this).addSinglePosition(that).build();
         } else {
             return other.merge(this);
         }
@@ -80,7 +76,10 @@ public class SinglePosition extends AbstractPositions<Positions> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(SinglePosition.class, coordinates);
+        if(!cachedHashCode.isPresent()) {
+            cachedHashCode = Optional.of(Objects.hash(SinglePosition.class, lon, lat, alt));
+        }
+        return cachedHashCode.get();
     }
 
     @Override
@@ -92,22 +91,17 @@ public class SinglePosition extends AbstractPositions<Positions> {
             return false;
         }
         final SinglePosition other = (SinglePosition) obj;
-        return Objects.equals(this.coordinates, other.coordinates);
+        return Objects.equals(this.lon, other.lon) &&
+                Objects.equals(this.lat, other.lat) &&
+                Objects.equals(this.alt, other.alt);
     }
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("coordinates", coordinates)
-                .toString();
-    }
-
-    private enum CoordinatesFn implements Function<SinglePosition, Coordinates> {
-        INSTANCE;
-
-        @Override
-        public Coordinates apply(SinglePosition input) {
-            return input.coordinates();
-        }
+        return "SinglePosition{" +
+                "lon=" + lon +
+                ", lat=" + lat +
+                ", alt=" + alt +
+                '}';
     }
 }

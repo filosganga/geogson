@@ -1,10 +1,9 @@
 package com.github.filosganga.geogson.jts;
 
-import static com.google.common.collect.Iterables.transform;
-
 import com.github.filosganga.geogson.model.MultiPolygon;
-import com.google.common.collect.FluentIterable;
 import com.vividsolutions.jts.geom.GeometryFactory;
+
+import java.util.stream.StreamSupport;
 
 /**
  * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.MultiPolygon} and
@@ -16,8 +15,7 @@ public class MultiPolygonCodec extends AbstractJtsCodec<com.vividsolutions.jts.g
      * Create a codec for a {@link com.vividsolutions.jts.geom.MultiPolygon JTS
      * MultiPolygon} with a given {@link GeometryFactory}
      *
-     * @param geometryFactory
-     *          a {@link GeometryFactory} defining a PrecisionModel and a SRID
+     * @param geometryFactory a {@link GeometryFactory} defining a PrecisionModel and a SRID
      */
     public MultiPolygonCodec(GeometryFactory geometryFactory) {
         super(geometryFactory);
@@ -25,15 +23,15 @@ public class MultiPolygonCodec extends AbstractJtsCodec<com.vividsolutions.jts.g
 
     @Override
     public MultiPolygon toGeometry(com.vividsolutions.jts.geom.MultiPolygon src) {
-        return MultiPolygon.of(transform(JtsPolygonIterable.of(src), fromJtsPolygonFn()));
+        return MultiPolygon.of(StreamSupport.stream(JtsPolygonIterable.of(src).spliterator(), false)
+                .map(AbstractJtsCodec::fromJtsPolygon));
     }
 
     @Override
     public com.vividsolutions.jts.geom.MultiPolygon fromGeometry(MultiPolygon src) {
         return this.geometryFactory.createMultiPolygon(
-                FluentIterable.from(src.polygons())
-                        .transform(toJtsPolygonFn())
-                        .toArray(com.vividsolutions.jts.geom.Polygon.class)
-        );
+                StreamSupport.stream(src.polygons().spliterator(), false)
+                        .map(this::toJtsPolygon)
+                        .toArray(com.vividsolutions.jts.geom.Polygon[]::new));
     }
 }

@@ -1,13 +1,16 @@
 package com.github.filosganga.geogson.model;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.Iterables.transform;
-import static com.google.common.collect.Lists.newArrayList;
-
 import com.github.filosganga.geogson.model.positions.LinearPositions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
-import com.google.common.collect.ImmutableList;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
 /**
  * A closed {@link LineString}.
  *
@@ -28,15 +31,11 @@ public class LinearRing extends LineString {
     private static final long serialVersionUID = 1L;
 
     public LinearRing(LinearPositions positions) {
-        super(checkPositions(positions));
-
-        checkArgument(positions.isClosed());
-    }
-
-    private static LinearPositions checkPositions(LinearPositions toCheck) {
-        checkArgument(toCheck.isClosed(), "LinearRing must be composed by a minimum of 4 points with the first and the last that are the same.");
-
-        return toCheck;
+        super(checkArgument(
+                positions,
+                LinearPositions::isClosed,
+                "LinearRing must be composed by a minimum of 4 points with the first and the last that are the same."
+        ));
     }
 
     /**
@@ -46,8 +45,7 @@ public class LinearRing extends LineString {
      * @return a LinearRing
      */
     public static LinearRing of(Point... points) {
-
-        return LinearRing.of(ImmutableList.copyOf(newArrayList(points)));
+        return of(Arrays.stream(points));
     }
 
     /**
@@ -57,7 +55,22 @@ public class LinearRing extends LineString {
      * @return a LinearRing
      */
     public static LinearRing of(Iterable<Point> points) {
-        return new LinearRing(new LinearPositions(transform(points, positionsFn(SinglePosition.class))));
+        LinearPositions.Builder builder = LinearPositions.builder();
+        for(Point point : points) {
+            builder.addSinglePosition(point.positions());
+        }
+        return new LinearRing(builder.build());
+    }
+
+    /**
+     * Create a LinearRing from the given points.
+     *
+     * @param points Point Iterable composed at least by 4 points, with the first and the last that are the same.
+     * @return a LinearRing
+     */
+    public static LinearRing of(Stream<Point> points) {
+
+        return of(points::iterator);
     }
 
     @Override

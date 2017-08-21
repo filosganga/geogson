@@ -18,7 +18,7 @@ package com.github.filosganga.geogson.gson;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Optional;
 
 import com.github.filosganga.geogson.model.Coordinates;
 import com.github.filosganga.geogson.model.positions.AreaPositions;
@@ -26,9 +26,6 @@ import com.github.filosganga.geogson.model.positions.LinearPositions;
 import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -81,9 +78,11 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
         return parsed;
     }
 
-    private Positions parsePositions(JsonReader in) throws IOException {
 
-        Optional<Positions> parsed = Optional.absent();
+    private static <P extends Positions> P parsePositions(JsonReader in) throws IOException {
+
+
+        Optional<P> parsed = Optional.empty();
 
         if (in.peek() != JsonToken.BEGIN_ARRAY) {
             throw new IllegalArgumentException("The given json is not a valid positions");
@@ -91,43 +90,41 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
 
         in.beginArray();
         if (in.peek() == JsonToken.NUMBER) {
-            parsed = Optional.of(parseSinglePosition(in));
+            parsed = Optional.of((P)parseSinglePosition(in));
         } else if (in.peek() == JsonToken.BEGIN_ARRAY) {
-            while (in.hasNext()) {
-                Positions thisPositions = parsePositions(in);
-                // fix bug #30: according to the recursion (i.e. the array structure;
-                // recognize that we came from a recursion because no parsed has no
-                // value yet): convert the already parsed Positions to the
-                // LinearPositions/AreaPositions matching the recursion level
-                if (parsed.equals(Optional.absent()) && thisPositions instanceof LinearPositions) {
-                    AreaPositions areaPositions = new AreaPositions(ImmutableList.of((LinearPositions) thisPositions));
-                    parsed = Optional.of((Positions) areaPositions);
-                } else if (parsed.equals(Optional.absent()) && thisPositions instanceof AreaPositions) {
-                    MultiDimensionalPositions multiPositions = new MultiDimensionalPositions(ImmutableList.of((AreaPositions) thisPositions));
-                    parsed = Optional.of((Positions) multiPositions);
-                } else {
-                  // mergeFn() does all the rest, if parsed has a value
-                  parsed = parsed.transform(mergeFn(thisPositions)).or(Optional.of(thisPositions));
-                }
+            LinkedList<P> innerPositions = new LinkedList<>();
 
+            int size = 0;
+            P first = null;
+            P last = null;
+
+            while (in.hasNext()) {
+                last = parsePositions(in);
+                if(first == null) {
+                    first = last;
+                }
+                size ++;
+
+                innerPositions.add(last);
+            }
+
+            boolean isClosed = size >=4 && last.equals(first);
+
+            if(innerPositions.getFirst() instanceof SinglePosition) {
+                parsed = Optional.of((P)new LinearPositions((Iterable<SinglePosition>) innerPositions, isClosed));
+            } else if(innerPositions.getFirst() instanceof LinearPositions) {
+                parsed = Optional.of((P)new AreaPositions((Iterable<LinearPositions>) innerPositions));
+            } else if (innerPositions.getFirst() instanceof AreaPositions) {
+                parsed = Optional.of((P)new MultiDimensionalPositions((Iterable<AreaPositions>) innerPositions));
             }
         }
 
         in.endArray();
 
-        return parsed.orNull();
+        return parsed.orElse(null);
     }
 
-    private Function<Positions, Positions> mergeFn(final Positions p) {
-        return new Function<Positions, Positions>() {
-            @Override
-            public Positions apply(Positions input) {
-                return input.merge(p);
-            }
-        };
-    }
-
-    private static SinglePosition parseSinglePosition(JsonReader in) throws IOException {
+    private static Positions parseSinglePosition(JsonReader in) throws IOException {
         double lon = in.nextDouble();
         double lat = in.nextDouble();
         double alt = Double.NaN;
@@ -136,38 +133,12 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             alt = in.nextDouble();
         }
 
-        // Skip eventual altitude or other dimensions
+        // Skip eventual other dimensions
         while (in.peek() != JsonToken.END_ARRAY) {
             in.skipValue();
         }
 
-        return new SinglePosition(Coordinates.of(lon, lat, alt));
+        return new SinglePosition(lon, lat, alt);
     }
-
-    private static LinearPositions parseLinearPosition(JsonReader in) throws IOException {
-        List<SinglePosition> children = new LinkedList<>();
-
-        while (in.hasNext()) {
-            in.beginArray();
-            children.add(parseSinglePosition(in));
-            in.endArray();
-        }
-
-        return new LinearPositions(children);
-    }
-
-    private static AreaPositions parseAreaPosition(JsonReader in) throws IOException {
-        List<LinearPositions> children = new LinkedList<>();
-
-        while (in.hasNext()) {
-            in.beginArray();
-            children.add(parseLinearPosition(in));
-            in.endArray();
-        }
-
-        return new AreaPositions(children);
-    }
-
-
 
 }

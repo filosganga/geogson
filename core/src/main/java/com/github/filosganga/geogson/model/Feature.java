@@ -1,14 +1,8 @@
 package com.github.filosganga.geogson.model;
 
-import java.util.Objects;
+import java.util.*;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Feature is a collection of properties and a geometry
@@ -29,7 +23,7 @@ public class Feature {
 
         private Geometry<?> geometry = null;
         private Map<String, JsonElement> properties = new HashMap<>();
-        private Optional<String> id = Optional.absent();
+        private Optional<String> id = Optional.empty();
 
         Builder(){
         }
@@ -62,10 +56,12 @@ public class Feature {
             if(geometry == null) {
                 throw new IllegalStateException("geometry is required to build a Feature");
             }
-            return new Feature(geometry, Collections.unmodifiableMap(properties), id);
+            return new Feature(geometry, properties, id);
         }
 
     }
+
+    private static final long serialVersionUID = 1L;
 
     private final Geometry<?> geometry;
 
@@ -73,6 +69,8 @@ public class Feature {
     private final Map<String, JsonElement> properties;
 
     private final Optional<String> id;
+
+    private Optional<Integer> cachedHashCode = Optional.empty();
 
     private Feature(Geometry<?> geometry, Map<String, JsonElement> properties, Optional<String> id) {
         this.geometry = geometry;
@@ -114,7 +112,7 @@ public class Feature {
      * @return an Map containing the properties. An empty map if not properties have been set.
      */
     public Map<String, JsonElement> properties() {
-        return properties;
+        return Collections.unmodifiableMap(properties);
     }
 
     /**
@@ -129,7 +127,11 @@ public class Feature {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getClass(), this.id, this.geometry, this.properties);
+        if(!cachedHashCode.isPresent()) {
+            cachedHashCode = Optional.of(Objects.hash(getClass(), this.id, this.geometry, this.properties));
+        }
+
+        return cachedHashCode.get();
     }
 
     @Override
@@ -144,5 +146,14 @@ public class Feature {
         return Objects.equals(this.id, other.id)
                 && Objects.equals(this.properties, other.properties)
                 && Objects.equals(this.geometry, other.geometry);
+    }
+
+    @Override
+    public String toString() {
+        return "Feature{" +
+                "geometry=" + geometry +
+                ", properties=" + properties +
+                ", id=" + id +
+                '}';
     }
 }

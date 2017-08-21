@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.github.filosganga</groupId>
         <artifactId>geogson</artifactId>
-        <version>1.3-SNAPHOT</version>
+        <version>1.4-SNAPHOT</version>
     </parent>
 
     <artifactId>geogson-jts</artifactId>

@@ -3,18 +3,18 @@ package com.github.filosganga.geogson.gson;
 import com.github.filosganga.geogson.gson.utils.FeatureUtils;
 import com.github.filosganga.geogson.model.Feature;
 import com.github.filosganga.geogson.model.FeatureCollection;
-import com.github.filosganga.geogson.model.Geometry;
-import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableList;
-import com.google.common.io.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -40,10 +40,11 @@ public class FeatureCollectionAdapterTest {
 
     @Test
     public void shouldHandleFeatureCollectionWithFeatures() {
-        List<Feature> features = ImmutableList.of(
+        List<Feature> features = Arrays.asList(
                 FeatureUtils.featureWithId("test1"),
                 FeatureUtils.featureWithId("test2")
         );
+
         FeatureCollection collection = new FeatureCollection(features);
         FeatureCollection parsed = toTest.fromJson(toTest.toJson(collection), FeatureCollection.class);
         assertThat(parsed.features(), hasSize(2));
@@ -65,12 +66,18 @@ public class FeatureCollectionAdapterTest {
     @Test
     public void shouldParseRealFeatureCollection() throws IOException {
 
-        String json = Resources.toString(Resources.getResource("feature-collection.json"), Charsets.UTF_8);
+        String json = readJson("feature-collection.json");
 
         FeatureCollection parsed = toTest.fromJson(json, FeatureCollection.class);
 
         assertThat(parsed.features(), hasSize(202));
 
+    }
+
+    public static String readJson(String resource) throws IOException {
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(resource)))) {
+            return buffer.lines().collect(Collectors.joining("\n"));
+        }
     }
 
 

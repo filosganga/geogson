@@ -1,11 +1,11 @@
 package com.github.filosganga.geogson.model.positions;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.github.filosganga.geogson.util.Iterables;
 
 import java.util.Objects;
+import java.util.Optional;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
 
 /**
  * Abstract implementation of {@link Positions}. Provides some basic methods.
@@ -16,8 +16,11 @@ public abstract class AbstractPositions<T extends Positions> implements Position
 
     protected final Iterable<T> children;
 
-    protected AbstractPositions(Iterable<T> children) {
-        this.children = checkNotNull(children, "The children cannot be null");
+    private Optional<Integer> cachedSize = Optional.empty();
+    private Optional<Integer> cachedHashCode = Optional.empty();
+
+    AbstractPositions(Iterable<T> children) {
+        this.children = checkArgument(children, Objects::nonNull, "The children cannot be null");
     }
 
     @Override
@@ -27,12 +30,18 @@ public abstract class AbstractPositions<T extends Positions> implements Position
 
     @Override
     public int size() {
-        return Iterables.size(children);
+        if(!cachedSize.isPresent()) {
+            cachedSize = Optional.of(Iterables.size(children));
+        }
+        return cachedSize.get();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getClass(), children);
+        if(!cachedHashCode.isPresent()) {
+            cachedHashCode = Optional.of(Objects.hash(getClass(), children));
+        }
+        return cachedHashCode.get();
     }
 
     @Override

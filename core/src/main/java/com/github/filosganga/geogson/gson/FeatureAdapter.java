@@ -2,8 +2,6 @@ package com.github.filosganga.geogson.gson;
 
 import com.github.filosganga.geogson.model.Feature;
 import com.github.filosganga.geogson.model.Geometry;
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -13,8 +11,7 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -28,10 +25,16 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
     public static final String GEOMETRY_NAME = "geometry";
     public static final String ID_NAME = "id";
     public static final String TYPE_NAME = "type";
+
+    private static final JsonParser jsonParser = new JsonParser();
+
     private final Gson gson;
+    private final TypeAdapter<Geometry> geometryAdapter;
 
     public FeatureAdapter(Gson gson) {
+
         this.gson = gson;
+        this.geometryAdapter = gson.getAdapter(Geometry.class);
     }
 
     @Override
@@ -52,7 +55,7 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
 
     private void writeGeometry(JsonWriter out, Feature value) throws IOException {
         out.name(GEOMETRY_NAME);
-        gson.getAdapter(Geometry.class).write(out, value.geometry());
+        geometryAdapter.write(out, value.geometry());
     }
 
     private void writeProperties(JsonWriter out, Feature value) throws IOException {
@@ -84,10 +87,9 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
                 } else if (PROPERTIES_NAME.equals(name)) {
                     readProperties(in, builder);
                 } else if (GEOMETRY_NAME.equals(name)) {
-                    Geometry<?> geometry = gson.fromJson(in, Geometry.class);
-                    builder.withGeometry(geometry);
+                    builder.withGeometry(gson.fromJson(in, Geometry.class));
                 } else if (ID_NAME.equals(name)) {
-                    builder.withId(Optional.fromNullable(in.nextString()));
+                    builder.withId(Optional.ofNullable(in.nextString()));
                 } else {
                     // Skip unknown value.
                     in.skipValue();
@@ -104,11 +106,10 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
     }
 
     private void readProperties(JsonReader in, Feature.Builder builder) throws IOException {
-        JsonParser parser = new JsonParser();
         in.beginObject();
-        while (in.peek() != JsonToken.END_OBJECT) {
+        while (in.hasNext()) {
             String name = in.nextName();
-            JsonElement value = parser.parse(in);
+            JsonElement value = jsonParser.parse(in);
             builder.withProperty(name, value);
         }
         in.endObject();

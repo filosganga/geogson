@@ -21,7 +21,6 @@ import static com.github.filosganga.geogson.model.Matchers.pointWithLonLat;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
 public class PointTest {
@@ -63,8 +62,14 @@ public class PointTest {
 
         assertThat(base.equals(null), is(false));
         assertThat(base.equals(base), is(true));
+        assertThat(base.equals(same), is(true));
+        assertThat(base.equals(different), is(false));
+        assertThat(same.equals(different), is(false));
 
-        assertThat(ImmutableSet.of(base, same, different).size(), is(2));
+        assertThat(base.hashCode() == base.hashCode(), is(true));
+        assertThat(base.hashCode() == same.hashCode(), is(true));
+        assertThat(base.hashCode() == different.hashCode(), is(false));
+        assertThat(same.hashCode() == different.hashCode(), is(false));
     }
 
 }

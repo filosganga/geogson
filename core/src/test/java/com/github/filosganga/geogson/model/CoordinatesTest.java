@@ -16,14 +16,12 @@
 
 package com.github.filosganga.geogson.model;
 
+import org.junit.Test;
+
 import static com.github.filosganga.geogson.model.Matchers.positionWithLonLat;
 import static com.github.filosganga.geogson.model.Matchers.positionWithLonLatAlt;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-
-import org.junit.Test;
-
-import com.google.common.collect.ImmutableSet;
 
 public class CoordinatesTest {
 
@@ -80,12 +78,16 @@ public class CoordinatesTest {
 
         Coordinates different = Coordinates.of(10, 21);
 
-
         assertThat(base.equals(null), is(false));
         assertThat(base.equals(base), is(true));
+        assertThat(base.equals(same), is(true));
+        assertThat(base.equals(different), is(false));
+        assertThat(same.equals(different), is(false));
 
-        assertThat(ImmutableSet.of(base, same, different).size(), is(2));
-
+        assertThat(base.hashCode() == base.hashCode(), is(true));
+        assertThat(base.hashCode() == same.hashCode(), is(true));
+        assertThat(base.hashCode() == different.hashCode(), is(false));
+        assertThat(same.hashCode() == different.hashCode(), is(false));
     }
 
 

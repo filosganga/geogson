@@ -1,8 +1,9 @@
 package com.github.filosganga.geogson.jts;
 
-import com.google.common.collect.UnmodifiableIterator;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
+
+import java.util.Iterator;
 
 /**
  * A {@link Geometry} Iterable, to wrap the getGeometryN and getNumGeometries JTS methods.
@@ -31,17 +32,17 @@ class JtsGeometryCollectionIterable implements Iterable<Geometry> {
 
 
     @Override
-    public UnmodifiableIterator<Geometry> iterator() {
-        return new Iterator(this.src);
+    public Iterator<Geometry> iterator() {
+        return new JtsGeometryCollectionIterator(this.src);
     }
 
-    private static class Iterator extends UnmodifiableIterator<Geometry> {
+    private static class JtsGeometryCollectionIterator implements Iterator<Geometry> {
 
         private final GeometryProvider src;
 
         private int index = 0;
 
-        private Iterator(GeometryProvider src) {
+        private JtsGeometryCollectionIterator(GeometryProvider src) {
             this.src = src;
         }
 

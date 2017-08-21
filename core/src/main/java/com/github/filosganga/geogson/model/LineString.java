@@ -16,17 +16,17 @@
 
 package com.github.filosganga.geogson.model;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.Iterables.transform;
-import static com.google.common.collect.Lists.newArrayList;
-
 import com.github.filosganga.geogson.model.positions.LinearPositions;
-import com.github.filosganga.geogson.model.positions.SinglePosition;
-import com.google.common.collect.ImmutableList;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
 
 /**
  * Specialization of LinearGeometry composed at least by 2 points.
- *
+ * <p>
  * JeoGson reference: @see http://geojson.org/geojson-spec.html#linestring.
  */
 public class LineString extends LinearGeometry {
@@ -34,13 +34,7 @@ public class LineString extends LinearGeometry {
     private static final long serialVersionUID = 1L;
 
     public LineString(LinearPositions positions) {
-        super(checkPositions(positions));
-    }
-
-    private static LinearPositions checkPositions(LinearPositions toCheck) {
-        checkArgument(toCheck.size() >= 2, "LineString must be composed by a minimum of 2 points.");
-
-        return toCheck;
+        super(checkArgument(positions, toCheck -> toCheck.size() >= 2, "LineString must be composed by a minimum of 2 points."));
     }
 
     /**
@@ -50,7 +44,7 @@ public class LineString extends LinearGeometry {
      * @return a LineString
      */
     public static LineString of(Point... points) {
-        return LineString.of(ImmutableList.copyOf(newArrayList(points)));
+        return of(Arrays.stream(points));
     }
 
     /**
@@ -60,7 +54,17 @@ public class LineString extends LinearGeometry {
      * @return a LineString
      */
     public static LineString of(Iterable<Point> points) {
-        return new LineString(new LinearPositions(transform(points, positionsFn(SinglePosition.class))));
+        return of(StreamSupport.stream(points.spliterator(), false));
+    }
+
+    /**
+     * Creates a LineString from the given points.
+     *
+     * @param points Iterable of Point at least by 2 points.
+     * @return a LineString
+     */
+    public static LineString of(Stream<Point> points) {
+        return new LineString(new LinearPositions(points.map(Point::positions)::iterator));
     }
 
     @Override
@@ -70,9 +74,9 @@ public class LineString extends LinearGeometry {
 
     /**
      * Return if this LineString:
-     *  - Is composed by at least 4 points
-     *  - The first and the last Point are the same.
-     *
+     * - Is composed by at least 4 points
+     * - The first and the last Point are the same.
+     * <p>
      * For more details @see http://geojson.org/geojson-spec.html#linestring.
      *
      * @return true if this Linestring is closed false otherwise.

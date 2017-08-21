@@ -17,7 +17,6 @@
 package com.github.filosganga.geogson.model;
 
 import com.github.filosganga.geogson.model.positions.SinglePosition;
-import com.google.common.base.Function;
 
 /**
  * A Point is identified by a {@link Coordinates}.
@@ -43,7 +42,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return Point instance.
      */
     public static Point from(double lon, double lat) {
-        return from(Coordinates.of(lon, lat));
+        return from(lon, lat, Double.NaN);
     }
 
     /**
@@ -56,7 +55,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return Point instance.
      */
     public static Point from(double lon, double lat, double alt) {
-        return from(Coordinates.of(lon, lat, alt));
+        return new Point(new SinglePosition(lon, lat, alt));
     }
 
     /**
@@ -67,16 +66,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return Point instance.
      */
     public static Point from(Coordinates coordinates) {
-        return new Point(new SinglePosition(coordinates));
-    }
-
-    /**
-     * The Guava function that extracts Coordinates instance from a Point.
-     *
-     * @return  {@link CoordinatesFn} function instance.
-     */
-    public static Function<Point, Coordinates> coordinatesFn() {
-        return CoordinatesFn.INSTANCE;
+        return from(coordinates.getLon(), coordinates.getLat(), coordinates.getAlt());
     }
 
     /**
@@ -160,13 +150,6 @@ public class Point extends AbstractGeometry<SinglePosition> {
         return Type.POINT;
     }
 
-    private static enum CoordinatesFn implements Function<Point, Coordinates> {
-        INSTANCE;
 
-        @Override
-        public Coordinates apply(Point input) {
-            return input.coordinates();
-        }
-    }
 
 }

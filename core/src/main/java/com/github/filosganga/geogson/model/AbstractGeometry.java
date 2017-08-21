@@ -1,13 +1,13 @@
 package com.github.filosganga.geogson.model;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.github.filosganga.geogson.model.positions.Positions;
-import com.google.common.base.Function;
-import com.google.common.base.MoreObjects;
+
+import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
+
 
 /**
  * Abstract implementation of {@link Geometry} providing generic methods.
@@ -18,27 +18,12 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
 
     private final P positions;
 
+    private Optional<Integer> cachedHashCode = Optional.empty();
+
     protected AbstractGeometry(P positions) {
-
-        checkArgument(positions != null);
-
-        this.positions = positions;
+        this.positions =  checkArgument(positions, Objects::nonNull, "Postitions is mandatory");
     }
 
-    /**
-     * Guava {@link Function} extracting the Positions instance from an AbstractGeometry.
-     *
-     * @param <P> The Position type.
-     * @param positionsClass The Position class.
-     */
-    public static <P extends Positions> Function<AbstractGeometry<P>, P> positionsFn(Class<P> positionsClass) {
-        return new Function<AbstractGeometry<P>, P>() {
-            @Override
-            public P apply(AbstractGeometry<P> input) {
-                return input.positions();
-            }
-        };
-    }
 
     /**
      * Returns the underlying {@link Positions} instance.
@@ -62,7 +47,11 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
 
     @Override
     public int hashCode() {
-        return Objects.hash(getClass(), positions);
+        if(!cachedHashCode.isPresent()) {
+            cachedHashCode = Optional.of(Objects.hash(getClass(), positions));
+        }
+
+        return cachedHashCode.get();
     }
 
     @Override
@@ -79,9 +68,7 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("positions", positions)
-                .toString();
+        return getClass().getSimpleName() + "{type: " + type() + ", positions: " + Objects.toString(positions) + "}";
     }
 
 }

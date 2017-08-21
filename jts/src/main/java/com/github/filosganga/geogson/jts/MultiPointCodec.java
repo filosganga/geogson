@@ -1,12 +1,11 @@
 package com.github.filosganga.geogson.jts;
 
-import static com.google.common.collect.Iterables.transform;
-
 import com.github.filosganga.geogson.model.MultiPoint;
 import com.github.filosganga.geogson.model.Point;
-import com.google.common.collect.FluentIterable;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
+
+import java.util.stream.StreamSupport;
 
 /**
  * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.MultiPoint} and
@@ -18,8 +17,7 @@ public class MultiPointCodec extends AbstractJtsCodec<com.vividsolutions.jts.geo
      * Create a codec for a {@link com.vividsolutions.jts.geom.MultiPoint JTS
      * MultiPoint} with a given {@link GeometryFactory}
      *
-     * @param geometryFactory
-     *          a {@link GeometryFactory} defining a PrecisionModel and a SRID
+     * @param geometryFactory a {@link GeometryFactory} defining a PrecisionModel and a SRID
      */
     public MultiPointCodec(GeometryFactory geometryFactory) {
         super(geometryFactory);
@@ -27,16 +25,17 @@ public class MultiPointCodec extends AbstractJtsCodec<com.vividsolutions.jts.geo
 
     @Override
     public MultiPoint toGeometry(com.vividsolutions.jts.geom.MultiPoint src) {
-        return MultiPoint.of(transform(JtsPointIterable.of(src), fromJtsPointFn()));
+        return MultiPoint.of(StreamSupport.stream(JtsPointIterable.of(src).spliterator(), false)
+                .map(AbstractJtsCodec::fromJtsPoint));
     }
 
     @Override
     public com.vividsolutions.jts.geom.MultiPoint fromGeometry(MultiPoint src) {
         return this.geometryFactory.createMultiPoint(
-                FluentIterable.from(src.points())
-                        .transform(Point.coordinatesFn())
-                        .transform(toJtsCoordinateFn())
-                        .toArray(Coordinate.class)
+                StreamSupport.stream(src.points().spliterator(), false)
+                        .map(Point::coordinates)
+                        .map(AbstractJtsCodec::toJtsCoordinate)
+                        .toArray(Coordinate[]::new)
         );
     }
 }
