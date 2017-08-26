@@ -1,5 +1,6 @@
 package com.github.filosganga.geogson.model;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Objects;
  *
  *
  */
-public class FeatureCollection {
+public class FeatureCollection implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

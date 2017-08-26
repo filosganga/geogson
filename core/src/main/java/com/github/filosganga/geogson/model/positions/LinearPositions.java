@@ -24,6 +24,10 @@ import java.util.List;
  */
 public class LinearPositions extends AbstractPositions<SinglePosition> {
 
+    private static final long serialVersionUID = 1L;
+
+    private final Boolean isClosed;
+
     public static class Builder implements PositionsBuilder {
 
         private LinkedList<SinglePosition> singlePositions = new LinkedList<>();
@@ -66,10 +70,6 @@ public class LinearPositions extends AbstractPositions<SinglePosition> {
         }
 
     }
-
-    private static final long serialVersionUID = 1L;
-
-    private final Boolean isClosed;
 
     private LinearPositions(List<SinglePosition> children, boolean isClosed) {
         super(children);

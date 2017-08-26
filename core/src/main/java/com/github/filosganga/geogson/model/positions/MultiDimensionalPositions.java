@@ -25,6 +25,8 @@ import java.util.List;
  */
 public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> {
 
+    private static final long serialVersionUID = 1L;
+
     public static class Builder implements PositionsBuilder {
 
         private LinkedList<AreaPositions> areaPositions = new LinkedList<>();
@@ -56,8 +58,6 @@ public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> 
         }
 
     }
-
-    private static final long serialVersionUID = 1L;
 
     /**
      * Creates a MultiDimensionalPositions from a sequence of {@link AreaPositions}.

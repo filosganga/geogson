@@ -19,11 +19,15 @@ package com.github.filosganga.geogson.model;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
 
 /**
- * A Point is identified by a {@link Coordinates}.
- *
+ * A Point is identified by a lon,lat and alt coordinate..
+ * <p>
  * GeoJson reference: @see http://geojson.org/geojson-spec.html#point.
- *
- * eg: {@code Point p = Point.from(1,2)}
+ * <p>
+ * eg: {@code
+ * Point p1 = Point.from(1,2);
+ * Point p2 = Point.from(1, 2, 3);
+ * <p>
+ * }
  */
 public class Point extends AbstractGeometry<SinglePosition> {
 
@@ -38,7 +42,6 @@ public class Point extends AbstractGeometry<SinglePosition> {
      *
      * @param lon The x axis value. Longitude in a geographic projection.
      * @param lat The y axis value. Latitude in a geographic projection.
-     *
      * @return Point instance.
      */
     public static Point from(double lon, double lat) {
@@ -51,7 +54,6 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @param lon The x axis value. Longitude in a geographic projection.
      * @param lat The y axis value. Latitude in a geographic projection.
      * @param alt The z axis value. Altitude in a geographic projection.
-     *
      * @return Point instance.
      */
     public static Point from(double lon, double lat, double alt) {
@@ -129,7 +131,6 @@ public class Point extends AbstractGeometry<SinglePosition> {
     public Type type() {
         return Type.POINT;
     }
-
 
 
 }

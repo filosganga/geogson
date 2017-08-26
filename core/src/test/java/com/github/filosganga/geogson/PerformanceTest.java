@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-public class PerformaceTest {
+public class PerformanceTest {
 
     private static final Gson gson = new GsonBuilder().registerTypeAdapterFactory(new GeometryAdapterFactory()).create();
 
@@ -21,12 +21,9 @@ public class PerformaceTest {
     }
 
     @Benchmark
-    public void featureCollectionReading() {
-
-        try(Reader reader = openReader("feature-collection.json")) {
+    public void featureCollectionReading() throws Exception {
+        try (Reader reader = openReader("feature-collection.json")) {
             gson.fromJson(reader, FeatureCollection.class);
-        } catch (IOException ioe) {
-            throw new RuntimeException(ioe);
         }
 
     }

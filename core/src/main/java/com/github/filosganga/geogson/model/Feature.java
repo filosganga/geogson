@@ -20,6 +20,17 @@ import java.util.*;
  */
 public class Feature implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
+    private final Geometry<?> geometry;
+
+    // Feature properties can contain generic json objects
+    private final Map<String, JsonElement> properties;
+
+    private final String id;
+
+    private transient Integer cachedHashCode = null;
+
     public static class Builder {
 
         private Geometry<?> geometry = null;
@@ -62,21 +73,10 @@ public class Feature implements Serializable {
 
     }
 
-    private static final long serialVersionUID = 1L;
-
-    private final Geometry<?> geometry;
-
-    // Feature properties can contain generic json objects
-    private final Map<String, JsonElement> properties;
-
-    private final Optional<String> id;
-
-    private Optional<Integer> cachedHashCode = Optional.empty();
-
     private Feature(Geometry<?> geometry, Map<String, JsonElement> properties, Optional<String> id) {
         this.geometry = geometry;
         this.properties = properties;
-        this.id = id;
+        this.id = id.orElse(null);
     }
 
     public static Builder builder() {
@@ -122,17 +122,17 @@ public class Feature implements Serializable {
      * @return Optional.absent if this Feature does not have any id. A valued Optional otherwise.
      */
     public Optional<String> id() {
-        return id;
+        return Optional.ofNullable(id);
     }
 
 
     @Override
     public int hashCode() {
-        if(!cachedHashCode.isPresent()) {
-            cachedHashCode = Optional.of(Objects.hash(getClass(), this.id, this.geometry, this.properties));
+        if(cachedHashCode == null) {
+            cachedHashCode = Objects.hash(getClass(), this.id, this.geometry, this.properties);
         }
 
-        return cachedHashCode.get();
+        return cachedHashCode;
     }
 
     @Override

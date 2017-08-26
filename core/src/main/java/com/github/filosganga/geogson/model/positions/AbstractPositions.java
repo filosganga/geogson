@@ -11,6 +11,13 @@ import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
  */
 public abstract class AbstractPositions<T extends Positions> implements Positions {
 
+    private static final long serialVersionUID = 1L;
+
+    protected final List<T> children;
+
+    private transient Integer cachedSize = null;
+    private transient Integer cachedHashCode = null;
+
     public interface PositionsBuilder {
 
         static PositionsBuilder builderOf(Positions p) {
@@ -29,13 +36,6 @@ public abstract class AbstractPositions<T extends Positions> implements Position
 
         Positions build();
     }
-
-    private static final long serialVersionUID = 1L;
-
-    protected final List<T> children;
-
-    private transient Integer cachedSize = null;
-    private transient Integer cachedHashCode = null;
 
     AbstractPositions(List<T> children) {
         this.children = checkArgument(children, Objects::nonNull, "The children cannot be null");

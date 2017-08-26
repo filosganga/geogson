@@ -4,7 +4,6 @@ import com.github.filosganga.geogson.model.positions.Positions;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
 
@@ -18,9 +17,9 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
 
     private final P positions;
 
-    private Optional<Integer> cachedHashCode = Optional.empty();
+    private transient Integer cachedHashCode = null;
 
-    protected AbstractGeometry(P positions) {
+    AbstractGeometry(P positions) {
         this.positions =  checkArgument(positions, Objects::nonNull, "Postitions is mandatory");
     }
 
@@ -47,11 +46,11 @@ public abstract class AbstractGeometry<P extends Positions> implements Geometry<
 
     @Override
     public int hashCode() {
-        if(!cachedHashCode.isPresent()) {
-            cachedHashCode = Optional.of(Objects.hash(getClass(), positions));
+        if(cachedHashCode == null) {
+            cachedHashCode = Objects.hash(getClass(), positions);
         }
 
-        return cachedHashCode.get();
+        return cachedHashCode;
     }
 
     @Override
