@@ -16,13 +16,6 @@ public class PerformaceTest {
 
     private static final Gson gson = new GsonBuilder().registerTypeAdapterFactory(new GeometryAdapterFactory()).create();
 
-    public static void main(String[] args) {
-        PerformaceTest pt = new PerformaceTest();
-        for (;;) {
-            pt.featureCollectionReading();
-        }
-    }
-
     private static Reader openReader(String resourceName) throws IOException {
         return new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(resourceName)));
     }
@@ -31,7 +24,7 @@ public class PerformaceTest {
     public void featureCollectionReading() {
 
         try(Reader reader = openReader("feature-collection.json")) {
-            FeatureCollection parsed = gson.fromJson(reader, FeatureCollection.class);
+            gson.fromJson(reader, FeatureCollection.class);
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
