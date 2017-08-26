@@ -18,25 +18,6 @@ public abstract class AbstractPositions<T extends Positions> implements Position
     private transient Integer cachedSize = null;
     private transient Integer cachedHashCode = null;
 
-    public interface PositionsBuilder {
-
-        static PositionsBuilder builderOf(Positions p) {
-            if(p instanceof SinglePosition) {
-                return LinearPositions.builder();
-            } else if (p instanceof LinearPositions) {
-                return AreaPositions.builder();
-            } else if (p instanceof AreaPositions) {
-                return MultiDimensionalPositions.builder();
-            } else {
-                throw new IllegalArgumentException("No builder can be supplied for Positions " + p);
-            }
-        }
-
-        PositionsBuilder addChild(Positions p);
-
-        Positions build();
-    }
-
     AbstractPositions(List<T> children) {
         this.children = checkArgument(children, Objects::nonNull, "The children cannot be null");
     }
@@ -80,4 +61,24 @@ public abstract class AbstractPositions<T extends Positions> implements Position
                 "children=" + children +
                 '}';
     }
+
+    public interface PositionsBuilder {
+
+        static PositionsBuilder builderOf(Positions p) {
+            if(p instanceof SinglePosition) {
+                return LinearPositions.builder();
+            } else if (p instanceof LinearPositions) {
+                return AreaPositions.builder();
+            } else if (p instanceof AreaPositions) {
+                return MultiDimensionalPositions.builder();
+            } else {
+                throw new IllegalArgumentException("No builder can be supplied for Positions " + p);
+            }
+        }
+
+        PositionsBuilder addChild(Positions p);
+
+        Positions build();
+    }
+
 }
