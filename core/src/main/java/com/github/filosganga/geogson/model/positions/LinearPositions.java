@@ -24,49 +24,6 @@ import java.util.List;
  */
 public class LinearPositions extends AbstractPositions<SinglePosition> {
 
-    public static class Builder implements PositionsBuilder {
-
-        private LinkedList<SinglePosition> singlePositions = new LinkedList<>();
-
-        private SinglePosition first = null;
-        private SinglePosition last = null;
-        private int size = 0;
-
-        public Builder addSinglePosition(SinglePosition sp) {
-            singlePositions.add(sp);
-            if(first == null) {
-                first = sp;
-            }
-            last = sp;
-            size++;
-
-            return this;
-        }
-
-        public Builder addSinglePositions(Iterable<SinglePosition> sps) {
-            sps.forEach(this::addSinglePosition);
-            return this;
-        }
-
-        @Override
-        public PositionsBuilder addChild(Positions p) {
-            if(p instanceof SinglePosition) {
-                return addSinglePosition((SinglePosition) p);
-            } else if (p instanceof LinearPositions) {
-                return AreaPositions.builder().addChild(this.build()).addChild(p);
-            } else {
-                throw new IllegalArgumentException("The position " + p +  "cannot be a child of LinearPositions");
-            }
-        }
-
-        @Override
-        public LinearPositions build() {
-            Boolean isClosed = size >= 4 && first.equals(last);
-            return new LinearPositions(singlePositions, isClosed);
-        }
-
-    }
-
     private static final long serialVersionUID = 1L;
 
     private final Boolean isClosed;
@@ -117,5 +74,49 @@ public class LinearPositions extends AbstractPositions<SinglePosition> {
     public boolean isClosed() {
         return isClosed;
     }
+
+    public static class Builder implements PositionsBuilder {
+
+        private LinkedList<SinglePosition> singlePositions = new LinkedList<>();
+
+        private SinglePosition first = null;
+        private SinglePosition last = null;
+        private int size = 0;
+
+        public Builder addSinglePosition(SinglePosition sp) {
+            singlePositions.add(sp);
+            if(first == null) {
+                first = sp;
+            }
+            last = sp;
+            size++;
+
+            return this;
+        }
+
+        public Builder addSinglePositions(Iterable<SinglePosition> sps) {
+            sps.forEach(this::addSinglePosition);
+            return this;
+        }
+
+        @Override
+        public PositionsBuilder addChild(Positions p) {
+            if(p instanceof SinglePosition) {
+                return addSinglePosition((SinglePosition) p);
+            } else if (p instanceof LinearPositions) {
+                return AreaPositions.builder().addChild(this.build()).addChild(p);
+            } else {
+                throw new IllegalArgumentException("The position " + p +  "cannot be a child of LinearPositions");
+            }
+        }
+
+        @Override
+        public LinearPositions build() {
+            Boolean isClosed = size >= 4 && first.equals(last);
+            return new LinearPositions(singlePositions, isClosed);
+        }
+
+    }
+
 
 }

@@ -17,7 +17,6 @@
 package com.github.filosganga.geogson.model;
 
 import com.github.filosganga.geogson.model.positions.AreaPositions;
-import com.github.filosganga.geogson.model.positions.LinearPositions;
 
 import java.util.Arrays;
 import java.util.List;

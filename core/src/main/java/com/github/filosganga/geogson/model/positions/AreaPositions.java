@@ -24,41 +24,6 @@ import java.util.List;
  */
 public class AreaPositions extends AbstractPositions<LinearPositions> {
 
-    public static class Builder implements PositionsBuilder {
-
-        private LinkedList<LinearPositions> linearPositions = new LinkedList<>();
-        private boolean allChildrenAreClosed = true;
-
-        public AreaPositions.Builder addLinearPosition(LinearPositions lp) {
-            linearPositions.add(lp);
-            allChildrenAreClosed = allChildrenAreClosed && lp.isClosed();
-            return this;
-        }
-
-        public AreaPositions.Builder addLinearPositions(Iterable<LinearPositions> lps) {
-            lps.forEach(this::addLinearPosition);
-            return this;
-        }
-
-        @Override
-        public PositionsBuilder addChild(Positions p) {
-            if(p instanceof LinearPositions) {
-                return addLinearPosition((LinearPositions)p);
-            } else if (p instanceof SinglePosition) {
-                return addLinearPosition(LinearPositions.builder().addSinglePosition((SinglePosition) p).build());
-            } else if (p instanceof AreaPositions) {
-                return MultiDimensionalPositions.builder().addAreaPosition(this.build()).addChild(p);
-            } else {
-                throw new IllegalArgumentException("The position " + p +  "cannot be a child of AreaPosition");
-            }
-        }
-
-        public AreaPositions build() {
-            return new AreaPositions(linearPositions, allChildrenAreClosed);
-        }
-
-    }
-
     private static final long serialVersionUID = 1L;
 
     private final Boolean allChildrenAreClosed;
@@ -110,6 +75,41 @@ public class AreaPositions extends AbstractPositions<LinearPositions> {
 
             return other.merge(this);
         }
+    }
+
+    public static class Builder implements PositionsBuilder {
+
+        private LinkedList<LinearPositions> linearPositions = new LinkedList<>();
+        private boolean allChildrenAreClosed = true;
+
+        public AreaPositions.Builder addLinearPosition(LinearPositions lp) {
+            linearPositions.add(lp);
+            allChildrenAreClosed = allChildrenAreClosed && lp.isClosed();
+            return this;
+        }
+
+        public AreaPositions.Builder addLinearPositions(Iterable<LinearPositions> lps) {
+            lps.forEach(this::addLinearPosition);
+            return this;
+        }
+
+        @Override
+        public PositionsBuilder addChild(Positions p) {
+            if(p instanceof LinearPositions) {
+                return addLinearPosition((LinearPositions)p);
+            } else if (p instanceof SinglePosition) {
+                return addLinearPosition(LinearPositions.builder().addSinglePosition((SinglePosition) p).build());
+            } else if (p instanceof AreaPositions) {
+                return MultiDimensionalPositions.builder().addAreaPosition(this.build()).addChild(p);
+            } else {
+                throw new IllegalArgumentException("The position " + p +  "cannot be a child of AreaPosition");
+            }
+        }
+
+        public AreaPositions build() {
+            return new AreaPositions(linearPositions, allChildrenAreClosed);
+        }
+
     }
 
 }

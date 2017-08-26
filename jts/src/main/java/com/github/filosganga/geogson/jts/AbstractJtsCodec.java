@@ -2,7 +2,6 @@ package com.github.filosganga.geogson.jts;
 
 import com.github.filosganga.geogson.codec.Codec;
 import com.github.filosganga.geogson.model.*;
-import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 

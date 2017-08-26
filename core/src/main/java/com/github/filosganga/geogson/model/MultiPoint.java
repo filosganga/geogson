@@ -21,7 +21,6 @@ import com.github.filosganga.geogson.model.positions.LinearPositions;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * Geometry composed by a sequence of {@link Point}.

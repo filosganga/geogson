@@ -25,38 +25,6 @@ import java.util.List;
  */
 public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> {
 
-    public static class Builder implements PositionsBuilder {
-
-        private LinkedList<AreaPositions> areaPositions = new LinkedList<>();
-
-        public MultiDimensionalPositions.Builder addAreaPosition(AreaPositions ap) {
-            areaPositions.add(ap);
-            return this;
-        }
-
-        public MultiDimensionalPositions.Builder addAreaPositions(Iterable<AreaPositions> aps) {
-            aps.forEach(this::addAreaPosition);
-            return this;
-        }
-
-        @Override
-        public MultiDimensionalPositions.Builder addChild(Positions p) {
-            if(p instanceof AreaPositions) {
-                return addAreaPosition((AreaPositions) p);
-            } else if (p instanceof LinearPositions) {
-                return addAreaPosition(AreaPositions.builder().addLinearPosition((LinearPositions) p).build());
-            } else {
-                throw new IllegalArgumentException("The position " + p +  "cannot be a child of MultiDimensionalPositions");
-            }
-        }
-
-        @Override
-        public MultiDimensionalPositions build() {
-            return new MultiDimensionalPositions(areaPositions);
-        }
-
-    }
-
     private static final long serialVersionUID = 1L;
 
     /**
@@ -105,5 +73,38 @@ public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> 
             throw new IllegalArgumentException("Cannot merge with: " + other);
         }
     }
+
+    public static class Builder implements PositionsBuilder {
+
+        private LinkedList<AreaPositions> areaPositions = new LinkedList<>();
+
+        public MultiDimensionalPositions.Builder addAreaPosition(AreaPositions ap) {
+            areaPositions.add(ap);
+            return this;
+        }
+
+        public MultiDimensionalPositions.Builder addAreaPositions(Iterable<AreaPositions> aps) {
+            aps.forEach(this::addAreaPosition);
+            return this;
+        }
+
+        @Override
+        public MultiDimensionalPositions.Builder addChild(Positions p) {
+            if(p instanceof AreaPositions) {
+                return addAreaPosition((AreaPositions) p);
+            } else if (p instanceof LinearPositions) {
+                return addAreaPosition(AreaPositions.builder().addLinearPosition((LinearPositions) p).build());
+            } else {
+                throw new IllegalArgumentException("The position " + p +  "cannot be a child of MultiDimensionalPositions");
+            }
+        }
+
+        @Override
+        public MultiDimensionalPositions build() {
+            return new MultiDimensionalPositions(areaPositions);
+        }
+
+    }
+
 
 }

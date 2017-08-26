@@ -1,6 +1,8 @@
 package com.github.filosganga.geogson.model.positions;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
 
@@ -8,25 +10,6 @@ import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
  * Abstract implementation of {@link Positions}. Provides some basic methods.
  */
 public abstract class AbstractPositions<T extends Positions> implements Positions {
-
-    public interface PositionsBuilder {
-
-        static PositionsBuilder builderOf(Positions p) {
-            if(p instanceof SinglePosition) {
-                return LinearPositions.builder();
-            } else if (p instanceof LinearPositions) {
-                return AreaPositions.builder();
-            } else if (p instanceof AreaPositions) {
-                return MultiDimensionalPositions.builder();
-            } else {
-                throw new IllegalArgumentException("No builder can be supplied for Positions " + p);
-            }
-        }
-
-        PositionsBuilder addChild(Positions p);
-
-        Positions build();
-    }
 
     private static final long serialVersionUID = 1L;
 
@@ -78,4 +61,24 @@ public abstract class AbstractPositions<T extends Positions> implements Position
                 "children=" + children +
                 '}';
     }
+
+    public interface PositionsBuilder {
+
+        static PositionsBuilder builderOf(Positions p) {
+            if(p instanceof SinglePosition) {
+                return LinearPositions.builder();
+            } else if (p instanceof LinearPositions) {
+                return AreaPositions.builder();
+            } else if (p instanceof AreaPositions) {
+                return MultiDimensionalPositions.builder();
+            } else {
+                throw new IllegalArgumentException("No builder can be supplied for Positions " + p);
+            }
+        }
+
+        PositionsBuilder addChild(Positions p);
+
+        Positions build();
+    }
+
 }

@@ -17,11 +17,9 @@
 package com.github.filosganga.geogson.model;
 
 import com.github.filosganga.geogson.model.positions.LinearPositions;
-import com.github.filosganga.geogson.model.positions.SinglePosition;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * An abstract Geometry that is composed by a sequence of points.

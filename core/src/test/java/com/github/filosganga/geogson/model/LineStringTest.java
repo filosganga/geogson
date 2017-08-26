@@ -1,8 +1,8 @@
 package com.github.filosganga.geogson.model;
 
-import static java.util.Arrays.asList;
-
 import org.junit.Test;
+
+import static java.util.Arrays.asList;
 
 public class LineStringTest {
 

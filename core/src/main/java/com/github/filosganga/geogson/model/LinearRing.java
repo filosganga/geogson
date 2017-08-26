@@ -1,14 +1,9 @@
 package com.github.filosganga.geogson.model;
 
 import com.github.filosganga.geogson.model.positions.LinearPositions;
-import com.github.filosganga.geogson.model.positions.SinglePosition;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
 /**

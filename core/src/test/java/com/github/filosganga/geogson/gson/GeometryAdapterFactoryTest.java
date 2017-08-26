@@ -1,26 +1,15 @@
 package com.github.filosganga.geogson.gson;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-
-import java.util.ArrayList;
-
+import com.github.filosganga.geogson.model.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.filosganga.geogson.model.Geometry;
-import com.github.filosganga.geogson.model.GeometryCollection;
-import com.github.filosganga.geogson.model.LineString;
-import com.github.filosganga.geogson.model.LinearRing;
-import com.github.filosganga.geogson.model.MultiLineString;
-import com.github.filosganga.geogson.model.MultiPoint;
-import com.github.filosganga.geogson.model.MultiPolygon;
-import com.github.filosganga.geogson.model.Point;
-import com.github.filosganga.geogson.model.Polygon;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.util.ArrayList;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 
 public class GeometryAdapterFactoryTest {
