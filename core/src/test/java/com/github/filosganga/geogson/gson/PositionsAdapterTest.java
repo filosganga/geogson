@@ -26,7 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.github.filosganga.geogson.gson.utils.JsonUtils.*;
-import static com.github.filosganga.geogson.model.Matchers.*;
+import static com.github.filosganga.geogson.model.Matchers.singlePositionsWithLonLat;
+import static com.github.filosganga.geogson.model.Matchers.singlePositionsWithLonLatAlt;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

@@ -1,7 +1,8 @@
 package com.github.filosganga.geogson.gson;
 
 import com.github.filosganga.geogson.gson.utils.FeatureUtils;
-import com.github.filosganga.geogson.model.*;
+import com.github.filosganga.geogson.model.Feature;
+import com.github.filosganga.geogson.model.Point;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -12,7 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 
 public class FeatureAdapterTest {

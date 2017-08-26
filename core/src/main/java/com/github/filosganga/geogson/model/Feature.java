@@ -1,9 +1,9 @@
 package com.github.filosganga.geogson.model;
 
+import com.google.gson.JsonElement;
+
 import java.io.Serializable;
 import java.util.*;
-
-import com.google.gson.JsonElement;
 
 /**
  * Feature is a collection of properties and a geometry

@@ -1,6 +1,8 @@
 package com.github.filosganga.geogson.model.positions;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
 

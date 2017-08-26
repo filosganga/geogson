@@ -1,10 +1,10 @@
 package com.github.filosganga.geogson.model;
 
+import com.github.filosganga.geogson.model.positions.Positions;
+
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
-
-import com.github.filosganga.geogson.model.positions.Positions;
 
 import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
 

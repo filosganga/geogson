@@ -1,14 +1,13 @@
 package com.github.filosganga.geogson.jts;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-
-import org.junit.Test;
-
 import com.github.filosganga.geogson.codec.CodecRegistry;
 import com.github.filosganga.geogson.model.Geometry;
 import com.github.filosganga.geogson.model.Point;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 
 public class CodecRegistryTest {
 
