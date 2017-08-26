@@ -1,9 +1,10 @@
 package com.github.filosganga.geogson.jts;
 
-import com.google.common.collect.UnmodifiableIterator;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Polygon;
+
+import java.util.Iterator;
 
 /**
  * A {@link LineString} Iterable, to wrap the getLineStringN and getNumLineStrings JTS methods.
@@ -46,17 +47,17 @@ class JtsLineStringIterable implements Iterable<LineString> {
 
 
     @Override
-    public UnmodifiableIterator<LineString> iterator() {
-        return new Iterator(src);
+    public Iterator<LineString> iterator() {
+        return new JtsLineStringIterator(src);
     }
 
-    private static class Iterator extends UnmodifiableIterator<LineString> {
+    private static class JtsLineStringIterator implements Iterator<LineString> {
 
         private final LineStringProvider src;
 
         private int index = 0;
 
-        private Iterator(LineStringProvider src) {
+        private JtsLineStringIterator(LineStringProvider src) {
             this.src = src;
         }
 

@@ -1,25 +1,23 @@
 package com.github.filosganga.geogson.codec;
 
-import static com.google.common.collect.Maps.newConcurrentMap;
+import com.github.filosganga.geogson.model.Geometry;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
-
-import com.github.filosganga.geogson.model.Geometry;
-import com.google.common.reflect.TypeToken;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A registry of codecs used as façade to convert to and from different geometry systems.
  */
 public class CodecRegistry<T, S extends Geometry<?>> implements Codec<T, S> {
 
-    private final Map<Type, Codec<T,S>> codecsByS = newConcurrentMap();
-    private final Map<Type, Codec<T,S>> codecsByT = newConcurrentMap();
+    private final Map<Type, Codec<T,S>> codecsByS = new ConcurrentHashMap<>();
+    private final Map<Type, Codec<T,S>> codecsByT = new ConcurrentHashMap<>();
 
     public CodecRegistry() {
-        this(new ArrayList<Codec<? extends T, ? extends S>>());
+        this(new ArrayList<>());
     }
 
     public CodecRegistry(Iterable<Codec<? extends T, ? extends S>> codecs ) {
@@ -31,7 +29,7 @@ public class CodecRegistry<T, S extends Geometry<?>> implements Codec<T, S> {
     @SuppressWarnings("unchecked")
     public void addCodec(Codec<? extends T, ? extends S> codec) {
 
-        ParameterizedType type = (ParameterizedType) TypeToken.of(codec.getClass()).getSupertype(Codec.class).getType();
+        ParameterizedType type = (ParameterizedType) codec.getClass().getGenericSuperclass();
 
         Type t = type.getActualTypeArguments()[0];
         Type s = type.getActualTypeArguments()[1];

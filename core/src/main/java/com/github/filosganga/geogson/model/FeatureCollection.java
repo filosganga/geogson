@@ -1,5 +1,7 @@
 package com.github.filosganga.geogson.model;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,14 +13,25 @@ import java.util.Objects;
  *
  */
 public class FeatureCollection {
+
+    private static final long serialVersionUID = 1L;
+
     private final List<Feature> features;
 
     public FeatureCollection(List<Feature> features) {
         this.features = features;
     }
 
+    public static FeatureCollection of(Feature...features) {
+        return new FeatureCollection(Arrays.asList(features));
+    }
+
     public List<Feature> features() {
-        return features;
+        return Collections.unmodifiableList(features);
+    }
+
+    public int size() {
+        return features.size();
     }
 
     @Override
@@ -36,5 +49,12 @@ public class FeatureCollection {
         }
         final FeatureCollection other = (FeatureCollection) obj;
         return Objects.equals(this.features, other.features);
+    }
+
+    @Override
+    public String toString() {
+        return "FeatureCollection{" +
+                "features=" + features +
+                '}';
     }
 }

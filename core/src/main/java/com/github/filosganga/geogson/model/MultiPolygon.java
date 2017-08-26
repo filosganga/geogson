@@ -1,16 +1,16 @@
 package com.github.filosganga.geogson.model;
 
-import static com.google.common.collect.Iterables.transform;
-
-import com.github.filosganga.geogson.model.positions.AreaPositions;
 import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.ImmutableList;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * A {@link Geometry} composed by a collection of {@link Polygon}.
- *
+ * <p>
  * GeoJson reference: @see http://geojson.org/geojson-spec.html#multipolygon.
  */
 public class MultiPolygon extends AbstractGeometry<MultiDimensionalPositions> {
@@ -28,8 +28,7 @@ public class MultiPolygon extends AbstractGeometry<MultiDimensionalPositions> {
      * @return MultiPolygon
      */
     public static MultiPolygon of(Polygon... polygons) {
-
-        return of(ImmutableList.copyOf(polygons));
+        return of(Arrays.asList(polygons));
     }
 
     /**
@@ -39,10 +38,22 @@ public class MultiPolygon extends AbstractGeometry<MultiDimensionalPositions> {
      * @return MultiPolygon
      */
     public static MultiPolygon of(Iterable<Polygon> polygons) {
+        MultiDimensionalPositions.Builder positionsBuilder = MultiDimensionalPositions.builder();
+        for(Polygon polygon : polygons) {
+            positionsBuilder.addAreaPosition(polygon.positions());
+        }
 
-        return new MultiPolygon(
-                new MultiDimensionalPositions(transform(polygons, positionsFn(AreaPositions.class)))
-        );
+        return new MultiPolygon(positionsBuilder.build());
+    }
+
+    /**
+     * Creates a MultiPolygon from the given {@link Polygon} stream.
+     *
+     * @param polygons The {@link Polygon} Stream.
+     * @return MultiPolygon
+     */
+    public static MultiPolygon of(Stream<Polygon> polygons) {
+        return of(polygons.collect(Collectors.toList()));
     }
 
     @Override
@@ -55,14 +66,11 @@ public class MultiPolygon extends AbstractGeometry<MultiDimensionalPositions> {
      *
      * @return an Iterable of the polygons contained in this MultiPolygon.
      */
-    public Iterable<Polygon> polygons() {
-        return FluentIterable.from(positions().children())
-                .transform(new Function<AreaPositions, Polygon>() {
-                    @Override
-                    public Polygon apply(AreaPositions input) {
-                        return new Polygon(input);
-                    }
-                });
+    public List<Polygon> polygons() {
+        return positions().children().stream()
+                .map(Polygon::new)
+                .collect(Collectors.toList());
+
     }
 
 }

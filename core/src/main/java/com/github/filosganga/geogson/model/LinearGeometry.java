@@ -18,8 +18,10 @@ package com.github.filosganga.geogson.model;
 
 import com.github.filosganga.geogson.model.positions.LinearPositions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * An abstract Geometry that is composed by a sequence of points.
@@ -28,51 +30,10 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
 
     private static final long serialVersionUID = 1L;
 
-    protected LinearGeometry(LinearPositions positions) {
+    LinearGeometry(LinearPositions positions) {
         super(positions);
     }
 
-    /**
-     * Guava Function that converts to MultiPoint.
-     *
-     * @return Guava Function instance to convert to MultiPoint.
-     */
-    public static <T extends LinearGeometry> Function<T, MultiPoint> toMultiPointFn() {
-        return new Function<T, MultiPoint>() {
-            @Override
-            public MultiPoint apply(T input) {
-                return input.toMultiPoint();
-            }
-        };
-    }
-
-    /**
-     * Guava Function that converts to LineString.
-     *
-     * @return Guava Function instance to convert to LineString.
-     */
-    public static <T extends LinearGeometry> Function<T, LineString> toLineStringFn() {
-        return new Function<T, LineString>() {
-            @Override
-            public LineString apply(T input) {
-                return input.toLineString();
-            }
-        };
-    }
-
-    /**
-     * Guava Function that converts to LinearRing.
-     *
-     * @return Guava Function instance to convert to LinearRing.
-     */
-    public static <T extends LinearGeometry> Function<T, LinearRing> toLinearRingFn() {
-        return new Function<T, LinearRing>() {
-            @Override
-            public LinearRing apply(T input) {
-                return input.toLinearRing();
-            }
-        };
-    }
 
     /**
      * Converts to a MultiPoint.
@@ -106,15 +67,11 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
      *
      * @return {@code Iterable<Point>} a Guava lazy Iterable.
      */
-    public Iterable<Point> points() {
-        return FluentIterable.from(positions().children())
-                .transform(SinglePosition.coordinatesFn())
-                .transform(new Function<Coordinates, Point>() {
-                    @Override
-                    public Point apply(com.github.filosganga.geogson.model.Coordinates input) {
-                        return Point.from(input);
-                    }
-                });
+    public List<Point> points() {
+        return positions().children().stream()
+                .map(Point::new)
+                .collect(Collectors.toList());
+
     }
 
 }

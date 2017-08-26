@@ -1,9 +1,8 @@
 package com.github.filosganga.geogson.model;
 
-import java.util.Objects;
+import java.io.Serializable;
+import java.util.*;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 
 /**
@@ -19,19 +18,73 @@ import com.google.gson.JsonElement;
  *     Feature f = Feature.of(polygon).withId(id)
  * }
  */
-public class Feature {
+public class Feature implements Serializable {
+
+    public static class Builder {
+
+        private Geometry<?> geometry = null;
+        private Map<String, JsonElement> properties = new HashMap<>(240);
+        private Optional<String> id = Optional.empty();
+
+        Builder(){
+        }
+
+        public Builder withGeometry(Geometry<?> geometry) {
+            this.geometry = geometry;
+            return this;
+        }
+
+        public Builder withProperties(Map<String, JsonElement> properties) {
+            this.properties.putAll(properties);
+            return this;
+        }
+
+        public Builder withProperty(String name, JsonElement value) {
+            this.properties.put(name, value);
+            return this;
+        }
+
+        public Builder withId(Optional<String> id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withId(String id) {
+            return withId(Optional.of(id));
+        }
+
+        public Feature build() {
+            if(geometry == null) {
+                throw new IllegalStateException("geometry is required to build a Feature");
+            }
+            return new Feature(geometry, properties, id);
+        }
+
+    }
+
+    private static final long serialVersionUID = 1L;
 
     private final Geometry<?> geometry;
 
     // Feature properties can contain generic json objects
-    private final ImmutableMap<String, JsonElement> properties;
+    private final Map<String, JsonElement> properties;
 
     private final Optional<String> id;
 
-    public Feature(Geometry<?> geometry, ImmutableMap<String, JsonElement> properties, Optional<String> id) {
+    private Optional<Integer> cachedHashCode = Optional.empty();
+
+    private Feature(Geometry<?> geometry, Map<String, JsonElement> properties, Optional<String> id) {
         this.geometry = geometry;
         this.properties = properties;
         this.id = id;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static Builder builder(Feature feature) {
+        return builder().withGeometry(feature.geometry).withProperties(feature.properties).withId(feature.id);
     }
 
     /**
@@ -42,7 +95,7 @@ public class Feature {
      * @return An instance of Feature
      */
     public static Feature of(Geometry<?> geometry) {
-        return new Feature(geometry, ImmutableMap.<String, JsonElement>of(), Optional.<String>absent());
+        return builder().withGeometry(geometry).build();
     }
 
     /**
@@ -57,10 +110,10 @@ public class Feature {
     /**
      * The properties of this Feature.
      *
-     * @return an ImmutableMap containing the properties. An empty map if not properties have been set.
+     * @return an Map containing the properties. An empty map if not properties have been set.
      */
-    public ImmutableMap<String, JsonElement> properties() {
-        return properties;
+    public Map<String, JsonElement> properties() {
+        return Collections.unmodifiableMap(properties);
     }
 
     /**
@@ -72,41 +125,14 @@ public class Feature {
         return id;
     }
 
-    /**
-     * Return a copy of this Feature with the given id.
-     *
-     * @param id The id of the new Feature instance.
-     * @return a new Feature instance.
-     */
-    public Feature withId(String id) {
-        return new Feature(geometry, properties, Optional.of(id));
-    }
-
-    /**
-     * Return a copy of this Feature with the given properties.
-     *
-     * @param properties The properties of the new Feature instance.
-     * @return a new Feature instance.
-     */
-    public Feature withProperties(ImmutableMap<String, JsonElement> properties) {
-        return new Feature(geometry, properties, id);
-    }
-
-    /**
-     * Return a copy of this Feature with the existing properties plus the given property.
-     *
-     * @param name The name of the property to add.
-     * @param value The value of the property to add.
-     *
-     * @return a new Feature instance.
-     */
-    public Feature withProperty(String name, JsonElement value) {
-        return new Feature(geometry, ImmutableMap.<String, JsonElement>builder().putAll(properties).put(name, value).build(), id);
-    }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getClass(), this.id, this.geometry, this.properties);
+        if(!cachedHashCode.isPresent()) {
+            cachedHashCode = Optional.of(Objects.hash(getClass(), this.id, this.geometry, this.properties));
+        }
+
+        return cachedHashCode.get();
     }
 
     @Override
@@ -121,5 +147,14 @@ public class Feature {
         return Objects.equals(this.id, other.id)
                 && Objects.equals(this.properties, other.properties)
                 && Objects.equals(this.geometry, other.geometry);
+    }
+
+    @Override
+    public String toString() {
+        return "Feature{" +
+                "geometry=" + geometry +
+                ", properties=" + properties +
+                ", id=" + id +
+                '}';
     }
 }

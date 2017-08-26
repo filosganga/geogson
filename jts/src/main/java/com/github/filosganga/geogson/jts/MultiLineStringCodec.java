@@ -1,10 +1,9 @@
 package com.github.filosganga.geogson.jts;
 
-import static com.google.common.collect.Iterables.transform;
-
 import com.github.filosganga.geogson.model.MultiLineString;
-import com.google.common.collect.FluentIterable;
 import com.vividsolutions.jts.geom.GeometryFactory;
+
+import java.util.stream.StreamSupport;
 
 /**
  * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.MultiLineString} and
@@ -16,8 +15,7 @@ public class MultiLineStringCodec extends AbstractJtsCodec<com.vividsolutions.jt
      * Create a codec for a {@link com.vividsolutions.jts.geom.MultiLineString JTS
      * MultiLineString} with a given {@link GeometryFactory}
      *
-     * @param geometryFactory
-     *          a {@link GeometryFactory} defining a PrecisionModel and a SRID
+     * @param geometryFactory a {@link GeometryFactory} defining a PrecisionModel and a SRID
      */
     public MultiLineStringCodec(GeometryFactory geometryFactory) {
         super(geometryFactory);
@@ -25,15 +23,16 @@ public class MultiLineStringCodec extends AbstractJtsCodec<com.vividsolutions.jt
 
     @Override
     public MultiLineString toGeometry(com.vividsolutions.jts.geom.MultiLineString src) {
-        return MultiLineString.of(transform(JtsLineStringIterable.of(src), fromJtsLineStringFn()));
+        return MultiLineString.of(StreamSupport.stream(JtsLineStringIterable.of(src).spliterator(), false)
+                .map(AbstractJtsCodec::fromJtsLineString));
     }
 
     @Override
     public com.vividsolutions.jts.geom.MultiLineString fromGeometry(MultiLineString src) {
         return this.geometryFactory.createMultiLineString(
-                FluentIterable.from(src.lineStrings())
-                        .transform(toJtsLineStringFn())
-                        .toArray(com.vividsolutions.jts.geom.LineString.class)
+                StreamSupport.stream(src.lineStrings().spliterator(), false)
+                        .map(this::toJtsLineString)
+                        .toArray(com.vividsolutions.jts.geom.LineString[]::new)
         );
     }
 }

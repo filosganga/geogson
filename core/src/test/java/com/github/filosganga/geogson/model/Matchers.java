@@ -18,10 +18,11 @@ package com.github.filosganga.geogson.model;
 
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
-import com.google.common.base.Optional;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+
+import java.util.Optional;
 
 public final class Matchers {
 
@@ -32,12 +33,12 @@ public final class Matchers {
         return new TypeSafeMatcher<Positions>() {
             @Override
             protected boolean matchesSafely(Positions item) {
-                return positionWithLonLat(lon, lat).matches(((SinglePosition) item).coordinates());
+                return positionsWithLonLat(lon, lat).matches((item));
             }
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("Single positions with position: ").appendDescriptionOf(positionWithLonLat(lon, lat));
+                description.appendText("Single positions with position: ").appendDescriptionOf(positionsWithLonLat(lon, lat));
 
             }
         };
@@ -47,7 +48,7 @@ public final class Matchers {
         return new TypeSafeMatcher<Positions>() {
             @Override
             protected boolean matchesSafely(Positions item) {
-                return positionWithLonLatAlt(lon, lat, alt).matches(((SinglePosition) item).coordinates());
+                return positionWithLonLatAlt(lon, lat, alt).matches(item);
             }
 
             @Override
@@ -59,11 +60,12 @@ public final class Matchers {
     }
 
 
-    public static Matcher<Coordinates> positionWithLonLat(final double lon, final double lat) {
-        return new TypeSafeMatcher<Coordinates>() {
+
+    public static Matcher<SinglePosition> positionsWithLonLat(final double lon, final double lat) {
+        return new TypeSafeMatcher<SinglePosition>() {
             @Override
-            protected boolean matchesSafely(Coordinates item) {
-                return item.getLon() == lon && item.getLat() == lat;
+            protected boolean matchesSafely(SinglePosition item) {
+                return item.lon() == lon && item.lat() == lat;
             }
 
             @Override
@@ -76,11 +78,11 @@ public final class Matchers {
         };
     }
 
-    public static Matcher<Coordinates> positionWithLonLatAlt(final double lon, final double lat, final double alt) {
-        return new TypeSafeMatcher<Coordinates>() {
+    public static Matcher<SinglePosition> positionWithLonLatAlt(final double lon, final double lat, final double alt) {
+        return new TypeSafeMatcher<SinglePosition>() {
             @Override
-            protected boolean matchesSafely(Coordinates item) {
-                return item.getLon() == lon && item.getLat() == lat && item.getAlt() == alt;
+            protected boolean matchesSafely(SinglePosition item) {
+                return item.lon() == lon && item.lat() == lat && item.alt() == alt;
             }
 
             @Override
@@ -96,14 +98,18 @@ public final class Matchers {
     }
 
     public static Matcher<Point> pointWithLonLat(final double lon, final double lat) {
-        return pointThatHave(positionWithLonLat(lon, lat));
+        return pointThatHave(positionsWithLonLat(lon, lat));
     }
 
-    public static Matcher<Point> pointThatHave(final Matcher<Coordinates> positionMatcher) {
+    public static Matcher<Point> pointWithLonLatAlt(final double lon, final double lat, final double alt) {
+        return pointThatHave(positionWithLonLatAlt(lon, lat, alt));
+    }
+
+    public static Matcher<Point> pointThatHave(final Matcher<SinglePosition> positionMatcher) {
         return new TypeSafeMatcher<Point>() {
             @Override
             protected boolean matchesSafely(Point item) {
-                return positionMatcher.matches(item.coordinates());
+                return positionMatcher.matches(item.positions());
             }
 
             @Override

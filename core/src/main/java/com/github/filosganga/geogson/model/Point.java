@@ -17,7 +17,6 @@
 package com.github.filosganga.geogson.model;
 
 import com.github.filosganga.geogson.model.positions.SinglePosition;
-import com.google.common.base.Function;
 
 /**
  * A Point is identified by a {@link Coordinates}.
@@ -43,7 +42,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return Point instance.
      */
     public static Point from(double lon, double lat) {
-        return from(Coordinates.of(lon, lat));
+        return from(lon, lat, Double.NaN);
     }
 
     /**
@@ -56,36 +55,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return Point instance.
      */
     public static Point from(double lon, double lat, double alt) {
-        return from(Coordinates.of(lon, lat, alt));
-    }
-
-    /**
-     * Create a Point from the given coordinates.
-     *
-     * @param coordinates The Coordinate instance.
-     *
-     * @return Point instance.
-     */
-    public static Point from(Coordinates coordinates) {
-        return new Point(new SinglePosition(coordinates));
-    }
-
-    /**
-     * The Guava function that extracts Coordinates instance from a Point.
-     *
-     * @return  {@link CoordinatesFn} function instance.
-     */
-    public static Function<Point, Coordinates> coordinatesFn() {
-        return CoordinatesFn.INSTANCE;
-    }
-
-    /**
-     * Returns the underlying {@link Coordinates} instance.
-     *
-     * @return The Coordinate instance represented by thi Point.
-     */
-    public Coordinates coordinates() {
-        return positions().coordinates();
+        return new Point(new SinglePosition(lon, lat, alt));
     }
 
     /**
@@ -97,7 +67,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return the x-axis value of this point.
      */
     public double lon() {
-        return coordinates().getLon();
+        return positions().lon();
     }
 
     /**
@@ -109,7 +79,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return the y-axis value of this point.
      */
     public double lat() {
-        return coordinates().getLat();
+        return positions().lat();
     }
 
     /**
@@ -121,7 +91,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return the z-axis value of this point.
      */
     public double alt() {
-        return coordinates().getAlt();
+        return positions().alt();
     }
 
     /**
@@ -131,7 +101,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return A Point instance with this instance latitude and the given longitude
      */
     public Point withLon(double lon) {
-        return from(lon, coordinates().getLat(), coordinates().getAlt());
+        return from(lon, lat(), alt());
     }
 
     /**
@@ -141,7 +111,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return A Point instance with this instance longitude and the given latitude.
      */
     public Point withLat(double lat) {
-        return from(coordinates().getLon(), lat, coordinates().getAlt());
+        return from(lon(), lat, alt());
     }
 
     /**
@@ -151,7 +121,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return A Point instance with this instance longitude and the given latitude.
      */
     public Point withAlt(double alt) {
-        return from(coordinates().getLon(), coordinates().getLat(), alt());
+        return from(lon(), lat(), alt);
     }
 
 
@@ -160,13 +130,6 @@ public class Point extends AbstractGeometry<SinglePosition> {
         return Type.POINT;
     }
 
-    private static enum CoordinatesFn implements Function<Point, Coordinates> {
-        INSTANCE;
 
-        @Override
-        public Coordinates apply(Point input) {
-            return input.coordinates();
-        }
-    }
 
 }

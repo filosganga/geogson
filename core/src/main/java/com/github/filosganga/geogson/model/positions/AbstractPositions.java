@@ -1,37 +1,63 @@
 package com.github.filosganga.geogson.model.positions;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.*;
 
-import java.util.Objects;
-
-import com.google.common.collect.ImmutableList;
+import static com.github.filosganga.geogson.util.Preconditions.checkArgument;
 
 /**
  * Abstract implementation of {@link Positions}. Provides some basic methods.
  */
 public abstract class AbstractPositions<T extends Positions> implements Positions {
 
+    public interface PositionsBuilder {
+
+        static PositionsBuilder builderOf(Positions p) {
+            if(p instanceof SinglePosition) {
+                return LinearPositions.builder();
+            } else if (p instanceof LinearPositions) {
+                return AreaPositions.builder();
+            } else if (p instanceof AreaPositions) {
+                return MultiDimensionalPositions.builder();
+            } else {
+                throw new IllegalArgumentException("No builder can be supplied for Positions " + p);
+            }
+        }
+
+        PositionsBuilder addChild(Positions p);
+
+        Positions build();
+    }
+
     private static final long serialVersionUID = 1L;
 
-    protected final ImmutableList<T> children;
+    protected final List<T> children;
 
-    protected AbstractPositions(ImmutableList<T> children) {
-        this.children = checkNotNull(children, "The children cannot be null");
+    private transient Integer cachedSize = null;
+    private transient Integer cachedHashCode = null;
+
+    AbstractPositions(List<T> children) {
+        this.children = checkArgument(children, Objects::nonNull, "The children cannot be null");
     }
 
     @Override
-    public Iterable<T> children() {
-        return children;
+    public List<T> children() {
+        return Collections.unmodifiableList(children);
     }
 
     @Override
     public int size() {
-        return children.size();
+        if(cachedSize == null) {
+            cachedSize = children.size();
+        }
+        return cachedSize;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getClass(), children);
+        if(cachedHashCode == null) {
+            cachedHashCode = Objects.hash(getClass(), children);
+        }
+        return cachedHashCode;
     }
 
     @Override
@@ -44,5 +70,12 @@ public abstract class AbstractPositions<T extends Positions> implements Position
         }
         final AbstractPositions other = (AbstractPositions) obj;
         return Objects.equals(this.children, other.children);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+                "children=" + children +
+                '}';
     }
 }

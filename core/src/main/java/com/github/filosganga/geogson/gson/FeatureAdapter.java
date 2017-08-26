@@ -2,8 +2,6 @@ package com.github.filosganga.geogson.gson;
 
 import com.github.filosganga.geogson.model.Feature;
 import com.github.filosganga.geogson.model.Geometry;
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -13,14 +11,13 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 
 /**
  * The Gson TypeAdapter to serialize/de-serialize {@link Feature} instances.
  */
-public class FeatureAdapter extends TypeAdapter<Feature> {
+public final class FeatureAdapter extends TypeAdapter<Feature> {
 
     public static final String FEATURE_TYPE = "Feature";
 
@@ -28,10 +25,16 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
     public static final String GEOMETRY_NAME = "geometry";
     public static final String ID_NAME = "id";
     public static final String TYPE_NAME = "type";
+
+    private static final JsonParser jsonParser = new JsonParser();
+
     private final Gson gson;
+    private final TypeAdapter<Geometry> geometryAdapter;
 
     public FeatureAdapter(Gson gson) {
+
         this.gson = gson;
+        this.geometryAdapter = gson.getAdapter(Geometry.class);
     }
 
     @Override
@@ -52,7 +55,7 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
 
     private void writeGeometry(JsonWriter out, Feature value) throws IOException {
         out.name(GEOMETRY_NAME);
-        gson.getAdapter(Geometry.class).write(out, value.geometry());
+        geometryAdapter.write(out, value.geometry());
     }
 
     private void writeProperties(JsonWriter out, Feature value) throws IOException {
@@ -68,15 +71,11 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
 
     @Override
     public Feature read(JsonReader in) throws IOException {
-        Feature feature = null;
+        Feature.Builder builder = Feature.builder();
         if (in.peek() == JsonToken.NULL) {
             in.nextNull();
         } else if (in.peek() == JsonToken.BEGIN_OBJECT) {
             in.beginObject();
-
-            Optional<String> id = Optional.absent();
-            Map<String, JsonElement> properties = null;
-            Geometry<?> geometry = null;
 
             while (in.hasNext()) {
                 String name = in.nextName();
@@ -86,25 +85,16 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
                         throw new IllegalArgumentException("The given json is not a valid Feature, the type must be Feature, current type=" + value);
                     }
                 } else if (PROPERTIES_NAME.equals(name)) {
-                    properties = readProperties(in);
+                    readProperties(in, builder);
                 } else if (GEOMETRY_NAME.equals(name)) {
-                    geometry = gson.fromJson(in, Geometry.class);
+                    builder.withGeometry(gson.fromJson(in, Geometry.class));
                 } else if (ID_NAME.equals(name)) {
-                    id = Optional.of(in.nextString());
+                    builder.withId(Optional.ofNullable(in.nextString()));
                 } else {
                     // Skip unknown value.
                     in.skipValue();
                 }
             }
-
-            if (properties == null) {
-                throw new IllegalArgumentException("Required field 'properties' is missing");
-            }
-            if (geometry == null) {
-                throw new IllegalArgumentException("Required field 'geometry' is missing");
-            }
-
-            feature = new Feature(geometry, ImmutableMap.copyOf(properties), id);
 
             in.endObject();
 
@@ -112,20 +102,17 @@ public class FeatureAdapter extends TypeAdapter<Feature> {
             throw new IllegalArgumentException("The given json is not a valid Feature: " + in.peek());
         }
 
-        return feature;
+        return builder.build();
     }
 
-    private Map<String, JsonElement> readProperties(JsonReader in) throws IOException {
-        Map<String, JsonElement> result = new HashMap<>();
-        JsonParser parser = new JsonParser();
+    private void readProperties(JsonReader in, Feature.Builder builder) throws IOException {
         in.beginObject();
-        while (in.peek() != JsonToken.END_OBJECT) {
+        while (in.hasNext()) {
             String name = in.nextName();
-            JsonElement value = parser.parse(in);
-            result.put(name, value);
+            JsonElement value = jsonParser.parse(in);
+            builder.withProperty(name, value);
         }
         in.endObject();
-        return result;
     }
 
 }

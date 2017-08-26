@@ -2,11 +2,14 @@ package com.github.filosganga.geogson.gson;
 
 import com.github.filosganga.geogson.gson.utils.FeatureUtils;
 import com.github.filosganga.geogson.model.*;
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -37,7 +40,9 @@ public class FeatureAdapterTest {
   @Test
   public void shouldHandleGeometryAsProperty() {
     Point point = Point.from(12.3, 45.3);
-    Feature feature = FeatureUtils.featureWithProperties(ImmutableMap.of("test", toTest.toJsonTree(point)));
+    Map<String, JsonElement> properties = new HashMap<>();
+    properties.put("test", toTest.toJsonTree(point));
+    Feature feature = FeatureUtils.featureWithProperties(properties);
     Feature parsed = toTest.fromJson(toTest.toJson(feature), Feature.class);
     assertThat(toTest.fromJson(parsed.properties().get("test"), Point.class), equalTo(point));
   }

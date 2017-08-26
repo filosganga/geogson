@@ -1,7 +1,5 @@
 package com.github.filosganga.geogson.jts;
 
-import java.io.IOException;
-
 import com.github.filosganga.geogson.codec.CodecRegistry;
 import com.github.filosganga.geogson.model.Geometry;
 import com.google.gson.Gson;
@@ -11,6 +9,8 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.vividsolutions.jts.geom.GeometryFactory;
+
+import java.io.IOException;
 
 /**
  * The JTS Gson TypeAdapterFactory.

@@ -1,3 +1,5 @@
+package com.github.filosganga.geogson.gson;
+
 /*
  * Copyright 2013 Filippo De Luca - me@filippodeluca.com
  *
@@ -14,23 +16,15 @@
  * limitations under the License.
  */
 
-package com.github.filosganga.geogson.gson;
-
-import java.io.IOException;
-
-import com.github.filosganga.geogson.model.Coordinates;
-import com.github.filosganga.geogson.model.positions.AreaPositions;
-import com.github.filosganga.geogson.model.positions.LinearPositions;
-import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
+import com.github.filosganga.geogson.model.positions.AbstractPositions;
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+
+import java.io.IOException;
 
 
 /**
@@ -47,10 +41,10 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             out.beginArray();
             if (value instanceof SinglePosition) {
                 SinglePosition sp = (SinglePosition) value;
-                out.value(sp.coordinates().getLon());
-                out.value(sp.coordinates().getLat());
-                if (!Double.isNaN(sp.coordinates().getAlt())) {
-                    out.value(sp.coordinates().getAlt());
+                out.value(sp.lon());
+                out.value(sp.lat());
+                if (!Double.isNaN(sp.alt())) {
+                    out.value(sp.alt());
                 }
             } else {
                 for (Positions child : value.children()) {
@@ -79,9 +73,11 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
         return parsed;
     }
 
-    private Positions parsePositions(JsonReader in) throws IOException {
 
-        Optional<Positions> parsed = Optional.absent();
+    private static Positions parsePositions(JsonReader in) throws IOException {
+
+
+        Positions parsed = null;
 
         if (in.peek() != JsonToken.BEGIN_ARRAY) {
             throw new IllegalArgumentException("The given json is not a valid positions");
@@ -89,44 +85,29 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
 
         in.beginArray();
         if (in.peek() == JsonToken.NUMBER) {
-            parsed = Optional.of(parseSinglePosition(in));
+            parsed = parseSinglePosition(in);
         } else if (in.peek() == JsonToken.BEGIN_ARRAY) {
-            while (in.hasNext()) {
-                Positions thisPositions = parsePositions(in);
-                // fix bug #30: according to the recursion (i.e. the array structure;
-                // recognize that we came from a recursion because no parsed has no
-                // value yet): convert the already parsed Positions to the
-                // LinearPositions/AreaPositions matching the recursion level
-                if (parsed.equals(Optional.absent()) && thisPositions instanceof LinearPositions) {
-                    AreaPositions areaPositions = new AreaPositions(ImmutableList.of((LinearPositions) thisPositions));
-                    parsed = Optional.of((Positions) areaPositions);
-                } else if (parsed.equals(Optional.absent()) && thisPositions instanceof AreaPositions) {
-                    MultiDimensionalPositions multiPositions = new MultiDimensionalPositions(ImmutableList.of((AreaPositions) thisPositions));
-                    parsed = Optional.of((Positions) multiPositions);
-                } else {
-                  // mergeFn() does all the rest, if parsed has a value
-                  parsed = parsed.transform(mergeFn(thisPositions)).or(Optional.of(thisPositions));
-                }
 
+            AbstractPositions.PositionsBuilder builder = null;
+            while (in.hasNext()) {
+                Positions p = parsePositions(in);
+                if(builder == null) {
+                    builder = AbstractPositions.PositionsBuilder.builderOf(p);
+                }
+                builder.addChild(p);
+            }
+
+            if(builder != null) {
+                parsed =  builder.build();
             }
         }
 
         in.endArray();
 
-        return parsed.orNull();
+        return parsed;
     }
 
-    private Function<Positions, Positions> mergeFn(final Positions p) {
-        return new Function<Positions, Positions>() {
-            @Override
-            public Positions apply(Positions input) {
-                return input.merge(p);
-            }
-        };
-    }
-
-    private Positions parseSinglePosition(JsonReader in) throws IOException {
-        Positions parsed;
+    private static Positions parseSinglePosition(JsonReader in) throws IOException {
         double lon = in.nextDouble();
         double lat = in.nextDouble();
         double alt = Double.NaN;
@@ -135,13 +116,12 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             alt = in.nextDouble();
         }
 
-        // Skip eventual altitude or other dimensions
+        // Skip eventual other dimensions
         while (in.peek() != JsonToken.END_ARRAY) {
             in.skipValue();
         }
 
-        parsed = new SinglePosition(Coordinates.of(lon, lat, alt));
-        return parsed;
+        return new SinglePosition(lon, lat, alt);
     }
 
 }

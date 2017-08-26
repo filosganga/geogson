@@ -16,25 +16,68 @@
 
 package com.github.filosganga.geogson.model.positions;
 
-import com.google.common.collect.ImmutableList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *  a {@link Positions} instance to represent an area Geometry.
  */
 public class AreaPositions extends AbstractPositions<LinearPositions> {
 
-    private static final long serialVersionUID = 1L;
+    public static class Builder implements PositionsBuilder {
 
-    public AreaPositions(ImmutableList<LinearPositions> children) {
-        super(children);
+        private LinkedList<LinearPositions> linearPositions = new LinkedList<>();
+        private boolean allChildrenAreClosed = true;
+
+        public AreaPositions.Builder addLinearPosition(LinearPositions lp) {
+            linearPositions.add(lp);
+            allChildrenAreClosed = allChildrenAreClosed && lp.isClosed();
+            return this;
+        }
+
+        public AreaPositions.Builder addLinearPositions(Iterable<LinearPositions> lps) {
+            lps.forEach(this::addLinearPosition);
+            return this;
+        }
+
+        @Override
+        public PositionsBuilder addChild(Positions p) {
+            if(p instanceof LinearPositions) {
+                return addLinearPosition((LinearPositions)p);
+            } else if (p instanceof SinglePosition) {
+                return addLinearPosition(LinearPositions.builder().addSinglePosition((SinglePosition) p).build());
+            } else if (p instanceof AreaPositions) {
+                return MultiDimensionalPositions.builder().addAreaPosition(this.build()).addChild(p);
+            } else {
+                throw new IllegalArgumentException("The position " + p +  "cannot be a child of AreaPosition");
+            }
+        }
+
+        public AreaPositions build() {
+            return new AreaPositions(linearPositions, allChildrenAreClosed);
+        }
+
     }
 
-    /**
-     * Creates a AreaPositions from a sequence of {@link LinearPositions}.
-     * @param children an Iterable of LinearPositions
-     */
-    public AreaPositions(Iterable<LinearPositions> children) {
-        this(ImmutableList.copyOf(children));
+    private static final long serialVersionUID = 1L;
+
+    private final Boolean allChildrenAreClosed;
+
+    private AreaPositions(List<LinearPositions> children, Boolean allChildrenAreClosed) {
+        super(children);
+        this.allChildrenAreClosed = allChildrenAreClosed;
+    }
+
+    public static AreaPositions.Builder builder() {
+        return new AreaPositions.Builder();
+    }
+
+    public static AreaPositions.Builder builder(AreaPositions positions) {
+        return builder().addLinearPositions(positions.children);
+    }
+
+    public Boolean areAllChildrenClosed() {
+        return allChildrenAreClosed;
     }
 
     /**
@@ -58,11 +101,11 @@ public class AreaPositions extends AbstractPositions<LinearPositions> {
         } else if (other instanceof LinearPositions) {
 
             LinearPositions that = (LinearPositions) other;
-            return new AreaPositions(ImmutableList.<LinearPositions>builder().addAll(children).add(that).build());
+            return builder().addLinearPosition(that).build();
         } else if (other instanceof AreaPositions) {
 
             AreaPositions that = (AreaPositions) other;
-            return new MultiDimensionalPositions(ImmutableList.of(this, that));
+            return MultiDimensionalPositions.builder().addAreaPosition(this).addAreaPosition(that).build();
         } else {
 
             return other.merge(this);
