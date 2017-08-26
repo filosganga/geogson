@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * The Gson TypeAdapter to serialize/de-serialize {@link FeatureCollection} instances.
  */
-public class FeatureCollectionAdapter extends TypeAdapter<FeatureCollection> {
+public final class FeatureCollectionAdapter extends TypeAdapter<FeatureCollection> {
 
     private final Gson gson;
     private final TypeAdapter<Feature> featureAdapter;

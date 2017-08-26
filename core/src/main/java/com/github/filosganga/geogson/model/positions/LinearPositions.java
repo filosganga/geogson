@@ -17,27 +17,27 @@
 package com.github.filosganga.geogson.model.positions;
 
 import java.util.LinkedList;
-import java.util.Optional;
+import java.util.List;
 
 /**
  * A {@link Positions} implementation for linear geometries. It is composed by a sequence of SinglePosition (points).
  */
 public class LinearPositions extends AbstractPositions<SinglePosition> {
 
-    public static class Builder {
+    public static class Builder implements PositionsBuilder {
 
         private LinkedList<SinglePosition> singlePositions = new LinkedList<>();
 
-        private Optional<SinglePosition> first = Optional.empty();
-        private Optional<SinglePosition> last = Optional.empty();
+        private SinglePosition first = null;
+        private SinglePosition last = null;
         private int size = 0;
 
         public Builder addSinglePosition(SinglePosition sp) {
             singlePositions.add(sp);
-            if(!first.isPresent()) {
-                first = Optional.of(sp);
+            if(first == null) {
+                first = sp;
             }
-            last = Optional.of(sp);
+            last = sp;
             size++;
 
             return this;
@@ -48,11 +48,32 @@ public class LinearPositions extends AbstractPositions<SinglePosition> {
             return this;
         }
 
+        @Override
+        public PositionsBuilder addChild(Positions p) {
+            if(p instanceof SinglePosition) {
+                return addSinglePosition((SinglePosition) p);
+            } else if (p instanceof LinearPositions) {
+                return AreaPositions.builder().addChild(this.build()).addChild(p);
+            } else {
+                throw new IllegalArgumentException("The position " + p +  "cannot be a child of LinearPositions");
+            }
+        }
+
+        @Override
         public LinearPositions build() {
             Boolean isClosed = size >= 4 && first.equals(last);
             return new LinearPositions(singlePositions, isClosed);
         }
 
+    }
+
+    private static final long serialVersionUID = 1L;
+
+    private final Boolean isClosed;
+
+    private LinearPositions(List<SinglePosition> children, boolean isClosed) {
+        super(children);
+        this.isClosed = isClosed;
     }
 
     public static LinearPositions.Builder builder() {
@@ -61,19 +82,6 @@ public class LinearPositions extends AbstractPositions<SinglePosition> {
 
     public static LinearPositions.Builder builder(LinearPositions positions) {
         return builder().addSinglePositions(positions.children);
-    }
-
-    private static final long serialVersionUID = 1L;
-
-    private Optional<Boolean> cachedIsClosed = Optional.empty();
-
-    public LinearPositions(Iterable<SinglePosition> children) {
-        super(children);
-    }
-
-    public LinearPositions(Iterable<SinglePosition> children, Boolean isClosed) {
-        this(children);
-        cachedIsClosed = Optional.of(isClosed);
     }
 
     /**
@@ -107,27 +115,7 @@ public class LinearPositions extends AbstractPositions<SinglePosition> {
      * @return true if it is closed, false otherwise.
      */
     public boolean isClosed() {
-        if(!cachedIsClosed.isPresent()) {
-
-            int size = 0;
-            SinglePosition first = null;
-            SinglePosition last = null;
-
-
-            for(SinglePosition child : children) {
-                if(first == null) {
-                    first = child;
-                }
-
-                last = child;
-                size = size + 1;
-            }
-
-
-            cachedIsClosed = Optional.of(size() >= 4 && last.equals(first));
-        }
-
-        return cachedIsClosed.get();
+        return isClosed;
     }
 
 }

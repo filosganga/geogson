@@ -14,9 +14,11 @@ import java.io.Reader;
 
 public class PerformaceTest {
 
+    private static final Gson gson = new GsonBuilder().registerTypeAdapterFactory(new GeometryAdapterFactory()).create();
+
     public static void main(String[] args) {
         PerformaceTest pt = new PerformaceTest();
-        while (true) {
+        for (;;) {
             pt.featureCollectionReading();
         }
     }
@@ -27,8 +29,6 @@ public class PerformaceTest {
 
     @Benchmark
     public void featureCollectionReading() {
-
-        Gson gson = new GsonBuilder().registerTypeAdapterFactory(new GeometryAdapterFactory()).create();
 
         try(Reader reader = openReader("feature-collection.json")) {
             FeatureCollection parsed = gson.fromJson(reader, FeatureCollection.class);

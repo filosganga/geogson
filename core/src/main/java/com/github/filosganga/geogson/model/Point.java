@@ -59,26 +59,6 @@ public class Point extends AbstractGeometry<SinglePosition> {
     }
 
     /**
-     * Create a Point from the given coordinates.
-     *
-     * @param coordinates The Coordinate instance.
-     *
-     * @return Point instance.
-     */
-    public static Point from(Coordinates coordinates) {
-        return from(coordinates.getLon(), coordinates.getLat(), coordinates.getAlt());
-    }
-
-    /**
-     * Returns the underlying {@link Coordinates} instance.
-     *
-     * @return The Coordinate instance represented by thi Point.
-     */
-    public Coordinates coordinates() {
-        return positions().coordinates();
-    }
-
-    /**
      * The x-axis coordinate in map units (degree, kilometer, meter, mile, foot
      * and inch). If your map is in a geographic projection, this will be the
      * Longitude. Otherwise, it will be the x coordinate of the map location in
@@ -87,7 +67,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return the x-axis value of this point.
      */
     public double lon() {
-        return coordinates().getLon();
+        return positions().lon();
     }
 
     /**
@@ -99,7 +79,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return the y-axis value of this point.
      */
     public double lat() {
-        return coordinates().getLat();
+        return positions().lat();
     }
 
     /**
@@ -111,7 +91,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return the z-axis value of this point.
      */
     public double alt() {
-        return coordinates().getAlt();
+        return positions().alt();
     }
 
     /**
@@ -121,7 +101,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return A Point instance with this instance latitude and the given longitude
      */
     public Point withLon(double lon) {
-        return from(lon, coordinates().getLat(), coordinates().getAlt());
+        return from(lon, lat(), alt());
     }
 
     /**
@@ -131,7 +111,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return A Point instance with this instance longitude and the given latitude.
      */
     public Point withLat(double lat) {
-        return from(coordinates().getLon(), lat, coordinates().getAlt());
+        return from(lon(), lat, alt());
     }
 
     /**
@@ -141,7 +121,7 @@ public class Point extends AbstractGeometry<SinglePosition> {
      * @return A Point instance with this instance longitude and the given latitude.
      */
     public Point withAlt(double alt) {
-        return from(coordinates().getLon(), coordinates().getLat(), alt());
+        return from(lon(), lat(), alt);
     }
 
 

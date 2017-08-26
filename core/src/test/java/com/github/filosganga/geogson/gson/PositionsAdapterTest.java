@@ -16,7 +16,6 @@
 
 package com.github.filosganga.geogson.gson;
 
-import com.github.filosganga.geogson.model.Coordinates;
 import com.github.filosganga.geogson.model.positions.AreaPositions;
 import com.github.filosganga.geogson.model.positions.LinearPositions;
 import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
@@ -27,8 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.github.filosganga.geogson.gson.utils.JsonUtils.*;
-import static com.github.filosganga.geogson.model.Matchers.singlePositionsWithLonLat;
-import static com.github.filosganga.geogson.model.Matchers.singlePositionsWithLonLatAlt;
+import static com.github.filosganga.geogson.model.Matchers.*;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -110,7 +108,7 @@ public class PositionsAdapterTest {
   @Test
   public void readWithEmptyJsonShouldReturnNull() throws Exception {
 
-    assertThat(toTest.fromJson("", Coordinates.class), is(nullValue()));
+    assertThat(toTest.fromJson("", Positions.class), is(nullValue()));
   }
 
   @Test(expected = IllegalArgumentException.class)

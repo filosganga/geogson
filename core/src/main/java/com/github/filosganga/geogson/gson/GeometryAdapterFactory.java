@@ -18,9 +18,7 @@ package com.github.filosganga.geogson.gson;
 
 import com.github.filosganga.geogson.model.*;
 import com.github.filosganga.geogson.model.positions.*;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
-import com.google.gson.TypeAdapterFactory;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -34,7 +32,7 @@ import java.util.Optional;
  * The Gson TypeAdapterFactory responsible to serialize/de-serialize all the {@link Geometry}, {@link Feature}
  * and {@link FeatureCollection} instances.
  */
-public class GeometryAdapterFactory implements TypeAdapterFactory {
+public final class GeometryAdapterFactory implements TypeAdapterFactory {
 
     @Override
     @SuppressWarnings("unchecked")
@@ -54,13 +52,10 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
 
     private static class GeometryAdapter extends TypeAdapter<Geometry> {
 
-        private final Gson gson;
         private final TypeAdapter<Geometry> geometryAdapter;
         private final TypeAdapter<Positions> positionsAdapter;
 
-
         private GeometryAdapter(Gson gson) {
-            this.gson = gson;
             this.geometryAdapter = gson.getAdapter(Geometry.class);
             this.positionsAdapter = gson.getAdapter(Positions.class);
         }
@@ -98,16 +93,16 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             } else if (in.peek() == JsonToken.BEGIN_OBJECT) {
                 in.beginObject();
 
-                String type = null;
+                Geometry.Type type = null;
                 Positions positions = null;
                 Geometry<?> geometries = null;
 
                 while (in.hasNext()) {
                     String name = in.nextName();
                     if ("type".equals(name)) {
-                        type = in.nextString();
+                        type = Geometry.Type.forValue(in.nextString());
                     } else if ("coordinates".equals(name)) {
-                        positions = readPosition(in);
+                        positions = positionsAdapter.read(in);
                     } else if ("geometries".equals(name)) {
                         geometries = readGeometries(in);
                     } else {
@@ -126,9 +121,6 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             return geometry;
         }
 
-        private Positions readPosition(JsonReader in) throws IOException {
-            return positionsAdapter.read(in);
-        }
 
         private Geometry<?> readGeometries(JsonReader in) throws IOException {
             Geometry<?> parsed;
@@ -170,8 +162,8 @@ public class GeometryAdapterFactory implements TypeAdapterFactory {
             return parsed.orElse(null);
         }
 
-        private Geometry<?> buildGeometry(final String type, Positions positions, Geometry<?> geometries) {
-            switch (Geometry.Type.forValue(type)) {
+        private Geometry<?> buildGeometry(final Geometry.Type type, final Positions positions, final Geometry<?> geometries) {
+            switch (type) {
                 case GEOMETRY_COLLECTION:
                     return geometries;
                 case MULTI_POLYGON:

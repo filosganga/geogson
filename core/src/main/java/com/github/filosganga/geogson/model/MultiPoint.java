@@ -19,6 +19,7 @@ package com.github.filosganga.geogson.model;
 import com.github.filosganga.geogson.model.positions.LinearPositions;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -49,7 +50,7 @@ public class MultiPoint extends LinearGeometry {
      * @return MultiPoint
      */
     public static MultiPoint of(Point... points) {
-        return of(Arrays.stream(points));
+        return of(Arrays.asList(points));
     }
 
     /**
@@ -59,7 +60,11 @@ public class MultiPoint extends LinearGeometry {
      * @return MultiPoint
      */
     public static MultiPoint of(Iterable<Point> points) {
-        return of(StreamSupport.stream(points.spliterator(), false));
+        LinearPositions.Builder positionsBuilder = LinearPositions.builder();
+        for(Point point : points) {
+            positionsBuilder.addSinglePosition(point.positions());
+        }
+        return new MultiPoint(positionsBuilder.build());
     }
 
     /**
@@ -69,7 +74,7 @@ public class MultiPoint extends LinearGeometry {
      * @return MultiPoint
      */
     public static MultiPoint of(Stream<Point> points) {
-        return new MultiPoint(new LinearPositions(points.map(Point::positions)::iterator));
+        return of(points.collect(Collectors.toList()));
     }
 
     @Override

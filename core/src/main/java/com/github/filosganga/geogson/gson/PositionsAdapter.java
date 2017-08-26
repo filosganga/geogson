@@ -1,3 +1,5 @@
+package com.github.filosganga.geogson.gson;
+
 /*
  * Copyright 2013 Filippo De Luca - me@filippodeluca.com
  *
@@ -14,22 +16,15 @@
  * limitations under the License.
  */
 
-package com.github.filosganga.geogson.gson;
-
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Optional;
-
-import com.github.filosganga.geogson.model.Coordinates;
-import com.github.filosganga.geogson.model.positions.AreaPositions;
-import com.github.filosganga.geogson.model.positions.LinearPositions;
-import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
+import com.github.filosganga.geogson.model.positions.AbstractPositions;
 import com.github.filosganga.geogson.model.positions.Positions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
+
+import java.io.IOException;
 
 
 /**
@@ -46,10 +41,10 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
             out.beginArray();
             if (value instanceof SinglePosition) {
                 SinglePosition sp = (SinglePosition) value;
-                out.value(sp.coordinates().getLon());
-                out.value(sp.coordinates().getLat());
-                if (!Double.isNaN(sp.coordinates().getAlt())) {
-                    out.value(sp.coordinates().getAlt());
+                out.value(sp.lon());
+                out.value(sp.lat());
+                if (!Double.isNaN(sp.alt())) {
+                    out.value(sp.alt());
                 }
             } else {
                 for (Positions child : value.children()) {
@@ -79,10 +74,10 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
     }
 
 
-    private static <P extends Positions> P parsePositions(JsonReader in) throws IOException {
+    private static Positions parsePositions(JsonReader in) throws IOException {
 
 
-        Optional<P> parsed = Optional.empty();
+        Positions parsed = null;
 
         if (in.peek() != JsonToken.BEGIN_ARRAY) {
             throw new IllegalArgumentException("The given json is not a valid positions");
@@ -90,38 +85,26 @@ public class PositionsAdapter extends TypeAdapter<Positions> {
 
         in.beginArray();
         if (in.peek() == JsonToken.NUMBER) {
-            parsed = Optional.of((P)parseSinglePosition(in));
+            parsed = parseSinglePosition(in);
         } else if (in.peek() == JsonToken.BEGIN_ARRAY) {
-            LinkedList<P> innerPositions = new LinkedList<>();
 
-            int size = 0;
-            P first = null;
-            P last = null;
-
+            AbstractPositions.PositionsBuilder builder = null;
             while (in.hasNext()) {
-                last = parsePositions(in);
-                if(first == null) {
-                    first = last;
+                Positions p = parsePositions(in);
+                if(builder == null) {
+                    builder = AbstractPositions.PositionsBuilder.builderOf(p);
                 }
-                size ++;
-
-                innerPositions.add(last);
+                builder.addChild(p);
             }
 
-            boolean isClosed = size >=4 && last.equals(first);
-
-            if(innerPositions.getFirst() instanceof SinglePosition) {
-                parsed = Optional.of((P)new LinearPositions((Iterable<SinglePosition>) innerPositions, isClosed));
-            } else if(innerPositions.getFirst() instanceof LinearPositions) {
-                parsed = Optional.of((P)new AreaPositions((Iterable<LinearPositions>) innerPositions));
-            } else if (innerPositions.getFirst() instanceof AreaPositions) {
-                parsed = Optional.of((P)new MultiDimensionalPositions((Iterable<AreaPositions>) innerPositions));
+            if(builder != null) {
+                parsed =  builder.build();
             }
         }
 
         in.endArray();
 
-        return parsed.orElse(null);
+        return parsed;
     }
 
     private static Positions parseSinglePosition(JsonReader in) throws IOException {

@@ -17,6 +17,7 @@
 package com.github.filosganga.geogson.model.positions;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * The Positions represent the set of coordinates.
@@ -37,7 +38,7 @@ public interface Positions extends Serializable {
      * Return this position children Positions.
      * @return Iterable of Positions.
      */
-    Iterable<? extends Positions> children();
+    List<? extends Positions> children();
 
     /**
      * The size of this positions. The semantic changes between different implementation of Positions.

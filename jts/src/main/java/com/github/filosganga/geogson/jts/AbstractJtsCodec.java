@@ -68,7 +68,7 @@ public abstract class AbstractJtsCodec<S, T extends Geometry<?>> implements Code
                     .map(this::toJtsGeometryCollection)
                     .toArray(com.vividsolutions.jts.geom.Geometry[]::new));
         } else {
-            throw new IllegalArgumentException("Unsupported geometry type: " + src.type()); //$NON-NLS-1$
+            throw new IllegalArgumentException("Unsupported geometry type: " + src.type());
         }
         return returnGeometry;
     }
@@ -100,7 +100,7 @@ public abstract class AbstractJtsCodec<S, T extends Geometry<?>> implements Code
             AbstractJtsCodec<com.vividsolutions.jts.geom.MultiPolygon, MultiPolygon> codec = new MultiPolygonCodec(this.geometryFactory);
             returnGeometry = codec.toGeometry((com.vividsolutions.jts.geom.MultiPolygon) src);
         } else {
-            throw new IllegalArgumentException("Unsupported geometry type: " + src.getGeometryType()); //$NON-NLS-1$
+            throw new IllegalArgumentException("Unsupported geometry type: " + src.getGeometryType());
         }
 
         return returnGeometry;
@@ -138,8 +138,7 @@ public abstract class AbstractJtsCodec<S, T extends Geometry<?>> implements Code
 
         return this.geometryFactory.createLinearRing(
                 StreamSupport.stream(src.positions().children().spliterator(), false)
-                        .map(SinglePosition::coordinates)
-                        .map(AbstractJtsCodec::toJtsCoordinate)
+                        .map(sp -> new Coordinate(sp.lon(), sp.lat(), sp.alt()))
                         .toArray(Coordinate[]::new)
 
         );
@@ -160,7 +159,7 @@ public abstract class AbstractJtsCodec<S, T extends Geometry<?>> implements Code
 
         return this.geometryFactory.createLineString(
                 StreamSupport.stream(src.positions().children().spliterator(), false)
-                        .map(SinglePosition::coordinates).map(AbstractJtsCodec::toJtsCoordinate)
+                        .map(sp -> new Coordinate(sp.lon(), sp.lat(), sp.alt()))
                         .toArray(Coordinate[]::new)
 
         );
@@ -180,17 +179,8 @@ public abstract class AbstractJtsCodec<S, T extends Geometry<?>> implements Code
 
 
     protected static Point fromJtsPoint(com.vividsolutions.jts.geom.Point src) {
-        return Point.from(fromJtsCoordinate(src.getCoordinate()));
-    }
-
-
-    protected static Coordinates fromJtsCoordinate(Coordinate src) {
-        return Coordinates.of(src.x, src.y);
-    }
-
-
-    protected static Coordinate toJtsCoordinate(Coordinates input) {
-        return new Coordinate(input.getLon(), input.getLat());
+        Coordinate coordinate = src.getCoordinate();
+        return Point.from(coordinate.x, coordinate.y, coordinate.z);
     }
 
 }

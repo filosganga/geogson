@@ -16,43 +16,44 @@
 
 package com.github.filosganga.geogson.model.positions;
 
-import com.github.filosganga.geogson.model.Coordinates;
-
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
- * A {@link Positions} instance for a single {@link Coordinates}.
+ * A {@link Positions} instance for a single point.
  */
 public class SinglePosition extends AbstractPositions<Positions> {
 
     private static final long serialVersionUID = 2L;
 
-    private static final Iterable<Positions> CHILDREN = new ArrayList<>();
+    private static final List<Positions> EMPTY_CHILDREN = new ArrayList<>();
 
     private final double lon;
     private final double lat;
     private final double alt;
 
-    private Optional<Integer> cachedHashCode = Optional.empty();
+    private transient Integer cachedHashCode = null;
 
     public SinglePosition(double lon, double lat, double alt) {
-        super(CHILDREN);
+        super(EMPTY_CHILDREN);
         this.lon = lon;
         this.lat = lat;
         this.alt = alt;
     }
 
-
-    /**
-     * Return the underlying {@link Coordinates} instance.
-     *
-     * @return Coordinates
-     */
-    public Coordinates coordinates() {
-        return Coordinates.of(lon, lat, alt);
+    public double lon() {
+        return lon;
     }
+
+    public double lat() {
+        return lat;
+    }
+
+    public double alt() {
+        return alt;
+    }
+
 
     /**
      * Merge this SinglePosition with another {@link Positions} instance. If the given {@link Positions} is:
@@ -76,10 +77,10 @@ public class SinglePosition extends AbstractPositions<Positions> {
 
     @Override
     public int hashCode() {
-        if(!cachedHashCode.isPresent()) {
-            cachedHashCode = Optional.of(Objects.hash(SinglePosition.class, lon, lat, alt));
+        if(cachedHashCode == null) {
+            cachedHashCode = Objects.hash(SinglePosition.class, lon, lat, alt);
         }
-        return cachedHashCode.get();
+        return cachedHashCode;
     }
 
     @Override

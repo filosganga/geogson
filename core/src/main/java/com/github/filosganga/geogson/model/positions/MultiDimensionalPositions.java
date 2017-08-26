@@ -16,8 +16,8 @@
 
 package com.github.filosganga.geogson.model.positions;
 
-import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * It represent a collection of {@link AreaPositions} used to represent composed Are geometries like the
@@ -25,9 +25,7 @@ import java.util.LinkedList;
  */
 public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> {
 
-    private static final long serialVersionUID = 1L;
-
-    public static class Builder {
+    public static class Builder implements PositionsBuilder {
 
         private LinkedList<AreaPositions> areaPositions = new LinkedList<>();
 
@@ -41,10 +39,33 @@ public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> 
             return this;
         }
 
+        @Override
+        public MultiDimensionalPositions.Builder addChild(Positions p) {
+            if(p instanceof AreaPositions) {
+                return addAreaPosition((AreaPositions) p);
+            } else if (p instanceof LinearPositions) {
+                return addAreaPosition(AreaPositions.builder().addLinearPosition((LinearPositions) p).build());
+            } else {
+                throw new IllegalArgumentException("The position " + p +  "cannot be a child of MultiDimensionalPositions");
+            }
+        }
+
+        @Override
         public MultiDimensionalPositions build() {
             return new MultiDimensionalPositions(areaPositions);
         }
 
+    }
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Creates a MultiDimensionalPositions from a sequence of {@link AreaPositions}.
+     *
+     * @param children Iterable of AreaPositions.
+     */
+    private MultiDimensionalPositions(List<AreaPositions> children) {
+        super(children);
     }
 
     public static MultiDimensionalPositions.Builder builder() {
@@ -53,15 +74,6 @@ public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> 
 
     public static MultiDimensionalPositions.Builder builder(MultiDimensionalPositions positions) {
         return builder().addAreaPositions(positions.children);
-    }
-
-    /**
-     * Creates a MultiDimensionalPositions from a sequence of {@link AreaPositions}.
-     *
-     * @param children Iterable of AreaPositions.
-     */
-    public MultiDimensionalPositions(Iterable<AreaPositions> children) {
-        super(children);
     }
 
     /**
@@ -83,7 +95,7 @@ public class MultiDimensionalPositions extends AbstractPositions<AreaPositions> 
             throw new IllegalArgumentException("Cannot merge single position and multidimensional positions");
         } else if (other instanceof LinearPositions) {
             // It can happen when a Polygon does not have holes and is represented by linear position see bug #19
-            return merge(new AreaPositions(Collections.singleton((LinearPositions) other)));
+            return merge(AreaPositions.builder().addLinearPosition((LinearPositions) other).build());
 
         } else if (other instanceof AreaPositions) {
 

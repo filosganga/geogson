@@ -16,12 +16,11 @@
 
 package com.github.filosganga.geogson.model;
 
-import static com.github.filosganga.geogson.model.Matchers.pointThatHave;
+import org.junit.Test;
+
 import static com.github.filosganga.geogson.model.Matchers.pointWithLonLat;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-
-import org.junit.Test;
 
 public class PointTest {
 
@@ -29,14 +28,6 @@ public class PointTest {
     public void ofLonLatShouldReturnRightValues() {
 
         assertThat(Point.from(10, 20), is(pointWithLonLat(10, 20)));
-    }
-
-    @Test
-    public void ofCoordinateShouldReturnRightValues() {
-
-        Coordinates coordinates = Coordinates.of(-10, 60);
-
-        assertThat(Point.from(coordinates), is(pointThatHave(is(coordinates))));
     }
 
     @Test

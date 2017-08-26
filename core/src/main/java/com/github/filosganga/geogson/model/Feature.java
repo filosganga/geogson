@@ -1,5 +1,6 @@
 package com.github.filosganga.geogson.model;
 
+import java.io.Serializable;
 import java.util.*;
 
 import com.google.gson.JsonElement;
@@ -17,12 +18,12 @@ import com.google.gson.JsonElement;
  *     Feature f = Feature.of(polygon).withId(id)
  * }
  */
-public class Feature {
+public class Feature implements Serializable {
 
     public static class Builder {
 
         private Geometry<?> geometry = null;
-        private Map<String, JsonElement> properties = new HashMap<>();
+        private Map<String, JsonElement> properties = new HashMap<>(240);
         private Optional<String> id = Optional.empty();
 
         Builder(){

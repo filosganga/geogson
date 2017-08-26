@@ -20,6 +20,8 @@ import com.github.filosganga.geogson.model.positions.AreaPositions;
 import com.github.filosganga.geogson.model.positions.LinearPositions;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -36,16 +38,9 @@ public class Polygon extends MultiLineString {
     private static final long serialVersionUID = 1L;
 
     public Polygon(AreaPositions positions) {
-        super(checkPositions(positions));
+        super(checkArgument(positions, AreaPositions::areAllChildrenClosed, "In a Polygon all the linear position must be closed"));
     }
 
-    private static AreaPositions checkPositions(AreaPositions src) {
-
-        checkArgument(src, s -> s.size() >= 1, "A polygon should have at least one perimeter");
-        src.children().forEach(child -> checkArgument(child, LinearPositions::isClosed, "The Polygon perimeters and holes must be closed"));
-
-        return src;
-    }
 
     /**
      * Creates a Polygon from the given perimeter and holes.
@@ -56,7 +51,7 @@ public class Polygon extends MultiLineString {
      * @return Polygon
      */
     public static Polygon of(LinearRing perimeter, LinearRing... holes) {
-        return Polygon.of(perimeter, Arrays.stream(holes));
+        return Polygon.of(perimeter, Arrays.asList(holes));
     }
 
     /**
@@ -68,7 +63,6 @@ public class Polygon extends MultiLineString {
      * @return Polygon
      */
     public static Polygon of(LinearRing perimeter, Iterable<LinearRing> holes) {
-
         return of(perimeter, StreamSupport.stream(holes.spliterator(), false));
     }
 
@@ -100,9 +94,9 @@ public class Polygon extends MultiLineString {
      *
      * @return a Guava lazy Iterable of {@link LinearRing}.
      */
-    public Iterable<LinearRing> linearRings() {
-        return StreamSupport.stream(lineStrings().spliterator(), false)
-                .map(LineString::toLinearRing)::iterator;
+    public List<LinearRing> linearRings() {
+        return lineStrings().stream()
+                .map(LineString::toLinearRing).collect(Collectors.toList());
     }
 
     /**
@@ -119,7 +113,7 @@ public class Polygon extends MultiLineString {
      *
      * @return a Guava lazy Iterable of {@link LinearRing}.
      */
-    public Iterable<LinearRing> holes() {
-        return StreamSupport.stream(linearRings().spliterator(), false).skip(1)::iterator;
+    public List<LinearRing> holes() {
+        return linearRings().stream().skip(1).collect(Collectors.toList());
     }
 }

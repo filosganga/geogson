@@ -17,7 +17,7 @@ import java.util.Optional;
 /**
  * The Gson TypeAdapter to serialize/de-serialize {@link Feature} instances.
  */
-public class FeatureAdapter extends TypeAdapter<Feature> {
+public final class FeatureAdapter extends TypeAdapter<Feature> {
 
     public static final String FEATURE_TYPE = "Feature";
 

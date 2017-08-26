@@ -1,7 +1,6 @@
 package com.github.filosganga.geogson.jts;
 
 import com.github.filosganga.geogson.model.MultiPoint;
-import com.github.filosganga.geogson.model.Point;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
@@ -32,9 +31,8 @@ public class MultiPointCodec extends AbstractJtsCodec<com.vividsolutions.jts.geo
     @Override
     public com.vividsolutions.jts.geom.MultiPoint fromGeometry(MultiPoint src) {
         return this.geometryFactory.createMultiPoint(
-                StreamSupport.stream(src.points().spliterator(), false)
-                        .map(Point::coordinates)
-                        .map(AbstractJtsCodec::toJtsCoordinate)
+                src.points().stream()
+                        .map(p -> new Coordinate(p.lon(), p.lat(), p.alt()))
                         .toArray(Coordinate[]::new)
         );
     }

@@ -3,6 +3,8 @@ package com.github.filosganga.geogson.model;
 import com.github.filosganga.geogson.model.positions.AreaPositions;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -35,7 +37,7 @@ public class MultiLineString extends AbstractGeometry<AreaPositions> {
      * @return MultiLineString.
      */
     public static MultiLineString of(LineString... lineStrings) {
-        return of(Arrays.stream(lineStrings));
+        return of(Arrays.asList(lineStrings));
     }
 
     /**
@@ -45,7 +47,11 @@ public class MultiLineString extends AbstractGeometry<AreaPositions> {
      * @return MultiLineString.
      */
     public static MultiLineString of(Iterable<LineString> lineStrings) {
-        return of(StreamSupport.stream(lineStrings.spliterator(), false));
+        AreaPositions.Builder positionsBuilder = AreaPositions.builder();
+        for(LineString lineString : lineStrings) {
+            positionsBuilder.addLinearPosition(lineString.positions());
+        }
+        return new MultiLineString(positionsBuilder.build());
     }
 
     /**
@@ -55,7 +61,7 @@ public class MultiLineString extends AbstractGeometry<AreaPositions> {
      * @return MultiLineString.
      */
     public static MultiLineString of(Stream<LineString> lineStrings) {
-        return new MultiLineString(new AreaPositions(lineStrings.map(AbstractGeometry::positions)::iterator));
+        return of(lineStrings.collect(Collectors.toList()));
     }
 
     @Override
@@ -87,9 +93,10 @@ public class MultiLineString extends AbstractGeometry<AreaPositions> {
      *
      * @return Guava lazy {@code Iterable<LineString>}.
      */
-    public Iterable<LineString> lineStrings() {
-        return StreamSupport.stream(positions().children().spliterator(), false)
-                .map(LineString::new)::iterator;
+    public List<LineString> lineStrings() {
+        return positions().children().stream()
+                .map(LineString::new)
+                .collect(Collectors.toList());
     }
 
 }

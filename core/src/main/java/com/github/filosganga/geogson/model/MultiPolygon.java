@@ -3,6 +3,8 @@ package com.github.filosganga.geogson.model;
 import com.github.filosganga.geogson.model.positions.MultiDimensionalPositions;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -26,7 +28,7 @@ public class MultiPolygon extends AbstractGeometry<MultiDimensionalPositions> {
      * @return MultiPolygon
      */
     public static MultiPolygon of(Polygon... polygons) {
-        return of(Arrays.stream(polygons));
+        return of(Arrays.asList(polygons));
     }
 
     /**
@@ -36,7 +38,12 @@ public class MultiPolygon extends AbstractGeometry<MultiDimensionalPositions> {
      * @return MultiPolygon
      */
     public static MultiPolygon of(Iterable<Polygon> polygons) {
-        return of(StreamSupport.stream(polygons.spliterator(), false));
+        MultiDimensionalPositions.Builder positionsBuilder = MultiDimensionalPositions.builder();
+        for(Polygon polygon : polygons) {
+            positionsBuilder.addAreaPosition(polygon.positions());
+        }
+
+        return new MultiPolygon(positionsBuilder.build());
     }
 
     /**
@@ -46,10 +53,7 @@ public class MultiPolygon extends AbstractGeometry<MultiDimensionalPositions> {
      * @return MultiPolygon
      */
     public static MultiPolygon of(Stream<Polygon> polygons) {
-
-        return new MultiPolygon(new MultiDimensionalPositions(
-                polygons.map(Polygon::positions)::iterator
-        ));
+        return of(polygons.collect(Collectors.toList()));
     }
 
     @Override
@@ -62,9 +66,10 @@ public class MultiPolygon extends AbstractGeometry<MultiDimensionalPositions> {
      *
      * @return an Iterable of the polygons contained in this MultiPolygon.
      */
-    public Iterable<Polygon> polygons() {
-        return StreamSupport.stream(positions().children().spliterator(), false)
-                .map(Polygon::new)::iterator;
+    public List<Polygon> polygons() {
+        return positions().children().stream()
+                .map(Polygon::new)
+                .collect(Collectors.toList());
 
     }
 

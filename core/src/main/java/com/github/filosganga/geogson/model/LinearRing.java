@@ -45,7 +45,7 @@ public class LinearRing extends LineString {
      * @return a LinearRing
      */
     public static LinearRing of(Point... points) {
-        return of(Arrays.stream(points));
+        return of(Arrays.asList(points));
     }
 
     /**

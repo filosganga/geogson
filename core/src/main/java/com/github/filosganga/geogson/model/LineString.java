@@ -19,6 +19,7 @@ package com.github.filosganga.geogson.model;
 import com.github.filosganga.geogson.model.positions.LinearPositions;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -44,7 +45,7 @@ public class LineString extends LinearGeometry {
      * @return a LineString
      */
     public static LineString of(Point... points) {
-        return of(Arrays.stream(points));
+        return of(Arrays.asList(points));
     }
 
     /**
@@ -54,7 +55,12 @@ public class LineString extends LinearGeometry {
      * @return a LineString
      */
     public static LineString of(Iterable<Point> points) {
-        return of(StreamSupport.stream(points.spliterator(), false));
+        LinearPositions.Builder positionsBuilder = LinearPositions.builder();
+        for(Point point : points) {
+            positionsBuilder.addSinglePosition(point.positions());
+        }
+        return new LineString(positionsBuilder.build());
+
     }
 
     /**
@@ -64,7 +70,7 @@ public class LineString extends LinearGeometry {
      * @return a LineString
      */
     public static LineString of(Stream<Point> points) {
-        return new LineString(new LinearPositions(points.map(Point::positions)::iterator));
+        return of(points.collect(Collectors.toList()));
     }
 
     @Override

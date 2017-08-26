@@ -19,6 +19,8 @@ package com.github.filosganga.geogson.model;
 import com.github.filosganga.geogson.model.positions.LinearPositions;
 import com.github.filosganga.geogson.model.positions.SinglePosition;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -65,10 +67,10 @@ public abstract class LinearGeometry extends AbstractGeometry<LinearPositions> {
      *
      * @return {@code Iterable<Point>} a Guava lazy Iterable.
      */
-    public Iterable<Point> points() {
-        return StreamSupport.stream(positions().children().spliterator(), false)
-                .map(SinglePosition::coordinates)
-                .map(Point::from)::iterator;
+    public List<Point> points() {
+        return positions().children().stream()
+                .map(Point::new)
+                .collect(Collectors.toList());
 
     }
 
