@@ -151,6 +151,11 @@ public final class JsonUtils {
         return "[" + lon + "," + lat + "]";
     }
 
+    public static String givenPointJson(double lon, double lat) {
+        return "{\"type\": \"Point\", \"coordinates\":" + givenSinglePositionJson(lon, lat) + "}";
+    }
+
+
     private JsonUtils() {
 
     }

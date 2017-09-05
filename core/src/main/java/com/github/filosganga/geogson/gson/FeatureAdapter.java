@@ -11,6 +11,7 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Optional;
 
 
@@ -106,13 +107,18 @@ public final class FeatureAdapter extends TypeAdapter<Feature> {
     }
 
     private void readProperties(JsonReader in, Feature.Builder builder) throws IOException {
-        in.beginObject();
-        while (in.hasNext()) {
-            String name = in.nextName();
-            JsonElement value = jsonParser.parse(in);
-            builder.withProperty(name, value);
+        if(in.peek() == JsonToken.NULL) {
+            in.nextNull();
+            builder.withProperties(Collections.emptyMap());
+        } else {
+            in.beginObject();
+            while (in.hasNext()) {
+                String name = in.nextName();
+                JsonElement value = jsonParser.parse(in);
+                builder.withProperty(name, value);
+            }
+            in.endObject();
         }
-        in.endObject();
     }
 
 }

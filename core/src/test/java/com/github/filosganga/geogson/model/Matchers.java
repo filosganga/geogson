@@ -22,6 +22,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import java.util.Map;
 import java.util.Optional;
 
 public final class Matchers {
@@ -133,5 +134,20 @@ public final class Matchers {
             }
         };
 
+    }
+
+    public static <K,V> Matcher<Map<K, V>> emptyMap() {
+        return new TypeSafeMatcher<Map<K, V>>() {
+            @Override
+            protected boolean matchesSafely(Map<K, V> kvMap) {
+                return kvMap.isEmpty();
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Empty Map");
+
+            }
+        };
     }
 }
