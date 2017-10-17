@@ -55,7 +55,7 @@ Geometry geometry = gson.fromJson(json); // It will be an instance of Point.
 There are currently only one additional module for GeoGSON, the Java Topology
 Suite (JTS) support.
 
-If you are not familiar with the JTS library take a look at the [JTS Home Page](http://www.vividsolutions.com/jts/JTSHome.htm)
+If you are not familiar with the JTS library take a look at the [JTS Home Page](http://www.tsusiatsoftware.net/jts/main.html)
 
 ### JTS support
 To enable the JTS support, you need declare the geogson-jts dependency and
