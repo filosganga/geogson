@@ -1,19 +1,19 @@
 package com.github.filosganga.geogson.jts;
 
 import com.github.filosganga.geogson.model.MultiPoint;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 
 import java.util.stream.StreamSupport;
 
 /**
- * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.MultiPoint} and
+ * A {@link com.github.filosganga.geogson.codec.Codec} for {@link org.locationtech.jts.geom.MultiPoint} and
  * {@link MultiPoint}.
  */
-public class MultiPointCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.MultiPoint, MultiPoint> {
+public class MultiPointCodec extends AbstractJtsCodec<org.locationtech.jts.geom.MultiPoint, MultiPoint> {
 
     /**
-     * Create a codec for a {@link com.vividsolutions.jts.geom.MultiPoint JTS
+     * Create a codec for a {@link org.locationtech.jts.geom.MultiPoint JTS
      * MultiPoint} with a given {@link GeometryFactory}
      *
      * @param geometryFactory a {@link GeometryFactory} defining a PrecisionModel and a SRID
@@ -23,13 +23,13 @@ public class MultiPointCodec extends AbstractJtsCodec<com.vividsolutions.jts.geo
     }
 
     @Override
-    public MultiPoint toGeometry(com.vividsolutions.jts.geom.MultiPoint src) {
+    public MultiPoint toGeometry(org.locationtech.jts.geom.MultiPoint src) {
         return MultiPoint.of(StreamSupport.stream(JtsPointIterable.of(src).spliterator(), false)
                 .map(AbstractJtsCodec::fromJtsPoint));
     }
 
     @Override
-    public com.vividsolutions.jts.geom.MultiPoint fromGeometry(MultiPoint src) {
+    public org.locationtech.jts.geom.MultiPoint fromGeometry(MultiPoint src) {
         return this.geometryFactory.createMultiPoint(
                 src.points().stream()
                         .map(p -> new Coordinate(p.lon(), p.lat(), p.alt()))
