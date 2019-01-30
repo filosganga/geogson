@@ -1,16 +1,16 @@
 package com.github.filosganga.geogson.jts;
 
 import com.github.filosganga.geogson.model.Polygon;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.GeometryFactory;
 
 /**
- * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.Polygon} and
+ * A {@link com.github.filosganga.geogson.codec.Codec} for {@link org.locationtech.jts.geom.Polygon} and
  * {@link Polygon}.
  */
-public class PolygonCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.Polygon, Polygon> {
+public class PolygonCodec extends AbstractJtsCodec<org.locationtech.jts.geom.Polygon, Polygon> {
 
     /**
-     * Create a codec for a {@link com.vividsolutions.jts.geom.Polygon JTS
+     * Create a codec for a {@link org.locationtech.jts.geom.Polygon JTS
      * Polygon} with a given {@link GeometryFactory}
      *
      * @param geometryFactory
@@ -21,12 +21,12 @@ public class PolygonCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.P
     }
 
     @Override
-    public Polygon toGeometry(com.vividsolutions.jts.geom.Polygon src) {
+    public Polygon toGeometry(org.locationtech.jts.geom.Polygon src) {
         return fromJtsPolygon(src);
     }
 
     @Override
-    public com.vividsolutions.jts.geom.Polygon fromGeometry(Polygon src) {
+    public org.locationtech.jts.geom.Polygon fromGeometry(Polygon src) {
         return toJtsPolygon(src);
     }
 }

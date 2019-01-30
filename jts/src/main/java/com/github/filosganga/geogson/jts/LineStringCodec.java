@@ -1,16 +1,16 @@
 package com.github.filosganga.geogson.jts;
 
 import com.github.filosganga.geogson.model.LineString;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.GeometryFactory;
 
 /**
- * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.LineString} and
+ * A {@link com.github.filosganga.geogson.codec.Codec} for {@link org.locationtech.jts.geom.LineString} and
  * {@link LineString}.
  */
-public class LineStringCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.LineString, LineString> {
+public class LineStringCodec extends AbstractJtsCodec<org.locationtech.jts.geom.LineString, LineString> {
 
     /**
-     * Create a codec for a {@link com.vividsolutions.jts.geom.LineString JTS
+     * Create a codec for a {@link org.locationtech.jts.geom.LineString JTS
      * LineString} with a given {@link GeometryFactory}
      *
      * @param geometryFactory
@@ -21,12 +21,12 @@ public class LineStringCodec extends AbstractJtsCodec<com.vividsolutions.jts.geo
     }
 
     @Override
-    public LineString toGeometry(com.vividsolutions.jts.geom.LineString src) {
+    public LineString toGeometry(org.locationtech.jts.geom.LineString src) {
         return fromJtsLineString(src);
     }
 
     @Override
-    public com.vividsolutions.jts.geom.LineString fromGeometry(LineString src) {
+    public org.locationtech.jts.geom.LineString fromGeometry(LineString src) {
         return toJtsLineString(src);
     }
 }

@@ -8,7 +8,7 @@ import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.GeometryFactory;
 
 import java.io.IOException;
 
@@ -34,7 +34,7 @@ public class JtsAdapterFactory implements TypeAdapterFactory {
     private final GeometryFactory geometryFactory;
 
     /**
-     * Create an adapter for {@link com.vividsolutions.jts.geom.Geometry JTS
+     * Create an adapter for {@link org.locationtech.jts.geom.Geometry JTS
      * Geometry} with a default {@link GeometryFactory} (i.e. using the
      * {@link GeometryFactory#GeometryFactory() empty constructor})
      *
@@ -44,7 +44,7 @@ public class JtsAdapterFactory implements TypeAdapterFactory {
     }
 
     /**
-     * Create an adapter for {@link com.vividsolutions.jts.geom.Geometry JTS
+     * Create an adapter for {@link org.locationtech.jts.geom.Geometry JTS
      * Geometry} with an optional {@link GeometryFactory}
      *
      * @param geometryFactory
@@ -62,7 +62,7 @@ public class JtsAdapterFactory implements TypeAdapterFactory {
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
 
-        if(com.vividsolutions.jts.geom.Geometry.class.isAssignableFrom(type.getRawType())) {
+        if(org.locationtech.jts.geom.Geometry.class.isAssignableFrom(type.getRawType())) {
             return (TypeAdapter<T>) new JtsGeometryAdapter(gson, getGeometryFactory());
         } else {
             return null;
@@ -80,11 +80,11 @@ public class JtsAdapterFactory implements TypeAdapterFactory {
 
 }
 
-class JtsGeometryAdapter extends TypeAdapter<com.vividsolutions.jts.geom.Geometry> {
+class JtsGeometryAdapter extends TypeAdapter<org.locationtech.jts.geom.Geometry> {
 
     private final Gson gson;
 
-    private final CodecRegistry<com.vividsolutions.jts.geom.Geometry, Geometry<?>> codecRegistry;
+    private final CodecRegistry<org.locationtech.jts.geom.Geometry, Geometry<?>> codecRegistry;
 
     public JtsGeometryAdapter(Gson gson, GeometryFactory geometryFactory) {
         this.gson = gson;
@@ -100,7 +100,7 @@ class JtsGeometryAdapter extends TypeAdapter<com.vividsolutions.jts.geom.Geometr
     }
 
     @Override
-    public void write(JsonWriter out, com.vividsolutions.jts.geom.Geometry value) throws IOException {
+    public void write(JsonWriter out, org.locationtech.jts.geom.Geometry value) throws IOException {
         if (value == null || value.getCoordinates().length == 0) {
             out.nullValue();
             return;
@@ -111,7 +111,7 @@ class JtsGeometryAdapter extends TypeAdapter<com.vividsolutions.jts.geom.Geometr
     }
 
     @Override
-    public com.vividsolutions.jts.geom.Geometry read(JsonReader in) throws IOException {
+    public org.locationtech.jts.geom.Geometry read(JsonReader in) throws IOException {
 
         Geometry<?> geometry = gson.getAdapter(new TypeToken<Geometry<?>>(){}).read(in);
 

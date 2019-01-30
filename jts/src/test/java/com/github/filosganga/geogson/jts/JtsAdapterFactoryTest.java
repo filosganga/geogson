@@ -19,8 +19,8 @@ package com.github.filosganga.geogson.jts;
 import com.github.filosganga.geogson.gson.GeometryAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
+import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 import org.junit.Before;
 import org.junit.Test;
 

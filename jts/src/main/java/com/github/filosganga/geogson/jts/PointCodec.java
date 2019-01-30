@@ -1,17 +1,17 @@
 package com.github.filosganga.geogson.jts;
 
 import com.github.filosganga.geogson.model.Point;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 
 /**
- * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.Point} and
+ * A {@link com.github.filosganga.geogson.codec.Codec} for {@link org.locationtech.jts.geom.Point} and
  * {@link Point}.
  */
-public class PointCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.Point, Point> {
+public class PointCodec extends AbstractJtsCodec<org.locationtech.jts.geom.Point, Point> {
 
     /**
-     * Create a codec for a {@link com.vividsolutions.jts.geom.Point JTS
+     * Create a codec for a {@link org.locationtech.jts.geom.Point JTS
      * Point} with a given {@link GeometryFactory}
      *
      * @param geometryFactory
@@ -22,12 +22,12 @@ public class PointCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.Poi
     }
 
     @Override
-    public Point toGeometry(com.vividsolutions.jts.geom.Point src) {
+    public Point toGeometry(org.locationtech.jts.geom.Point src) {
         return fromJtsPoint(src);
     }
 
     @Override
-    public com.vividsolutions.jts.geom.Point fromGeometry(Point src) {
+    public org.locationtech.jts.geom.Point fromGeometry(Point src) {
         return this.geometryFactory.createPoint(new Coordinate(src.lon(), src.lat()));
     }
 

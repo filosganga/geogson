@@ -1,16 +1,16 @@
 package com.github.filosganga.geogson.jts;
 
 import com.github.filosganga.geogson.model.LinearRing;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.GeometryFactory;
 
 /**
- * A {@link com.github.filosganga.geogson.codec.Codec} for {@link com.vividsolutions.jts.geom.LinearRing} and
+ * A {@link com.github.filosganga.geogson.codec.Codec} for {@link org.locationtech.jts.geom.LinearRing} and
  * {@link LinearRing}.
  */
-public class LinearRingCodec extends AbstractJtsCodec<com.vividsolutions.jts.geom.LinearRing, LinearRing> {
+public class LinearRingCodec extends AbstractJtsCodec<org.locationtech.jts.geom.LinearRing, LinearRing> {
 
     /**
-     * Create a codec for a {@link com.vividsolutions.jts.geom.LinearRing JTS
+     * Create a codec for a {@link org.locationtech.jts.geom.LinearRing JTS
      * LinearRing} with a given {@link GeometryFactory}
      *
      * @param geometryFactory
@@ -21,12 +21,12 @@ public class LinearRingCodec extends AbstractJtsCodec<com.vividsolutions.jts.geo
     }
 
     @Override
-    public LinearRing toGeometry(com.vividsolutions.jts.geom.LinearRing src) {
+    public LinearRing toGeometry(org.locationtech.jts.geom.LinearRing src) {
         return fromJtsLinearRing(src);
     }
 
     @Override
-    public com.vividsolutions.jts.geom.LinearRing fromGeometry(LinearRing src) {
+    public org.locationtech.jts.geom.LinearRing fromGeometry(LinearRing src) {
         return toJtsLinearRing(src);
     }
 }
