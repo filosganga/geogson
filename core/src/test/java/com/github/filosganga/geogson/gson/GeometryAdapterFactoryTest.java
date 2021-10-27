@@ -1,16 +1,31 @@
 package com.github.filosganga.geogson.gson;
 
-import com.github.filosganga.geogson.model.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.util.ArrayList;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import com.github.filosganga.geogson.model.Geometry;
+import com.github.filosganga.geogson.model.GeometryCollection;
+import com.github.filosganga.geogson.model.LineString;
+import com.github.filosganga.geogson.model.LinearRing;
+import com.github.filosganga.geogson.model.MultiLineString;
+import com.github.filosganga.geogson.model.MultiPoint;
+import com.github.filosganga.geogson.model.MultiPolygon;
+import com.github.filosganga.geogson.model.Point;
+import com.github.filosganga.geogson.model.Polygon;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import static com.github.filosganga.geogson.gson.GeometryAdapter.MSG_MISSING_KEY_COORDINATES;
+import static com.github.filosganga.geogson.gson.GeometryAdapter.MSG_MISSING_KEY_GEOMETRIES;
+import static com.github.filosganga.geogson.gson.GeometryAdapter.MSG_MISSING_KEY_GEOMETRY_TYPE;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class GeometryAdapterFactoryTest {
 
@@ -2023,5 +2038,43 @@ public class GeometryAdapterFactoryTest {
     GeometryCollection parsed = this.toTest.fromJson(this.toTest.toJson(source), GeometryCollection.class);
 
     assertThat(parsed, equalTo(source));
+  }
+
+  @Test
+  public void shouldHandleEmptyGeometryCoordinates() {
+    try {
+      this.toTest.fromJson("{\n"
+          + "            \"type\": \"LineString\",\n"
+          + "            \"coordinates\": []\n"
+          + "        }", Geometry.class);
+      fail();
+    } catch (IllegalArgumentException expected) {
+      assertEquals(MSG_MISSING_KEY_COORDINATES, expected.getMessage());
+    }
+  }
+
+  @Test
+  public void shouldHandleEmptyType() {
+    try {
+      this.toTest.fromJson("{\n"
+          + "            \"coordinates\": [77, 13]\n"
+          + "        }", Geometry.class);
+      fail();
+    } catch (IllegalArgumentException expected) {
+      assertEquals(MSG_MISSING_KEY_GEOMETRY_TYPE, expected.getMessage());
+    }
+  }
+
+  @Test
+  public void shouldHandleEmptyGeometryCollection() {
+    try {
+      this.toTest.fromJson("{\n"
+          + "            \"type\": \"GeometryCollection\",\n"
+          + "            \"coordinates\": [7, 13]\n"
+          + "        }", Geometry.class);
+      fail();
+    } catch (IllegalArgumentException expected) {
+      assertEquals(MSG_MISSING_KEY_GEOMETRIES, expected.getMessage());
+    }
   }
 }
