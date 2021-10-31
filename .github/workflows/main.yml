@@ -25,14 +25,13 @@ jobs:
           restore-keys: |
             maven-dependencies-${{ runner.os }}-
       - run: mvn test-compile
-      - run: ls -la core
-      - run: ls -la core/target
       - name: Store targets
         uses: alehechka/upload-tartifact@v1
         with:
           name: targets
           path: |
-            **/*/target/**/*
+            core/target/**/*
+            jts/target/**/*
           if-no-files-found: error
           retention-days: 1
   verify:
