@@ -33,7 +33,7 @@ jobs:
           key: maven-dependencies-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-dependencies-${{ runner.os }}-
-      - run: gpg --list-secret-keys --keyid-format LONG
+      - run: gpg --list-secret-keys --keyid-format=long
       - run: mvn test-compile
       - run: tar -cvzf targets.tar.gz core/target/**/* jts/target/**/*
       - name: "Upload targets"
