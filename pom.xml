@@ -19,7 +19,7 @@
 
     <groupId>com.github.filosganga</groupId>
     <artifactId>geogson</artifactId>
-    <version>1.4.28-SNAPSHOT</version>
+    <version>1.4.28</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -45,7 +45,7 @@
         <connection>scm:git:git@github.com:filosganga/geogson.git</connection>
         <developerConnection>scm:git:git@github.com:filosganga/geogson.git</developerConnection>
         <url>http://github.com/filosganga/geogson</url>
-      <tag>HEAD</tag>
+      <tag>v1.4.28</tag>
   </scm>
 
     <issueManagement>
