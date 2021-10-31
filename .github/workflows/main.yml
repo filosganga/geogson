@@ -33,16 +33,9 @@ jobs:
           key: maven-dependencies-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-dependencies-${{ runner.os }}-
-      - name: Import GPG key
-        id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v4
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
       - run: gpg --list-secret-keys --keyid-format LONG
-      - run: mvn verify
+      - run: mvn test-compile
       - run: tar -cvzf targets.tar.gz core/target/**/* jts/target/**/*
-        if: success() || failure()
       - name: "Upload targets"
         uses: actions/upload-artifact@v2
         with:
@@ -50,7 +43,9 @@ jobs:
           path: targets.tar.gz
           if-no-files-found: error
           retention-days: 1
+      - run: mvn -X verify
       - name: Test Report
+        if: success() || failure()
         uses: dorny/test-reporter@v1.5.0
         with:
           list-suites: "all"
