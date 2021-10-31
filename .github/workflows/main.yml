@@ -44,7 +44,7 @@ jobs:
           path: targets.tar.gz
           if-no-files-found: error
           retention-days: 1
-      - run: mvn -X verify
+      - run: mvn verify
       - name: Test Report
         if: success() || failure()
         uses: dorny/test-reporter@v1.5.0
@@ -86,5 +86,8 @@ jobs:
         with:
           name: targets
       - run: tar -xvzf targets.tar.gz
+      - uses: oleksiyrudenko/gha-git-credentials@v2.1
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
       - run: mvn release:clean release:prepare --batch-mode
       - run: mvn release:perform
