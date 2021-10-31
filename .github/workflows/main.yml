@@ -89,5 +89,8 @@ jobs:
       - uses: oleksiyrudenko/gha-git-credentials@v2.1
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: webfactory/ssh-agent@v0.5.3
+        with:
+            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: mvn release:clean release:prepare --batch-mode
       - run: mvn release:perform
