@@ -324,9 +324,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <configuration>
-                    <keyname>A45E069685F198166A0233738BEBB0C7EC186577</keyname>
-                </configuration>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
