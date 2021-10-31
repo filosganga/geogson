@@ -24,8 +24,9 @@ jobs:
           key: maven-dependencies-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-dependencies-${{ runner.os }}-
-      - run: mvn compile
       - run: mvn test-compile
+      - run: ls -la core
+      - run: ls -la core/target
       - name: Store targets
         uses: alehechka/upload-tartifact@v1
         with:
