@@ -33,6 +33,12 @@ jobs:
           key: maven-dependencies-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-dependencies-${{ runner.os }}-
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
       - run: gpg --list-secret-keys --keyid-format LONG
       - run: mvn verify
       - run: tar -cvzf targets.tar.gz core/target/**/* jts/target/**/*
