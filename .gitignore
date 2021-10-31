@@ -1,10 +1,12 @@
-target
+target/
 
-.idea
-.idea_modules
+.idea/
+.idea_modules/
 *.iml
 
 .classpath
 .project
+.settings
+.settings/
 
 .DS_Store
