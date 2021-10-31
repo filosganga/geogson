@@ -77,21 +77,13 @@ jobs:
       new_tag: ${{ steps.tag.outputs.new_tag }}
     steps:
       - uses: actions/checkout@v2
-      - name: Claculate next version
+      - name: Caculate next version
         id: next-tag
         uses: anothrNick/github-tag-action@1.36.0
         env:
           DRY_RUN: true
           DEFAULT_BUMP: patch
           WITH_V: false
-      - name: Claculate next version
-        id: next-tag
-        uses: anothrNick/github-tag-action@1.36.0
-        env:
-          DRY_RUN: true
-          DEFAULT_BUMP: patch
-          WITH_V: false
-
 
   release:
     runs-on: ubuntu-latest
